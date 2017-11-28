@@ -1,0 +1,51 @@
+﻿using FycnApi.Base;
+using Fycn.Interface;
+using Fycn.Model.Sys;
+using Fycn.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using Fycn.Utility;
+
+namespace FycnApi.Controllers
+{
+    public class HomeController : ApiBaseController
+    {
+        public IEnumerable<RemoteServiceEntity> GetAllProducts()
+        {
+            // IProduct service = new ProductService();
+            //List<ProductModel> products = service.GetAllProducts();
+
+            var servicelist = ServiceInfoHelper.RemoteServiceList;
+            return servicelist;
+        }
+
+        //机器 状态数
+        public ResultObj<string> GetTotalMachineCount()
+        {
+            ICommon icommon = new CommonService();
+            string retutStr = JsonHandler.DataTable2Json(icommon.GetTotalMachineCount());
+            return Content(retutStr);
+        }
+
+
+        //机器 销售额
+        public ResultObj<string> GetSalesAmountByMachine(string salesDateStart="", string salesDateEnd="", bool needPage=false,  int pageIndex = 1, int pageSize = 10)
+        {
+            IStatistic istatistic = new StatisticService();
+            string retutStr = JsonHandler.DataTable2Json(istatistic.GetSalesAmountByMachine(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize));
+            if (!needPage)
+            {
+                return Content(retutStr);
+            }
+
+            int totalcount = istatistic.GetSalesAmountByMachineCount(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize);
+
+            var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
+            return Content(retutStr, pagination);
+          
+        }
+    }
+}
