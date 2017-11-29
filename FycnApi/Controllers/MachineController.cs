@@ -21,6 +21,7 @@ using System.Xml;
 using Fycn.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FycnApi.Controllers
 {
@@ -69,7 +70,8 @@ namespace FycnApi.Controllers
         }
 
         // 心跳
-        [DisableCors]
+        //[EnableCors("AllowSpecificOrigin")]
+        
         public string GetHeartBeep(string k)
         {
             KeyJsonModel keyJsonInfo = AnalizeKey(k);

@@ -14,9 +14,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Controllers
 {
+    //[DisableCors]
     public class CommonController : ApiBaseController
     {
         public ResultObj<List<MenuModel>> GetMenus()

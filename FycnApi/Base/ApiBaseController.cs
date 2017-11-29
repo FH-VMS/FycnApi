@@ -9,9 +9,11 @@ using System.Reflection;
 using Fycn.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Base
 {
+    //[EnableCors("AllowSpecificOrigin")]
     public class ApiBaseController:Controller
     {
         protected string ContentWithJson<T>(T obj, ResultCode retCode, string retMsg)

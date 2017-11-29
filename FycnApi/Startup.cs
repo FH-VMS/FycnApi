@@ -9,6 +9,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using Fycn.Utility;
+using Microsoft.Extensions.Logging;
 
 namespace FycnApi
 {
@@ -33,18 +34,14 @@ namespace FycnApi
             services.AddHttpContextAccessor();
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.Configure<WebConfig>(Configuration.GetSection("AppConfiguration"));
-            services.AddMvc()
-                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
-                .AddWebApiConventions();
             services.AddCors();
-            
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder
-                    //.WithOrigins("http://example.com", "http://www.contoso.com")
+                    //.WithOrigins("http://localhost:9090")
                     .AllowAnyOrigin()
-                    .WithMethods("GET","POST", "PUT", "DELETE")
+                    .WithMethods("GET", "POST", "PUT", "DELETE")
                     .AllowAnyHeader()
                     .AllowCredentials()
                     .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
@@ -54,15 +51,24 @@ namespace FycnApi
             {
                 options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
             });
+
+            services.AddMvc()
+                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
+                .AddWebApiConventions();
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider svp)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "api/{controller=Machine}/{action=GetPayResult}/{id?}");

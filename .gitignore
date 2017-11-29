@@ -16,3 +16,7 @@ FycnApi/obj/
 FycnApi/Properties/
 Fycn.Utility/bin/
 Fycn.Service/bin/
+.vs/
+Fycn.Sockets/bin/
+Fycn.Sockets/obj/
+Fycn.Sockets/Properties/
