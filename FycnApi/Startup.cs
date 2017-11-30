@@ -10,11 +10,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using Fycn.Utility;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using log4net.Repository;
+using log4net;
+using log4net.Config;
 
 namespace FycnApi
 {
     public class Startup
     {
+        public static ILoggerRepository repository { get; set; }
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             /*
@@ -24,6 +29,10 @@ namespace FycnApi
        */
             
              Configuration = configuration;
+
+            // log4net
+            repository = LogManager.CreateRepository("FycnApi");
+            XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));
         }
 
         public IConfiguration Configuration { get; }
@@ -80,6 +89,10 @@ namespace FycnApi
             app.UseStaticHttpContext();
 
             //app.UseMvcWithDefaultRoute();
+
+            var log = LogManager.GetLogger(repository.Name, typeof(Startup));
+            log.Info("test");
+            log.Info(Directory.GetCurrentDirectory());
         }
 
         private void OnStarted()

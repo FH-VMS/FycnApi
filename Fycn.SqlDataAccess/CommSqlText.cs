@@ -81,7 +81,7 @@ namespace Fycn.SqlDataAccess
 
         public static Dictionary<string, string> GetSqlDictionary(string sqlTxtName)
         {
-            var configPath = Directory.GetCurrentDirectory() + "\\" + SqlTextName + ".sqlconfig";
+            var configPath = Directory.GetCurrentDirectory() + "/" + SqlTextName + ".sqlconfig";
 
             var sqlConfigFile = File.ReadAllText(configPath);
             //return TTT.Main(sqlConfigFile) as Dictionary<string, string>;
