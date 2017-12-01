@@ -46,7 +46,7 @@ namespace Fycn.PaymentLib.ali
         public static string sign_type = "MD5";
 
         // 调试用，创建TXT日志文件夹路径，见AlipayCore.cs类中的LogResult(string sWord)打印方法。
-        public static string log_path = Directory.GetCurrentDirectory() + "log\\";
+        public static string log_path = Directory.GetCurrentDirectory() + "log/";
 
         // 字符编码格式 目前支持utf-8
         public static string input_charset = "utf-8";
@@ -76,7 +76,7 @@ namespace Fycn.PaymentLib.ali
         public static string refund_date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         // 调试用，创建TXT日志文件夹路径，见AlipayCore.cs类中的LogResult(string sWord)打印方法。
-        public static string refund_log_path = Directory.GetCurrentDirectory() + "log\\";
+        public static string refund_log_path = Directory.GetCurrentDirectory() + "log/";
 
         // 字符编码格式 目前支持 gbk 或 utf-8
         public static string refund_input_charset = "utf-8";

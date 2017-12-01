@@ -51,7 +51,7 @@ namespace Fycn.Utility
             {
                 if (String.IsNullOrEmpty(_ehrFileRelativePath))
                 {
-                    _ehrFileRelativePath = ConfigurationManager.AppSettings["EhrFilePath"] ?? "~\\Files\\EHR\\";
+                    _ehrFileRelativePath = ConfigurationManager.AppSettings["EhrFilePath"] ?? "~/Files/EHR/";
                 }
                 return _ehrFileRelativePath;
             }

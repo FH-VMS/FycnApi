@@ -80,7 +80,7 @@ namespace FycnApi.Controllers
         {
             var hfc = Request.Form.Files;
             const string localPath = "Attachment/";
-            var path = Directory.GetCurrentDirectory() + "\\" + localPath;
+            var path = Directory.GetCurrentDirectory() + "/" + localPath;
             List<CommonDic> lstCommonDic = new List<CommonDic>();
             if (hfc.Count == 0)
             {
@@ -101,7 +101,7 @@ namespace FycnApi.Controllers
                                 .Trim('"');
                 var fileName = readFile.Split('.')[0] + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfffff") + "." + readFile.Split('.')[1];
                 //这个hostingEnv.WebRootPath就是要存的地址可以改下
-                fileName = path + $@"\{fileName}";
+                fileName = path + $@"/{fileName}";
                 size += file.Length;
                 using (FileStream fs = System.IO.File.Create(fileName))
                 {

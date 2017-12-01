@@ -92,7 +92,7 @@ namespace Fycn.PaymentLib.ali
         /// <param name="sWord">要写入日志里的文本内容</param>
         public static void LogResult(string sWord)
         {
-            string strPath = Config.log_path + "\\" + "alipay_log_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
+            string strPath = Config.log_path + "/" + "alipay_log_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
             StreamWriter fs = new StreamWriter(strPath, false, System.Text.Encoding.Default);
             fs.Write(sWord);
             fs.Close();
