@@ -47,8 +47,8 @@ namespace Fycn.Sockets
 
                 string HostName = Dns.GetHostName(); //得到主机名
                 IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
-                string ipV4 = string.Empty;
-
+                string ipV4 = "0.0.0.0";
+                /*
                 for (int i = 0; i < IpEntry.AddressList.Length; i++)
                 {
                     //从IP地址列表中筛选出IPv4类型的IP地址
@@ -59,6 +59,7 @@ namespace Fycn.Sockets
                         ipV4 = IpEntry.AddressList[i].ToString();
                     }
                 }
+                */
                 IPEndPoint listenPoint = new IPEndPoint(IPAddress.Parse(ipV4), port);
                 AsyncSocketSvr.Start(listenPoint);
 

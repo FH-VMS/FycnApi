@@ -21,7 +21,7 @@ namespace Fycn.Utility
         {
             try
             {
-                string pathVal = HttpContext.Current.Request.Path + Path;
+                string pathVal = Directory.GetCurrentDirectory() +"/" + Path;
                 if (!Directory.Exists(pathVal))
                 {
                     Directory.CreateDirectory(pathVal);
@@ -53,7 +53,7 @@ namespace Fycn.Utility
         {
             try
             {
-                StreamReader sr = new StreamReader(HttpContext.Current.Request.Path + Path, System.Text.Encoding.GetEncoding("utf-8"));
+                StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "/" + Path, System.Text.Encoding.GetEncoding("utf-8"));
                 string content = sr.ReadToEnd().ToString();
                 sr.Close();
                 return content;
@@ -69,7 +69,7 @@ namespace Fycn.Utility
         {
             try
             {
-                string finalPath = HttpContext.Current.Request.Path + path;
+                string finalPath = Directory.GetCurrentDirectory() + "/" + path;
                 File.Delete(finalPath);
             }
             catch

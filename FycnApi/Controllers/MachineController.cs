@@ -22,6 +22,7 @@ using Fycn.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using log4net;
 
 namespace FycnApi.Controllers
 {
@@ -264,7 +265,13 @@ namespace FycnApi.Controllers
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     string tradeNo = Fycn.Utility.HttpContext.Current.Request.Form["trade_no"];
 
+                    //var log = LogManager.GetLogger(Startup.repository.Name, typeof(Startup));
+                    //log.Info("test");
+                    //log.Info(Directory.GetCurrentDirectory());
+                    //log.Info(outTradeNo);
                     string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
+                    //log.Info(jsonProduct);
+
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo);
                     if (result == 1)

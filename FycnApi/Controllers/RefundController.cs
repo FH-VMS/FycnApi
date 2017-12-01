@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using Fycn.Utility;
 using Microsoft.AspNetCore.Http;
+using log4net;
 
 namespace FycnApi.Controllers
 {
@@ -179,7 +180,11 @@ namespace FycnApi.Controllers
                 if (sPara.Count > 0)//判断是否有带返回参数
                 {
                     Notify aliNotify = new Notify();
+                    var log = LogManager.GetLogger(Startup.repository.Name, typeof(Startup));
+                    //log.Info("test");
+                    log.Info(Fycn.Utility.HttpContext.Current.Request.Form["notify_id"]);
                     bool verifyResult = aliNotify.Verify(sPara, Fycn.Utility.HttpContext.Current.Request.Form["notify_id"], Fycn.Utility.HttpContext.Current.Request.Form["sign"]);
+                    log.Info(verifyResult);
                     if (verifyResult)//验证成功
                     {
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
