@@ -75,7 +75,7 @@ namespace FycnApi.Controllers
         public string GetHeartBeep(string k)
         {
             KeyJsonModel keyJsonInfo = AnalizeKey(k);
-            MicroDataTable dt = _IMachine.GetBeepHeart(keyJsonInfo.m);
+            DataTable dt = _IMachine.GetBeepHeart(keyJsonInfo.m);
             if (dt.Rows.Count > 0)
             {
                 return "{\"OK\":"+JsonHandler.DataTable2Json(dt) + "}";
@@ -139,7 +139,7 @@ namespace FycnApi.Controllers
         public string GetMachineSetting(string k)
         {
             KeyJsonModel keyJsonInfo = AnalizeKey(k);
-            MicroDataTable dt = _IMachine.GetMachineSetting(keyJsonInfo.m);
+            DataTable dt = _IMachine.GetMachineSetting(keyJsonInfo.m);
             return JsonHandler.DataTable2Json(dt);
         }
 
@@ -154,7 +154,7 @@ namespace FycnApi.Controllers
             //List<ProductModel> products = service.GetAllProducts();
             //k = "ABC123456789";
             //机器运行情况
-            MicroDataTable dt = _IMachine.GetMachineByMachineId(k);
+            DataTable dt = _IMachine.GetMachineByMachineId(k);
             if (dt == null || dt.Rows.Count == 0)
             {
                 return Content(new List<ProductForMachineModel>(), ResultCode.Success, "机器不存在", new Pagination { });

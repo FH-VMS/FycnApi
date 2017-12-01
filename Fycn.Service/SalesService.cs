@@ -415,7 +415,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            MicroDataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetClientIds, conditions);
+            DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetClientIds, conditions);
             if (result.Rows.Count == 0)
             {
                 return string.Empty;

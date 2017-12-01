@@ -367,13 +367,13 @@ namespace Fycn.Service
         /// 取机器各个状态数
         /// </summary>
         /// <returns></returns>
-        public MicroDataTable GetTotalMachineCount()
+        public DataTable GetTotalMachineCount()
         {
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
             var conditions = new List<Condition>();
             if (string.IsNullOrEmpty(clientId.ToString()))
             {
-                return new MicroDataTable();
+                return new DataTable();
             }
             conditions.Add(new Condition
             {
@@ -461,7 +461,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            MicroDataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetChildAndParentIds, conditions);
+            DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetChildAndParentIds, conditions);
             if (result.Rows.Count == 0)
             {
                 return string.Empty;

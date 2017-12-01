@@ -36,7 +36,7 @@ namespace Fycn.Interface
         int GetFullfilGoodByTunnel(KeyJsonModel keyJsonModel);
 
         [Remark("心跳包", ParmsNote = "机器编号", ReturnNote = "DataTable")]
-        MicroDataTable GetBeepHeart(string machineId);
+        DataTable GetBeepHeart(string machineId);
 
         [Remark("更新机器在线时间", ParmsNote = "机器编号", ReturnNote = "int")]
         int UpdateMachineInlineTime(string machineId);
@@ -48,18 +48,18 @@ namespace Fycn.Interface
         int GetHandleResult(string machineId, string machineStatus);
 
          [Remark("向机器下行价格信息", ParmsNote = "机器编号,起始数据,取数据长度", ReturnNote = "DataTable")]
-        MicroDataTable GetToMachinePrice(string machineId, int startNo, int len);
+        DataTable GetToMachinePrice(string machineId, int startNo, int len);
 
          [Remark("向机器下行当前库存信息", ParmsNote = "机器编号,起始数据,取数据长度", ReturnNote = "DataTable")]
-        MicroDataTable GetToMachineStock(string machineId, int startNo, int len);
+        DataTable GetToMachineStock(string machineId, int startNo, int len);
 
         [Remark("机器端设置最大库存和价格", ParmsNote = "价格和库存列表，机器编号", ReturnNote = "int")]
         int PostMaxStockAndPrice(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId);
 
         [Remark("机器端取机器设置", ParmsNote = "机器编号", ReturnNote = "DataTable")]
-        MicroDataTable GetMachineSetting(string machineId);
+        DataTable GetMachineSetting(string machineId);
 
         [Remark("取机器情况根据machine_id", ParmsNote = "机器编号", ReturnNote = "DataTable")]
-        MicroDataTable GetMachineByMachineId(string machineId);
+        DataTable GetMachineByMachineId(string machineId);
     }
 }

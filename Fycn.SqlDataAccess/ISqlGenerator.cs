@@ -131,11 +131,11 @@ namespace Fycn.SqlDataAccess
 
 
 
-        MicroDataTable LoadDataTable(string sql);
+        DataTable LoadDataTable(string sql);
 
-        MicroDataTable LoadDataTable(CommonSqlKey sqlKey, IDictionary<string, object> parmDic);
+        DataTable LoadDataTable(CommonSqlKey sqlKey, IDictionary<string, object> parmDic);
 
-        MicroDataTable LoadDataTableByConditions(CommonSqlKey sqlKey, IList<Condition> parmObj);
+        DataTable LoadDataTableByConditions(CommonSqlKey sqlKey, IList<Condition> parmObj);
 
         #endregion
 

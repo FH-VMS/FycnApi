@@ -8,6 +8,7 @@ namespace Fycn.Model.Sys
     { /// <summary>
       /// 整个查询语句结果的总条数，而非本DataTable的条数
       /// </summary>
+      
         public int TotalCount { get; set; }
         public List<MicroDataColumn> Columns { get; set; } = new List<MicroDataColumn>();
         public List<MicroDataRow> Rows { get; set; } = new List<MicroDataRow>();
@@ -16,6 +17,8 @@ namespace Fycn.Model.Sys
         {
             return new MicroDataRow(this.Columns, new object[Columns.Count]);
         }
+        
+        
     }
     public class MicroDataColumn
     {
@@ -23,7 +26,7 @@ namespace Fycn.Model.Sys
         public string ColumnName {
             get
             {
-                return _columnName.ToLower();
+                return _columnName;
             }
             set
             {

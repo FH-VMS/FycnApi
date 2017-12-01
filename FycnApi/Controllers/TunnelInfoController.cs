@@ -118,8 +118,8 @@ namespace FycnApi.Controllers
              {
                  int nowRow = 0;
                  IFullfilBill ifullFill = new TunnelInfoService();
-                MicroDataTable dtProduct = ifullFill.ExportByProduct(machineId);
-                MicroDataTable dtTunnel = ifullFill.ExportByTunnel(machineId);
+                DataTable dtProduct = ifullFill.ExportByProduct(machineId);
+                DataTable dtTunnel = ifullFill.ExportByTunnel(machineId);
                  ISheet sheet1 = hssfworkbook.CreateSheet(machineId);
                  IRow rowHeader = sheet1.CreateRow(nowRow);
 

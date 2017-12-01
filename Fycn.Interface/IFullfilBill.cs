@@ -20,9 +20,9 @@ namespace Fycn.Interface
          int UpdateStockWithMobile(List<TunnelInfoModel> lstTunnelInfo);
 
          [Remark("按产品导出", ParmsNote = "机器编号", ReturnNote = "datatable")]
-        MicroDataTable ExportByProduct(string machineId);
+        DataTable ExportByProduct(string machineId);
 
          [Remark("按货道导出", ParmsNote = "机器编号", ReturnNote = "datatable")]
-        MicroDataTable ExportByTunnel(string machineId);
+        DataTable ExportByTunnel(string machineId);
     }
 }

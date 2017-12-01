@@ -337,7 +337,7 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            MicroDataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetPriceByWaresId, conditions);
+            DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetPriceByWaresId, conditions);
             if (result.Rows.Count > 0)
             {
                 return result.Rows[0][0].ToString();
@@ -348,7 +348,7 @@ namespace Fycn.Service
             }
         }
 
-        public MicroDataTable ExportByProduct(string machineId)
+        public DataTable ExportByProduct(string machineId)
         {
             var conditions = new List<Condition>();
 
@@ -379,7 +379,7 @@ namespace Fycn.Service
             return GenerateDal.LoadDataTableByConditions(CommonSqlKey.ExportByProduct, conditions);
         }
 
-        public MicroDataTable ExportByTunnel(string machineId)
+        public DataTable ExportByTunnel(string machineId)
         {
             var conditions = new List<Condition>();
 

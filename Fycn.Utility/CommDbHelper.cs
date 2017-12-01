@@ -442,7 +442,7 @@ namespace Fycn.Utility
         /// </summary>
         /// <param name="sql">Sql statement.</param>
         /// <returns>Populated DataTable.</returns>
-        public MicroDataTable ExecuteDataTable(string sql)
+        public DataTable ExecuteDataTable(string sql)
         {
             return ExecuteDataTable(sql, CommandType.Text, null);
         }
@@ -452,7 +452,7 @@ namespace Fycn.Utility
         /// <param name="sql">Sql statement.</param>
         /// <param name="cmdType">The type of the sql statement.</param>
         /// <returns>Populated DataTable.</returns>
-        public MicroDataTable ExecuteDataTable(string sql, CommandType cmdType)
+        public DataTable ExecuteDataTable(string sql, CommandType cmdType)
         {
             return ExecuteDataTable(sql, cmdType, null);
         }
@@ -462,7 +462,7 @@ namespace Fycn.Utility
         /// <param name="sql">Sql statement.</param>
         /// <param name="parameters">the parameters of the sql statement.</param>
         /// <returns>Populated DataTable.</returns>
-        public MicroDataTable ExecuteDataTable(string sql, IDictionary<string, object> parameters)
+        public DataTable ExecuteDataTable(string sql, IDictionary<string, object> parameters)
         {
             return ExecuteDataTable(sql, CommandType.Text, parameters);
         }
@@ -474,19 +474,19 @@ namespace Fycn.Utility
         /// <param name="cmdType">The type of the sql statement.</param>
         /// <param name="parameters">the parameters of the sql statement.</param>
         /// <returns>Populated DataTable.</returns>
-        public MicroDataTable ExecuteDataTable(string sql, CommandType cmdType, IDictionary<string, object> parameters)
+        public DataTable ExecuteDataTable(string sql, CommandType cmdType, IDictionary<string, object> parameters)
         {
             DbConnection conn = null;
             DbCommand cmd = null;
             DbDataReader dataAdapter = null;
-            var result = new MicroDataTable();
+            var result = new DataTable();
             try
             {
                 conn = CreateConnection();
                 cmd = CreateCommand(conn, sql, cmdType, parameters);
                 dataAdapter = cmd.ExecuteReader();
                 ///添加表的数据  
-                ///
+                /*
                 for (int i = 0; i < dataAdapter.FieldCount; i++)
                 {
                     result.Columns.Add(new MicroDataColumn
@@ -501,6 +501,30 @@ namespace Fycn.Utility
                 {
                     dataAdapter.GetValues(values);
                     result.Rows.Add(new MicroDataRow(result.Columns, values));
+                }
+                */
+                DataRow row;
+                //DataTable test = new DataTable();
+                for (int i = 0; i < dataAdapter.FieldCount; i++)
+                {
+                    result.Columns.Add(new DataColumn
+                    {
+                        ColumnName = dataAdapter.GetName(i),
+                        DataType = dataAdapter.GetFieldType(i)
+                    });
+                    //myDataRow.Columns[dataAdapter.GetName(i)] = dataAdapter[i].ToString();
+                }
+                object[] values = new object[dataAdapter.FieldCount];
+                while (dataAdapter.Read())
+                {
+                    //dataAdapter.GetValues(values);
+                    //test.Rows.Add(new MicroDataRow(result.Columns, values));
+                    row = result.NewRow();
+                    for (int i = 0; i < dataAdapter.FieldCount; i++)
+                    {
+                        row[i] = dataAdapter[i];
+                    }
+                    result.Rows.Add(row);
                 }
                 //result.Load(dataAdapter);
 

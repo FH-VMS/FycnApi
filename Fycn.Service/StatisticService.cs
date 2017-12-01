@@ -18,13 +18,13 @@ namespace Fycn.Service
         /// 取机器的销售额
         /// </summary>
         /// <returns></returns>
-        public MicroDataTable GetSalesAmountByMachine(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize)
+        public DataTable GetSalesAmountByMachine(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize)
         {
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
             var conditions = new List<Condition>();
             if (string.IsNullOrEmpty(clientId.ToString()))
             {
-                return new MicroDataTable();
+                return new DataTable();
             }
             conditions.Add(new Condition
             {
@@ -142,11 +142,11 @@ namespace Fycn.Service
         /// </summary>
         /// <param name="saleInfo"></param>
         /// <returns></returns>
-        public MicroDataTable GetStatisticSalesMoneyByDate(SaleModel saleInfo)
+        public DataTable GetStatisticSalesMoneyByDate(SaleModel saleInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            MicroDataTable result = new MicroDataTable();
+            DataTable result = new DataTable();
             var conditions = new List<Condition>();
 
             if (!string.IsNullOrEmpty(saleInfo.SaleDateStart))

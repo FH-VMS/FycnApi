@@ -57,7 +57,7 @@ namespace Fycn.Utility
             return needEncode ? HttpUtility.UrlEncode(str) : str;
         }
 
-        public static string DataTable2Json(MicroDataTable dt)
+        public static string DataTable2Json(DataTable dt)
         {
             StringBuilder jsonBuilder = new StringBuilder();
             jsonBuilder.Append("[");

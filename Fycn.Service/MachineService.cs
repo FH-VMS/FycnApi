@@ -477,7 +477,7 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            MicroDataTable dt = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetCabinetId, conditions);
+            DataTable dt = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetCabinetId, conditions);
             if (dt.Rows.Count > 0)
             {
                 return dt.Rows[0][0].ToString();
@@ -491,7 +491,7 @@ namespace Fycn.Service
        
 
         //心跳包
-        public MicroDataTable GetBeepHeart(string machineId)
+        public DataTable GetBeepHeart(string machineId)
         {
             IDictionary<string,object> dicParam = new Dictionary<string,object>();
             dicParam.Add("P_MachineId",machineId);
@@ -565,7 +565,7 @@ namespace Fycn.Service
 
 
         //向机器下行价格
-        public MicroDataTable GetToMachinePrice(string machineId, int startNo, int len)
+        public DataTable GetToMachinePrice(string machineId, int startNo, int len)
         {
             var conditions = new List<Condition>();
 
@@ -626,7 +626,7 @@ namespace Fycn.Service
 
 
         //向机器下行当前补货库存
-        public MicroDataTable GetToMachineStock(string machineId, int startNo, int len)
+        public DataTable GetToMachineStock(string machineId, int startNo, int len)
         {
             var conditions = new List<Condition>();
 
@@ -733,7 +733,7 @@ namespace Fycn.Service
         }
 
         //机器配置发给机器
-        public MicroDataTable GetMachineSetting(string machineId)
+        public DataTable GetMachineSetting(string machineId)
         {
             var conditions = new List<Condition>();
 
@@ -755,7 +755,7 @@ namespace Fycn.Service
         }
 
         //取机器情况根据machine_id
-        public MicroDataTable GetMachineByMachineId(string machineId)
+        public DataTable GetMachineByMachineId(string machineId)
         {
             var conditions = new List<Condition>();
 

@@ -383,12 +383,12 @@ namespace Fycn.SqlDataAccess
             }
         }
 
-        public MicroDataTable LoadDataTable(string sql)
+        public DataTable LoadDataTable(string sql)
         {
             return DbHelper.ExecuteDataTable(sql);
         }
 
-        public MicroDataTable LoadDataTable(CommonSqlKey sqlKey, IDictionary<string, object> parmDic)
+        public DataTable LoadDataTable(CommonSqlKey sqlKey, IDictionary<string, object> parmDic)
         {
 
             var logStep = 0;
@@ -411,7 +411,7 @@ namespace Fycn.SqlDataAccess
             }
         }
 
-        public MicroDataTable LoadDataTableByConditions(CommonSqlKey sqlKey, IList<Condition> parmObj)
+        public DataTable LoadDataTableByConditions(CommonSqlKey sqlKey, IList<Condition> parmObj)
         {
             var logStep = 0;
             try

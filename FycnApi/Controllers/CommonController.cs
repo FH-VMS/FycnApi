@@ -101,9 +101,9 @@ namespace FycnApi.Controllers
                                 .Trim('"');
                 var fileName = readFile.Split('.')[0] + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfffff") + "." + readFile.Split('.')[1];
                 //这个hostingEnv.WebRootPath就是要存的地址可以改下
-                fileName = path + $@"/{fileName}";
+                string fileNamePath = path + $@"{fileName}";
                 size += file.Length;
-                using (FileStream fs = System.IO.File.Create(fileName))
+                using (FileStream fs = System.IO.File.Create(fileNamePath))
                 {
                     file.CopyTo(fs);
                     fs.Flush();

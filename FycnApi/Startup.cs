@@ -14,6 +14,7 @@ using System.IO;
 using log4net.Repository;
 using log4net;
 using log4net.Config;
+using Microsoft.Extensions.FileProviders;
 
 namespace FycnApi
 {
@@ -83,15 +84,19 @@ namespace FycnApi
                 routes.MapRoute("default", "api/{controller=Machine}/{action=GetPayResult}/{id?}");
             });
 
-            
-            app.UseStaticFiles();
+            //图片静态资源配置
+            // var staticfile = new StaticFileOptions();
+            // staticfile.FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory() + "/Attachment");//指定目录
+            //app.UseStaticFiles("Attachment");
+
+            //配置跨域
             app.UseCors("AllowSpecificOrigin");
             app.UseStaticHttpContext();
 
             //app.UseMvcWithDefaultRoute();
 
             var log = LogManager.GetLogger(repository.Name, typeof(Startup));
-            log.Info("test");
+            //log.Info("test");
             log.Info(Directory.GetCurrentDirectory());
         }
 
