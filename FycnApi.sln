@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fycn.PaymentLib", "Fycn.Pay
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fycn.Sockets", "Fycn.Sockets\Fycn.Sockets.csproj", "{FA5225E8-7407-4624-855C-6CD5FC246700}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D11A884C-2055-4E51-912E-DCB646662D5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FycnLog", "FycnLog\FycnLog.csproj", "{82C93242-0648-4F8B-9E33-072CBD517EFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,10 @@ Global
 		{FA5225E8-7407-4624-855C-6CD5FC246700}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA5225E8-7407-4624-855C-6CD5FC246700}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA5225E8-7407-4624-855C-6CD5FC246700}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D11A884C-2055-4E51-912E-DCB646662D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D11A884C-2055-4E51-912E-DCB646662D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D11A884C-2055-4E51-912E-DCB646662D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D11A884C-2055-4E51-912E-DCB646662D5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82C93242-0648-4F8B-9E33-072CBD517EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82C93242-0648-4F8B-9E33-072CBD517EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82C93242-0648-4F8B-9E33-072CBD517EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82C93242-0648-4F8B-9E33-072CBD517EFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
