@@ -9,18 +9,18 @@ namespace Fycn.Utility
 {
     public class SocketHelper
     {
-        private static IPAddress serverIp = IPAddress.Parse("192.168.20.190");
+        private static IPAddress serverIp = IPAddress.Parse(ConfigurationManager.AppSettings["SocketIp"]);
         private static IPEndPoint serverFullAddr;//完整终端地址
 
         private static Socket sock;
 
-        public static void SendMessage(string message)
+        public static void SendMessage(string ip, string message)
         {
-            serverFullAddr = new IPEndPoint(serverIp, 9999);//设置IP，端口
+            serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //指定本地主机地址和端口号
             sock.Connect(serverFullAddr);
-            byte[] byteSend = System.Text.Encoding.Default.GetBytes("A2 88 32");
+            byte[] byteSend = System.Text.Encoding.Default.GetBytes(message);
             try
             {
                 //发送数据
