@@ -434,7 +434,7 @@ namespace Fycn.Sockets
                 m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                 for (int i = 0; i < list.Length; i++)
                 {
-                    if (list[i].ConnectSocket.Connected && list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                    if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
                     {
                         list[0].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
                         bool willRaiseEvent = list[0].ConnectSocket.SendAsync(list[0].SendEventArgs);
