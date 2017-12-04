@@ -61,5 +61,8 @@ namespace Fycn.Interface
 
         [Remark("取机器情况根据machine_id", ParmsNote = "机器编号", ReturnNote = "DataTable")]
         DataTable GetMachineByMachineId(string machineId);
+
+        [Remark("取Ip根据machine_id", ParmsNote = "机器编号", ReturnNote = "DataTable")]
+        DataTable GetIpByMachineId(string machineId);
     }
 }

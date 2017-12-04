@@ -14,13 +14,13 @@ namespace Fycn.Utility
 
         private static Socket sock;
 
-        public static void SendMessage(string ip, string message)
+        public static void SendMessage(string message)
         {
             serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //指定本地主机地址和端口号
             sock.Connect(serverFullAddr);
-            byte[] byteSend = System.Text.Encoding.Default.GetBytes(message);
+            byte[] byteSend = strToToHexByte(message);
             try
             {
                 //发送数据
@@ -32,6 +32,23 @@ namespace Fycn.Utility
 
             }
             sock.Close();
+        }
+
+        //将十字符串转换成数组
+        /// <summary>
+        /// 字符串转16进制字节数组
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
+        public static byte[] strToToHexByte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if ((hexString.Length % 2) != 0)
+                hexString += " ";
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
         }
     }
 }

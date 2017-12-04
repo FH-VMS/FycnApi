@@ -775,5 +775,27 @@ namespace Fycn.Service
 
             return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetMachineByMachineId, conditions);
         }
+
+        //取Ip根据machine_id
+        public DataTable GetIpByMachineId(string machineId)
+        {
+            var conditions = new List<Condition>();
+
+            if (!string.IsNullOrEmpty(machineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "DeviceId",
+                    DbColumnName = "device_id",
+                    ParamValue = machineId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetIpByMachineId, conditions);
+        }
     }
 }

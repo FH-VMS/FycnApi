@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.StaticFiles;
+using System.Text;
 
 namespace FycnLog
 {
@@ -23,6 +24,7 @@ namespace FycnLog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -35,6 +37,7 @@ namespace FycnLog
             staticfile.FileProvider = new PhysicalFileProvider("/log/");//指定目录 这里指定C盘,也可以是其它目录
             staticfile.ServeUnknownFileTypes = true;
             staticfile.DefaultContentType = "application/x-msdownload"; //设置默认  MIME
+            
             var provider = new FileExtensionContentTypeProvider();
             provider.Mappings.Add(".log", "text/plain");//手动设置对应MIME
             staticfile.ContentTypeProvider = provider;

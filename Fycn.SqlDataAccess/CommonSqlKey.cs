@@ -169,6 +169,7 @@ namespace Fycn.SqlDataAccess
         UpdateOrderStatusForAli,
         IsRefundSucceed,
         GetMachineByMachineId,
+        GetIpByMachineId,
         GetPayConfig,
 
         //总额及提现记录

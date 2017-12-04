@@ -157,6 +157,7 @@ namespace Fycn.Sockets
 
             return buff;
         }
+        
 
 
         //把机器码转换成对应的实际数据
@@ -204,6 +205,33 @@ namespace Fycn.Sockets
             }
             return returnStr;
         }
+
+        public static DateTime BytesToDateTime(byte[] bytes, int offset)
+        {
+            if (bytes != null)
+            {
+                long ticks = BitConverter.ToInt64(bytes, offset);
+                if (ticks < DateTime.MaxValue.Ticks && ticks > DateTime.MinValue.Ticks)
+                {
+                    DateTime dt = new DateTime(ticks);
+                    return dt;
+                }
+            }
+            return new DateTime();
+        }
+
+
+
+        public static byte[] DateTimeToBytes(DateTime dt)
+        {
+            return BitConverter.GetBytes(dt.Ticks);
+        }
+
+        public static byte[] StrToByte(string str)
+        {
+            return System.Text.Encoding.Default.GetBytes(str);
+        }
+
 
         public static string[] SecretKey = { "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678" };
 

@@ -13,9 +13,10 @@ namespace FycnApi.Controllers
 {
     public class AndroidController : ApiBaseController
     {
-       public string TestSendMessage(string ip , string message)
+       public string TestSendMessage(string message)
        {
-           //SocketHelper.SendMessage()
+            //49 10 31 32 33 34 35 36 37 38 39 30 41 42 31 32 33 34 35 36 EE
+            SocketHelper.SendMessage(message);
           return "OK";
        }
 
