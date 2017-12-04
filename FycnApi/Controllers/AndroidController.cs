@@ -20,5 +20,13 @@ namespace FycnApi.Controllers
           return "OK";
        }
 
+
+        public string TestSendStrMessage(string ip,string message)
+        {
+            //49 10 31 32 33 34 35 36 37 38 39 30 41 42 31 32 33 34 35 36 EE
+            SocketHelper.SendStrMessageTest(ip,message);
+            return "OK";
+        }
+
     }
 }

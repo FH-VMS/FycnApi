@@ -427,6 +427,21 @@ namespace Fycn.Sockets
                 //x[0].co
                 return new byte[0];
             } else {
+                string ipAndMessage = Utility.GenerateRealityData(byteInfo, "stringval");
+                string ip = ipAndMessage.Split("~")[0];
+                byte[] sendByte = Utility.StrToByte(ipAndMessage.Split("~")[1]);
+                AsyncSocketUserToken[] list = null;
+                m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
+                for (int i = 0; i < list.Length; i++)
+                {
+                    if (list[i].ConnectSocket.Connected && list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                    {
+                        list[0].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
+                        bool willRaiseEvent = list[0].ConnectSocket.SendAsync(list[0].SendEventArgs);
+                        break;
+                    }
+                }
+                    
                 return new byte[0];
             }
         }

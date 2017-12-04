@@ -40,7 +40,7 @@ namespace Fycn.Utility
         /// </summary>
         /// <param name="hexString"></param>
         /// <returns></returns>
-        public static byte[] strToToHexByte(string hexString)
+        private static byte[] strToToHexByte(string hexString)
         {
             hexString = hexString.Replace(" ", "");
             if ((hexString.Length % 2) != 0)
@@ -49,6 +49,26 @@ namespace Fycn.Utility
             for (int i = 0; i < returnBytes.Length; i++)
                 returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             return returnBytes;
+        }
+
+        public static void SendStrMessageTest(string ip,string message)
+        {
+            serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
+            sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //指定本地主机地址和端口号
+            sock.Connect(serverFullAddr);
+            byte[] byteSend = System.Text.Encoding.Default.GetBytes(ip.Trim()+"~"+message.Trim());
+            try
+            {
+                //发送数据
+                sock.Send(byteSend);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            sock.Close();
         }
     }
 }
