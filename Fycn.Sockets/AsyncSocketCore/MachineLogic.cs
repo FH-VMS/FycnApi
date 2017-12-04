@@ -416,8 +416,8 @@ namespace Fycn.Sockets
                     {
                         if (list[i].ConnectSocket.Connected&& list[i].ConnectSocket.RemoteEndPoint.ToString() == ip.Split("-")[0])
                         {
-                            list[0].SendEventArgs.SetBuffer(sendByte, 0, sendLength);
-                            bool willRaiseEvent = list[0].ConnectSocket.SendAsync(list[0].SendEventArgs);
+                            list[i].SendEventArgs.SetBuffer(sendByte, 0, sendLength);
+                            bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
                             break;
                         }
                     }
@@ -436,8 +436,8 @@ namespace Fycn.Sockets
                 {
                     if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
                     {
-                        list[0].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
-                        bool willRaiseEvent = list[0].ConnectSocket.SendAsync(list[0].SendEventArgs);
+                        list[i].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
+                        bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
                         break;
                     }
                 }
