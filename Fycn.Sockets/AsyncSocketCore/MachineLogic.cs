@@ -51,6 +51,26 @@ namespace Fycn.Sockets
                     //验证通过
                     switch (Utility.Ten2Hex(data[0].ToString()).ToUpper())
                     {
+                        case "40": //心跳
+                            byte[] returnByte40 = new byte[6];
+                            returnByte40[0] = byteInfo[0];//包头;
+                            returnByte40[1] = 2; //size
+                            returnByte40[3] = data[0];
+                            
+                            returnByte40[4] = 0;
+
+                            returnByte40[5] = 238;//
+                            //验证码生成
+                            byte result40Chunk = new byte();
+                            byte[] finalResult40 = returnByte40.Skip(3).Take(returnByte40[1]).ToArray();
+                            for (int i = 0; i < finalResult40.Length; i++)
+                            {
+                                result40Chunk ^= finalResult40[i];
+                            }
+                            returnByte40[2] = result40Chunk;
+                            Utility.Encryption(returnByte40[1], finalResult40.ToArray()).CopyTo(returnByte40, 3);//加密
+
+                            return returnByte40;
 
                         case "41": //签到
                             int resultA1 = 0;
