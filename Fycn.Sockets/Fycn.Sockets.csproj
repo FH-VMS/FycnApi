@@ -14,7 +14,7 @@
 	<Content Include="log4net.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-	<Content Include="SqlConfigText.sqlconfig">
+	<Content Include="../FycnApi/SqlConfigText.sqlconfig">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
