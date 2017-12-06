@@ -447,20 +447,28 @@ namespace Fycn.Sockets
                 //x[0].co
                 return new byte[0];
             } else {
-                string ipAndMessage = Utility.GenerateRealityData(byteInfo, "stringval");
-                string ip = ipAndMessage.Split("~")[0];
-                byte[] sendByte = Utility.StrToByte(ipAndMessage.Split("~")[1]);
-                AsyncSocketUserToken[] list = null;
-                m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
-                for (int i = 0; i < list.Length; i++)
+                try
                 {
-                    if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                    string ipAndMessage = Utility.GenerateRealityData(byteInfo, "stringval");
+                    string ip = ipAndMessage.Split("~")[0];
+                    byte[] sendByte = Utility.StrToByte(ipAndMessage.Split("~")[1]);
+                    AsyncSocketUserToken[] list = null;
+                    m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
+                    for (int i = 0; i < list.Length; i++)
                     {
-                        list[i].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
-                        bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
-                        break;
+                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                        {
+                            list[i].SendEventArgs.SetBuffer(sendByte, 0, sendByte.Length);
+                            bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                            break;
+                        }
                     }
                 }
+                catch
+                {
+                    return byteInfo;
+                }
+               
                     
                 return new byte[0];
             }
