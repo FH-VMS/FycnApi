@@ -3,6 +3,7 @@ using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Sale;
 using Fycn.Service;
+using Fycn.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,8 +19,8 @@ namespace Fycn.Sockets
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
             //return byteInfo;
-            //Utility.byteToHexStr(byteInfo.Take(4).ToArray());
-            //byte[] byteInfo = Utility.strToToHexByte(info);
+            //ByteHelper.byteToHexStr(byteInfo.Take(4).ToArray());
+            //byte[] byteInfo = ByteHelper.strToToHexByte(info);
             //包头
             string infoHead = byteInfo[0].ToString();
             if(infoHead=="72")
@@ -49,8 +50,13 @@ namespace Fycn.Sockets
 
 
                     //验证通过
-                    switch (Utility.Ten2Hex(data[0].ToString()).ToUpper())
+                    switch (ByteHelper.Ten2Hex(data[0].ToString()).ToUpper())
                     {
+                        case "39": //保活
+                            byte[] returnByte39 = new byte[1];
+                            returnByte39[0] = 1;
+
+                            return returnByte39;
                         case "40": //心跳
                             byte[] returnByte40 = new byte[6];
                             returnByte40[0] = byteInfo[0];//包头;
@@ -68,14 +74,14 @@ namespace Fycn.Sockets
                                 result40Chunk ^= finalResult40[i];
                             }
                             returnByte40[2] = result40Chunk;
-                            Utility.Encryption(returnByte40[1], finalResult40.ToArray()).CopyTo(returnByte40, 3);//加密
+                            ByteHelper.Encryption(returnByte40[1], finalResult40.ToArray()).CopyTo(returnByte40, 3);//加密
 
                             return returnByte40;
 
                         case "41": //签到
                             int resultA1 = 0;
                             //机器编号
-                            string machineNum41 = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
 
 
                             resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
@@ -88,7 +94,7 @@ namespace Fycn.Sockets
                             returnByteA1[3] = data[0];
 
 
-                            Utility.StrToByte(DateTime.Now.ToString("yyyyMMddHHmmss")).CopyTo(returnByteA1, 4);//机器编号
+                            ByteHelper.StrToByte(DateTime.Now.ToString("yyyyMMddHHmmss")).CopyTo(returnByteA1, 4);//机器编号
                             
                             if (resultA1 == 1)
                             {
@@ -109,14 +115,14 @@ namespace Fycn.Sockets
                             }
                             returnByteA1[2] = resultA1Chunk;
                             //SendMsg(finalResultA1, myClientSocket);
-                            Utility.Encryption(returnByteA1[1], finalResultA1.ToArray()).CopyTo(returnByteA1, 3);//加密
+                            ByteHelper.Encryption(returnByteA1[1], finalResultA1.ToArray()).CopyTo(returnByteA1, 3);//加密
                            
                             return returnByteA1;
-                        
+
                         case "43": //上报出货结果
                             int result43 = 0;
-                            string machineNum = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum = Utility.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
                             KeyJsonModel jsonModel = new KeyJsonModel();
                             jsonModel.m = machineNum;
                         
@@ -126,8 +132,8 @@ namespace Fycn.Sockets
                             {
                                 jsonModel.t.Add(new KeyTunnelModel()
                                 {
-                                    tn = Utility.GenerateRealityData(data.Skip(25 + i * 28).Take(22).ToArray(), "stringval"),
-                                    tid = Utility.GenerateRealityData(data.Skip(25 + i * 28+22).Take(5).ToArray(), "stringval"),
+                                    tn = ByteHelper.GenerateRealityData(data.Skip(25 + i * 28).Take(22).ToArray(), "stringval"),
+                                    tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 28+22).Take(5).ToArray(), "stringval"),
                                     n = data.Skip(25 + i * 28 + 27).Take(1).ToArray()[0].ToString()
                                     
                                 });
@@ -164,13 +170,13 @@ namespace Fycn.Sockets
                             }
                             returnByte43[2] = result43Chunk;
                             //SendMsg(finalResultA1, myClientSocket);
-                            Utility.Encryption(returnByte43[1], finalResult43.ToArray()).CopyTo(returnByte43, 3);//加密
+                            ByteHelper.Encryption(returnByte43[1], finalResult43.ToArray()).CopyTo(returnByte43, 3);//加密
 
                             return returnByte43;
                         case "45": //满仓信息 (一键补货)
                             int result45 = 0;
-                            string machineNum45 = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum45 = Utility.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            string machineNum45 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
                         
                         
                             byte[] return45 = new byte[30];
@@ -199,11 +205,11 @@ namespace Fycn.Sockets
                             }
                             return45[2] = resultChunk45;
                             return45[29] = 238;
-                            Utility.Encryption(return45[1], finalResult45.ToArray()).CopyTo(return45, 3);//加密
+                            ByteHelper.Encryption(return45[1], finalResult45.ToArray()).CopyTo(return45, 3);//加密
                             //SendMsg(returnByteA6, myClientSocket);
                             return return45;
                         case "A0": //心跳包
-                            string machineNumA0 = Utility.GenerateRealityData(data.Skip(1).Take(4).ToArray(), "intval");
+                            string machineNumA0 = ByteHelper.GenerateRealityData(data.Skip(1).Take(4).ToArray(), "intval");
                             int execResultA0 = 0;//daoBll.ExistMachine(machineNumA0);
                             byte[] returnByteA0 = new byte[10];
                             returnByteA0[0] = byteInfo[0];//包头;
@@ -230,7 +236,7 @@ namespace Fycn.Sockets
                             //SendMsg(returnByteA0, myClientSocket);
                             return finalResultA0;
                         case "A7": //读卡验证信息
-                            int execResult = 0;//daoBll.VerifyCard(Utility.byteToHexStr(data.Skip(1).Take(4).ToArray()));
+                            int execResult = 0;//daoBll.VerifyCard(ByteHelper.byteToHexStr(data.Skip(1).Take(4).ToArray()));
                             if (execResult <= 0)
                             {
                                 retResult = 10;
@@ -253,9 +259,9 @@ namespace Fycn.Sockets
 
                             return returnByte;
                         case "46": //按货道补货
-                            string machineNum46 = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum46 = Utility.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                            //string tunnelNumA5 = Utility.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+                            string machineNum46 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum46 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
 
                             byte[] returnByte46 = new byte[30];
                             returnByte46[0] = byteInfo[0];//包头;
@@ -273,7 +279,7 @@ namespace Fycn.Sockets
                             for (int i = 0; i < loopTimes; i++)
                             {
                                 jsonModel46.t.Add(new KeyTunnelModel() {
-                                    tid = Utility.GenerateRealityData(data.Skip(25+i*6).Take(5).ToArray(), "stringval"),
+                                    tid = ByteHelper.GenerateRealityData(data.Skip(25+i*6).Take(5).ToArray(), "stringval"),
                                     n =data.Skip(30 + i * 6).Take(1).ToArray()[0].ToString()
                                 });
                             }
@@ -295,12 +301,12 @@ namespace Fycn.Sockets
                             }
                             returnByte46[2] = resultChunk46;
                             //SendMsg(returnByteA5, myClientSocket);
-                            Utility.Encryption(returnByte46[1], returnByte46.Skip(2).Take(returnByte46.Length-3).ToArray()).CopyTo(returnByte46, 3);//加密
+                            ByteHelper.Encryption(returnByte46[1], returnByte46.Skip(2).Take(returnByte46.Length-3).ToArray()).CopyTo(returnByte46, 3);//加密
                             return returnByte46;
                         case "48": //补价格
-                            string machineNum48 = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum48 = Utility.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                            //string tunnelNumA5 = Utility.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+                            string machineNum48 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
 
                             byte[] returnByte48 = new byte[30];
                             returnByte48[0] = byteInfo[0];//包头;
@@ -319,7 +325,7 @@ namespace Fycn.Sockets
                             {
                                 lstPrice48.Add(new PriceAndMaxStockModel()
                                 {
-                                    tid = Utility.GenerateRealityData(data.Skip(25 + i * 11).Take(5).ToArray(), "stringval"),
+                                    tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 11).Take(5).ToArray(), "stringval"),
                                     p1 = Convert.ToDecimal(data.Skip(30 + i * 11).Take(6).ToArray()[0])
                                 });
                             }
@@ -341,12 +347,12 @@ namespace Fycn.Sockets
                             }
                             returnByte48[2] = resultChunk48;
                             //SendMsg(returnByteA5, myClientSocket);
-                            Utility.Encryption(returnByte48[1], finalResult48.ToArray()).CopyTo(returnByte48, 3);//加密
+                            ByteHelper.Encryption(returnByte48[1], finalResult48.ToArray()).CopyTo(returnByte48, 3);//加密
                             return returnByte48;
                         case "49": //设置最大库存
-                            string machineNum49 = Utility.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum49 = Utility.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                            //string tunnelNumA5 = Utility.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+                            string machineNum49 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum49 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
 
                             byte[] returnByte49 = new byte[30];
                             returnByte49[0] = byteInfo[0];//包头;
@@ -365,7 +371,7 @@ namespace Fycn.Sockets
                             {
                                 lstPrice49.Add(new PriceAndMaxStockModel()
                                 {
-                                    tid = Utility.GenerateRealityData(data.Skip(25 + i * 7).Take(5).ToArray(), "stringval"),
+                                    tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 7).Take(5).ToArray(), "stringval"),
                                     ms = Convert.ToInt32(data.Skip(30 + i * 7).Take(2).ToArray()[0])
                                 });
                             }
@@ -387,7 +393,7 @@ namespace Fycn.Sockets
                             }
                             returnByte49[2] = resultChunk49;
                             //SendMsg(returnByteA5, myClientSocket);
-                            Utility.Encryption(returnByte49[1], finalResult49.ToArray()).CopyTo(returnByte49, 3);//加密
+                            ByteHelper.Encryption(returnByte49[1], finalResult49.ToArray()).CopyTo(returnByte49, 3);//加密
                             return returnByte49;
                         case "58":
                             SaleModel saleInfo = new SaleModel();
@@ -411,16 +417,16 @@ namespace Fycn.Sockets
             } else if(infoHead=="73") {
                 IMachine imachine = new MachineService();
                 byte[] sendByte = new byte[100];
-                int sendLength = Utility.StrToByte("you are succeed").Length;
+                int sendLength = ByteHelper.StrToByte("you are succeed").Length;
                 string ip = string.Empty;
-                Utility.StrToByte("you are succeed").CopyTo(sendByte,0);
+                ByteHelper.StrToByte("you are succeed").CopyTo(sendByte,0);
                 //AsyncSocketUserToken userToken;
                 //userToken = new AsyncSocketUserToken(ProtocolConst.ReceiveBufferSize);
                 //Socket sc =new Socket()
-                switch (Utility.Ten2Hex(byteInfo[1].ToString()).ToUpper())
+                switch (ByteHelper.Ten2Hex(byteInfo[1].ToString()).ToUpper())
                 {
                     case "10":
-                        string machineId10 = Utility.GenerateRealityData(byteInfo.Skip(2).Take(12).ToArray(), "stringval");
+                        string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(2).Take(12).ToArray(), "stringval");
                         DataTable dt = imachine.GetIpByMachineId(machineId10);
                         if(dt.Rows.Count>0)
                         {
@@ -449,9 +455,9 @@ namespace Fycn.Sockets
             } else {
                 try
                 {
-                    string ipAndMessage = Utility.GenerateRealityData(byteInfo, "stringval");
+                    string ipAndMessage = ByteHelper.GenerateRealityData(byteInfo, "stringval");
                     string ip = ipAndMessage.Split("~")[0];
-                    byte[] sendByte = Utility.StrToByte(ipAndMessage.Split("~")[1]);
+                    byte[] sendByte = ByteHelper.StrToByte(ipAndMessage.Split("~")[1]);
                     AsyncSocketUserToken[] list = null;
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                     for (int i = 0; i < list.Length; i++)

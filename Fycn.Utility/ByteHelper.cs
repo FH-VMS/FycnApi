@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Fycn.Sockets
+namespace Fycn.Utility
 {
-    public class Utility
+    public class ByteHelper
     {
-       
         //http://www.cnblogs.com/zjbtony/archive/2012/04/13/2445055.html
         //http://www.cnblogs.com/allen0118/p/3892028.html
         /// <summary>
@@ -76,11 +75,11 @@ namespace Fycn.Sockets
                 hexString += " ";
             byte[] returnBytes = new byte[hexString.Length / 2];
             for (int i = 0; i < returnBytes.Length; i++)
-                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2),16);
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             return returnBytes;
         }
 
-       
+
 
 
 
@@ -149,7 +148,7 @@ namespace Fycn.Sockets
             byte[] buff = new byte[info.Length / 2];
 
             int index = 0;
-            for(int i = 0; i < info.Length; i += 2)
+            for (int i = 0; i < info.Length; i += 2)
             {
                 buff[index] = Convert.ToByte(info.Substring(i, 2));
                 ++index;
@@ -157,14 +156,14 @@ namespace Fycn.Sockets
 
             return buff;
         }
-        
+
 
 
         //把机器码转换成对应的实际数据
         public static string GenerateRealityData(byte[] source, string typeVal)
         {
             string finalResult = string.Empty;
-            if(typeVal == "intval") //整形
+            if (typeVal == "intval") //整形
             {
                 /*
                uint result = 0;
@@ -175,11 +174,11 @@ namespace Fycn.Sockets
 
                 finalResult = result.ToString();
                  */
-               string hexStr = byteToHexStr(source);
-               finalResult = Hex2Ten(hexStr);
+                string hexStr = byteToHexStr(source);
+                finalResult = Hex2Ten(hexStr);
             }
 
-            if(typeVal == "stringval")
+            if (typeVal == "stringval")
             {
                 char[] chars = source.Select(x => (char)x).ToArray();
                 finalResult = new string(chars);
@@ -236,7 +235,7 @@ namespace Fycn.Sockets
         public static string[] SecretKey = { "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678" };
 
         //加密
-        public static byte[] Encryption(int size,byte[] hex)
+        public static byte[] Encryption(int size, byte[] hex)
         {
             string nowSecretKey = SecretKey[size % 8];
             return hex;

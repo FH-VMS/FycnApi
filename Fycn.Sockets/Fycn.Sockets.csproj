@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Fycn.Interface\Fycn.Interface.csproj" />
     <ProjectReference Include="..\Fycn.Model\Fycn.Model.csproj" />
     <ProjectReference Include="..\Fycn.Service\Fycn.Service.csproj" />
+    <ProjectReference Include="..\Fycn.Utility\Fycn.Utility.csproj" />
   </ItemGroup>
 
 </Project>
