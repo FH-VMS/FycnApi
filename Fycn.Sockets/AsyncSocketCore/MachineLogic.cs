@@ -425,7 +425,7 @@ namespace Fycn.Sockets
                 //Socket sc =new Socket()
                 switch (ByteHelper.Ten2Hex(byteInfo[1].ToString()).ToUpper())
                 {
-                    case "10":
+                    case "10": // 通知出货 42 +机器编号+订单编号+
                         string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(2).Take(12).ToArray(), "stringval");
                         DataTable dt = imachine.GetIpByMachineId(machineId10);
                         if(dt.Rows.Count>0)
