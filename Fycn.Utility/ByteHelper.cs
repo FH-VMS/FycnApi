@@ -156,7 +156,7 @@ namespace Fycn.Utility
         }
 
 
-        //将十字符串转换成数组
+        //将十六字符串转换成数组
         public static byte[] HexToArray(string info)
         {
             byte[] buff = new byte[info.Length / 2];
