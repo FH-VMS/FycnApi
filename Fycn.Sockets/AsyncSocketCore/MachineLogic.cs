@@ -457,7 +457,7 @@ namespace Fycn.Sockets
                 {
                     string ipAndMessage = ByteHelper.GenerateRealityData(byteInfo, "stringval");
                     string ip = ipAndMessage.Split("~")[0];
-                    byte[] sendByte = ByteHelper.strToToTenByte(ipAndMessage.Split("~")[1]);
+                    byte[] sendByte = ByteHelper.strToToHexByte(ipAndMessage.Split("~")[1]);
                     AsyncSocketUserToken[] list = null;
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                     for (int i = 0; i < list.Length; i++)
