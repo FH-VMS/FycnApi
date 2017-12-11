@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fycn.Model.Socket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -69,6 +70,35 @@ namespace Fycn.Utility
 
             }
             sock.Close();
+        }
+
+        public static void GenerateCommand(byte commandType, byte totalSize, List<CommandModel> lstCommandModel)
+        {
+            byte[] sendByte = new byte[totalSize+6];  //49+commandType + 48+size+chunk+content+EE
+            sendByte[0] = 73;
+            sendByte[1] = commandType;
+            sendByte[2] = 72;
+            sendByte[3] = totalSize;
+            //sendByte[4] = chunk
+            int i = 0;
+            foreach(CommandModel cmdModel in lstCommandModel)
+            {
+                ByteHelper.HexToArray(cmdModel.Content).CopyTo(sendByte, 5 + i);
+                i = i + cmdModel.Size;
+            }
+            sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
+            sendByte[totalSize + 5] = 238;
+
+        }
+
+        private static byte GetChunk(byte[] chunkBytes)
+        {
+            byte resultChunk = new byte();
+            for (int i = 0; i < chunkBytes.Length; i++)
+            {
+                resultChunk ^= chunkBytes[i];
+            }
+            return resultChunk;
         }
     }
 }
