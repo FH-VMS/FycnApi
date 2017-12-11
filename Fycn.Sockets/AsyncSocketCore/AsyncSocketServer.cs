@@ -169,8 +169,8 @@ namespace Fycn.Sockets
                 if ((userToken.AsyncSocketInvokeElement == null) & (userToken.ConnectSocket != null)) //存在Socket对象，并且没有绑定协议对象，则进行协议对象绑定
                 {
                     BuildingSocketInvokeElement(userToken);
-                    offset = offset + 1;
-                    count = count - 1;
+                    //offset = offset + 1;
+                    //count = count - 1;
                 }
                 
                 if (userToken.AsyncSocketInvokeElement == null) //如果没有解析对象，提示非法连接并关闭连接

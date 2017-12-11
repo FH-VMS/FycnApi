@@ -20,7 +20,7 @@ namespace Fycn.Utility
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //指定本地主机地址和端口号
             sock.Connect(serverFullAddr);
-            byte[] byteSend = strToToHexByte(message);
+            byte[] byteSend = ByteHelper.strToToTenByte(message);
             try
             {
                 //发送数据
@@ -34,22 +34,7 @@ namespace Fycn.Utility
             sock.Close();
         }
 
-        //将十字符串转换成数组
-        /// <summary>
-        /// 字符串转16进制字节数组
-        /// </summary>
-        /// <param name="hexString"></param>
-        /// <returns></returns>
-        private static byte[] strToToHexByte(string hexString)
-        {
-            hexString = hexString.Replace(" ", "");
-            if ((hexString.Length % 2) != 0)
-                hexString += " ";
-            byte[] returnBytes = new byte[hexString.Length / 2];
-            for (int i = 0; i < returnBytes.Length; i++)
-                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-            return returnBytes;
-        }
+        
 
         public static void SendStrMessageTest(string ip,string message)
         {

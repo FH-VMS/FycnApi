@@ -50,9 +50,9 @@ namespace Fycn.Sockets
             DynamicBufferManager receiveBuffer = m_asyncSocketUserToken.ReceiveBuffer;
 
             receiveBuffer.WriteBuffer(buffer, offset, count);
-            if (receiveBuffer.DataCount > sizeof(int))
+            if (receiveBuffer.DataCount > 0)
             {
-
+                 
                 //按照长度分包
                 /*
                 int packetLength = BitConverter.ToInt32(receiveBuffer.Buffer, 0); //获取包长度
@@ -75,11 +75,11 @@ namespace Fycn.Sockets
                     return true;
                 }
                  * */
-                byte[] handleBuffer = buffer.Take(count+1).ToArray();
+                byte[] handleBuffer = buffer.Take(count).ToArray();
                 MachineLogic machineLogic = new MachineLogic();
                 byte[] result = machineLogic.HandleHexByte(handleBuffer, m_asyncSocketUserToken, m_asyncSocketServer);
                 DoSendBuffer(result, 0, result.Length);
-                
+                receiveBuffer.Clear(count);
                 return true;
             }
             else
