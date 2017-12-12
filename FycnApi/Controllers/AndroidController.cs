@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Fycn.Utility;
+using Fycn.Model.Socket;
 
 namespace FycnApi.Controllers
 {
@@ -37,6 +38,32 @@ namespace FycnApi.Controllers
         {
             RedisHelper redisHelper = new RedisHelper(0);
             return redisHelper.StringGet("test");
+        }
+
+        public void TestSendCommand()
+        {
+            List<CommandModel> lstCommand = new List<CommandModel>();
+            lstCommand.Add(new CommandModel()
+            {
+                Content = "XB0B17100001",
+                Size = 12
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = "2017121204215003142952",
+                Size = 22
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = "A0106",
+                Size = 5
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = "4",
+                Size = 1
+            });
+            SocketHelper.GenerateCommand(10, 47, lstCommand);
         }
     }
 }

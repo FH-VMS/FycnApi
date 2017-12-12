@@ -96,6 +96,16 @@ namespace Fycn.Utility
         }
 
 
+        /// <summary>
+        /// 字符串转AScii码
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
+        public static byte[] strToAscii(string str)
+        {
+            return System.Text.Encoding.ASCII.GetBytes(str);
+        }
+
 
         /// <summary>
         /// 从十进制转换到十六进制

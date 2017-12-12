@@ -68,7 +68,7 @@ namespace Fycn.Utility
             int i = 0;
             foreach(CommandModel cmdModel in lstCommandModel)
             {
-                ByteHelper.HexToArray(cmdModel.Content).CopyTo(sendByte, 5 + i);
+                ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 5 + i);
                 i = i + cmdModel.Size;
             }
             sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
@@ -81,6 +81,8 @@ namespace Fycn.Utility
             sock.Connect(serverFullAddr);
             try
             {
+                //RedisHelper redisHelper = new RedisHelper(0);
+                //redisHelper.StringSet("senddata", ByteHelper.byteToHexStr(sendByte));
                 //发送数据
                 sock.Send(sendByte);
 
