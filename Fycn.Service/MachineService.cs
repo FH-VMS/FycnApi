@@ -95,7 +95,7 @@ namespace Fycn.Service
 
 
         //微信支付结果插入数据库
-        public void PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo)
+        public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo)
         {
             try
             {
@@ -123,11 +123,12 @@ namespace Fycn.Service
                 }
                 
                 GenerateDal.CommitTransaction();
-
+                return 1;
             }
             catch (Exception e)
             {
                 GenerateDal.RollBack();
+                return 0;
             }
 
 

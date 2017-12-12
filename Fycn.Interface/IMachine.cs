@@ -18,7 +18,7 @@ namespace Fycn.Interface
         int GetCount(ProductForMachineModel machineInfo);
 
         [Remark("微信支付结果回调", ParmsNote = "机器和货道和商品信息", ReturnNote = "void")]
-        void PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo);
+        int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo);
 
         [Remark("支付宝支付结果回调", ParmsNote = "商品信息列表", ReturnNote = "void")]
         int PostPayResultA(KeyJsonModel keyJsonModel, string outTradeNo, string tradeNo);

@@ -74,6 +74,23 @@ namespace Fycn.Utility
             sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
             sendByte[totalSize + 5] = 238;
 
+
+            serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
+            sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //指定本地主机地址和端口号
+            sock.Connect(serverFullAddr);
+            try
+            {
+                //发送数据
+                sock.Send(sendByte);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            sock.Close();
+
         }
 
         private static byte GetChunk(byte[] chunkBytes)

@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using log4net;
+using Fycn.Model.Socket;
 
 namespace FycnApi.Controllers
 {
@@ -221,9 +222,39 @@ namespace FycnApi.Controllers
                     string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
 
-                    _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText);
-                    //删除文件
-                    FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
+                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText);
+                    if(result == 1)
+                    {
+                        List<CommandModel> lstCommand = new List<CommandModel>();
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.m,
+                            Size =12
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = tradeNoNode.InnerText,
+                            Size = 22
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.t[0].tid,
+                            Size = 5
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = "3",
+                            Size = 1
+                        });
+
+                        var log = LogManager.GetLogger("FycnApi", "weixin");
+                        //log.Info("test");
+                        log.Info(tradeNoNode.InnerText);
+                        SocketHelper.GenerateCommand(10, 47, lstCommand);
+                        //删除文件
+                        FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
+                    }
+                   
                 }
 
                 return Content(1);
@@ -278,9 +309,35 @@ namespace FycnApi.Controllers
                     {
                         //Fycn.Utility.HttpContext.Current.Response.Write("success");
                         Response.WriteAsync("success");
+                        List<CommandModel> lstCommand = new List<CommandModel>();
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.m,
+                            Size = 12
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = outTradeNo,
+                            Size = 22
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.t[0].tid,
+                            Size = 5
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = "4",
+                            Size = 1
+                        });
+                        var log = LogManager.GetLogger("FycnApi", "zhifubao");
+                        //log.Info("test");
+                        log.Info(outTradeNo);
+                        SocketHelper.GenerateCommand(10, 47, lstCommand);
+                        //删除文件
+                        FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
                     }
-                    //删除文件
-                    FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
+                   
                 }
                 return Content(1);
             }

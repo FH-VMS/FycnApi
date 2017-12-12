@@ -23,7 +23,13 @@ namespace Fycn.Sockets
             //byte[] byteInfo = ByteHelper.strToToHexByte(info);
             //包头
             string infoHead = byteInfo[0].ToString();
-            if(infoHead=="72")
+            //保活
+            if (infoHead == "57")
+            {
+                return byteInfo;
+            }
+            RedisHelper redisHelper = new RedisHelper(0);
+            if (infoHead=="72")
             {
 
             
@@ -52,11 +58,6 @@ namespace Fycn.Sockets
                     //验证通过
                     switch (ByteHelper.Ten2Hex(data[0].ToString()).ToUpper())
                     {
-                        case "39": //保活
-                            byte[] returnByte39 = new byte[1];
-                            returnByte39[0] = 1;
-
-                            return returnByte39;
                         case "40": //心跳
                             byte[] returnByte40 = new byte[6];
                             returnByte40[0] = byteInfo[0];//包头;
@@ -83,7 +84,8 @@ namespace Fycn.Sockets
                             //机器编号
                             string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
 
-
+                            
+                            redisHelper.StringSet(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                             resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
 
 
@@ -414,35 +416,48 @@ namespace Fycn.Sockets
                     return byteInfo;
                 }
 
-            } else if(infoHead=="73") {
+            } else if(infoHead=="73") { //推送
                 IMachine imachine = new MachineService();
-                byte[] sendByte = new byte[100];
-                int sendLength = ByteHelper.StrToByte("you are succeed").Length;
+                //byte[] sendByte = new byte[100];
+                int sendLength = byteInfo.Length - 2;
                 string ip = string.Empty;
-                ByteHelper.StrToByte("you are succeed").CopyTo(sendByte,0);
+                //ByteHelper.HexToArray("you are succeed").CopyTo(sendByte,0);
                 //AsyncSocketUserToken userToken;
                 //userToken = new AsyncSocketUserToken(ProtocolConst.ReceiveBufferSize);
                 //Socket sc =new Socket()
+                /*
                 switch (ByteHelper.Ten2Hex(byteInfo[1].ToString()).ToUpper())
                 {
+               
                     case "10": // 通知出货 42 +机器编号+订单编号+
-                        string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(2).Take(12).ToArray(), "stringval");
-                        DataTable dt = imachine.GetIpByMachineId(machineId10);
-                        if(dt.Rows.Count>0)
+                     */
+                Program.Logger.InfoFormat("the pay information's message is {0}", ByteHelper.byteToHexStr(byteInfo));
+                string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(6).Take(12).ToArray(), "stringval");
+                        if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
                         {
-                            ip = dt.Rows[0]["ip_v4"].ToString();
+                            ip = redisHelper.StringGet(machineId10);
                         }
+                        else
+                        {
+                            DataTable dt = imachine.GetIpByMachineId(machineId10);
+                            if (dt.Rows.Count > 0)
+                            {
+                                ip = dt.Rows[0]["ip_v4"].ToString();
+                            }
+                        }
+                        /*
                         break;
                 }
+                */
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
                     AsyncSocketUserToken[] list = null;
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                     for (int i = 0; i < list.Length; i++)
                     {
-                        if (list[i].ConnectSocket.Connected&& list[i].ConnectSocket.RemoteEndPoint.ToString() == ip.Split("-")[0])
+                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip.Split("-")[0])
                         {
-                            list[i].SendEventArgs.SetBuffer(sendByte, 0, sendLength);
+                            list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
                             bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
                             break;
                         }

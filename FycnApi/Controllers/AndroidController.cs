@@ -28,5 +28,15 @@ namespace FycnApi.Controllers
             return "OK";
         }
 
+        public void TestRedis()
+        {
+            RedisHelper redisHelper = new RedisHelper(0);
+            redisHelper.StringSet("test", "123456789");
+        }
+        public string GetRedis()
+        {
+            RedisHelper redisHelper = new RedisHelper(0);
+            return redisHelper.StringGet("test");
+        }
     }
 }
