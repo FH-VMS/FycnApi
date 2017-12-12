@@ -442,7 +442,7 @@ namespace Fycn.Sockets
                             DataTable dt = imachine.GetIpByMachineId(machineId10);
                             if (dt.Rows.Count > 0)
                             {
-                                ip = dt.Rows[0]["ip_v4"].ToString();
+                                ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
                             }
                         }
                         /*
@@ -455,7 +455,7 @@ namespace Fycn.Sockets
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                     for (int i = 0; i < list.Length; i++)
                     {
-                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip.Split("-")[0])
+                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
                         {
                             list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
                             bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
