@@ -250,7 +250,7 @@ namespace FycnApi.Controllers
                         var log = LogManager.GetLogger("FycnApi", "weixin");
                         //log.Info("test");
                         log.Info(tradeNoNode.InnerText);
-                        SocketHelper.GenerateCommand(10, 47, lstCommand);
+                        SocketHelper.GenerateCommand(10, 47,42, lstCommand);
                         //删除文件
                         FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
                     }
@@ -333,7 +333,7 @@ namespace FycnApi.Controllers
                         var log = LogManager.GetLogger("FycnApi", "zhifubao");
                         //log.Info("test");
                         log.Info(outTradeNo);
-                        SocketHelper.GenerateCommand(10, 47, lstCommand);
+                        SocketHelper.GenerateCommand(10, 47,42, lstCommand);
                         //删除文件
                         FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
                     }

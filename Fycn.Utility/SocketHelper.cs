@@ -57,18 +57,19 @@ namespace Fycn.Utility
             sock.Close();
         }
 
-        public static void GenerateCommand(byte commandType, byte totalSize, List<CommandModel> lstCommandModel)
+        public static void GenerateCommand(byte webCommandType, byte totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
         {
             byte[] sendByte = new byte[totalSize+6];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;
-            sendByte[1] = commandType;
+            sendByte[1] = webCommandType;
             sendByte[2] = 72;
             sendByte[3] = totalSize;
             //sendByte[4] = chunk
+            sendByte[5]= socketCommand;
             int i = 0;
             foreach(CommandModel cmdModel in lstCommandModel)
             {
-                ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 5 + i);
+                ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 6 + i);
                 i = i + cmdModel.Size;
             }
             sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());

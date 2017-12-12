@@ -63,7 +63,13 @@ namespace FycnApi.Controllers
                 Content = "4",
                 Size = 1
             });
-            SocketHelper.GenerateCommand(10, 47, lstCommand);
+            SocketHelper.GenerateCommand(10, 47,42, lstCommand);
+        }
+
+        public void TestByte()
+        {
+            char x = (char)88;
+            ByteHelper.GenerateRealityData(ByteHelper.strToToTenByte("584230423137313030303031"), "stringval");
         }
     }
 }

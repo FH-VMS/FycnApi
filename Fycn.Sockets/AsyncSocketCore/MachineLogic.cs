@@ -417,7 +417,7 @@ namespace Fycn.Sockets
                 }
 
             } else if(infoHead=="73") { //推送
-                IMachine imachine = new MachineService();
+               
                 //byte[] sendByte = new byte[100];
                 int sendLength = byteInfo.Length - 2;
                 string ip = string.Empty;
@@ -439,6 +439,7 @@ namespace Fycn.Sockets
                         }
                         else
                         {
+                            IMachine imachine = new MachineService();
                             DataTable dt = imachine.GetIpByMachineId(machineId10);
                             if (dt.Rows.Count > 0)
                             {
