@@ -69,7 +69,7 @@ namespace FycnApi.Controllers
                 Content = "4",
                 Size = 1
             });
-            SocketHelper.GenerateCommand(10, 47,42, lstCommand);
+            SocketHelper.GenerateCommand(10, 41,66, lstCommand);
         }
 
         public void TestByte()

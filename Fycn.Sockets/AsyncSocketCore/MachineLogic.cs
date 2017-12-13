@@ -205,41 +205,40 @@ namespace Fycn.Sockets
                             ByteHelper.Encryption(returnByte43[1], finalResult43.ToArray()).CopyTo(returnByte43, 3);//加密
 
                             return returnByte43;
-                        case "45": //满仓信息 (一键补货)
-                            int result45 = 0;
-                            string machineNum45 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                        case "65": //满仓信息 (一键补货)
+                            int result65 = 0;
+                            string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
                         
                         
-                            byte[] return45 = new byte[30];
-                            return45[0] = byteInfo[0];//包头;
-                            return45[1] = 26; //size
-                            return45[3] = data[0];
-                            data.Skip(1).Take(12).ToArray().CopyTo(return45, 4);
+                            byte[] return65 = new byte[6];
+                            return65[0] = byteInfo[0];//包头;
+                            return65[1] = 2; //size
+                            return65[3] = data[0];
                         
 
                             //验证码生成
-                            byte resultChunk45 = new byte();
-                            byte[] finalResult45 = return45.Skip(3).Take(return45[1]).ToArray();
+                            byte resultChunk65 = new byte();
+                            byte[] finalResult65 = return65.Skip(3).Take(return65[1]).ToArray();
 
-                            result45=imachine.GetFullfilGood(machineNum45);
-                            for (int i = 0; i < finalResult45.Length; i++)
+                            result65=imachine.GetFullfilGood(machineNum65);
+                            for (int i = 0; i < finalResult65.Length; i++)
                             {
-                                resultChunk45 ^= finalResult45[i];
+                                resultChunk65 ^= finalResult65[i];
                             }
-                            if (result45 == 1)
+                            if (result65 == 1)
                             {
-                                return45[28] = 30;
+                                return65[4] = 48;
                             }
                             else
                             {
-                                return45[28] = 31;
+                                return65[4] = 49;
                             }
-                            return45[2] = resultChunk45;
-                            return45[29] = 238;
-                            ByteHelper.Encryption(return45[1], finalResult45.ToArray()).CopyTo(return45, 3);//加密
+                            return65[2] = resultChunk65;
+                            return65[5] = 238;
+                            ByteHelper.Encryption(return65[1], finalResult65.ToArray()).CopyTo(return65, 3);//加密
                             //SendMsg(returnByteA6, myClientSocket);
-                            return return45;
+                            return return65;
                         case "A0": //心跳包
                             string machineNumA0 = ByteHelper.GenerateRealityData(data.Skip(1).Take(4).ToArray(), "intval");
                             int execResultA0 = 0;//daoBll.ExistMachine(machineNumA0);

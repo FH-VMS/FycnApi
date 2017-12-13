@@ -259,7 +259,7 @@ namespace FycnApi.Controllers
                         //var log = LogManager.GetLogger("FycnApi", "weixin");
                         //log.Info("test");
                         //log.Info(tradeNoNode.InnerText);
-                        SocketHelper.GenerateCommand(10, 47,42, lstCommand);
+                        SocketHelper.GenerateCommand(10, 41,66, lstCommand);
                         //删除文件
                         helper.KeyDelete(tradeNoNode.InnerText);
                         //FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
@@ -355,7 +355,7 @@ namespace FycnApi.Controllers
                             Size = 1
                         });
                         
-                        SocketHelper.GenerateCommand(10, 47,42, lstCommand);
+                        SocketHelper.GenerateCommand(10, 41,66, lstCommand);
                         //删除文件
                         helper.KeyDelete(outTradeNo);
                         //FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
