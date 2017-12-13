@@ -32,12 +32,18 @@ namespace FycnApi.Controllers
         public void TestRedis()
         {
             RedisHelper redisHelper = new RedisHelper(0);
-            redisHelper.StringSet("test", "123456789", new TimeSpan(0,1,0));
+            redisHelper.StringSet("2017121310330774981665", "123456789", new TimeSpan(0,2,0));
         }
         public string GetRedis()
         {
             RedisHelper redisHelper = new RedisHelper(0);
-            return redisHelper.StringGet("test");
+            return redisHelper.StringGet("2017121310330774981665");
+        }
+
+        public bool ExistRedis()
+        {
+            RedisHelper redisHelper = new RedisHelper(0);
+            return redisHelper.KeyExists("2017121310330774981665");
         }
 
         public void TestSendCommand()

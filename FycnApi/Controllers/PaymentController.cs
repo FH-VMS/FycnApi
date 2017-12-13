@@ -14,6 +14,7 @@ using Alipay.AopSdk.Core;
 using Alipay.AopSdk.Core.Domain;
 using Alipay.AopSdk.Core.Request;
 using Alipay.AopSdk.Core.Response;
+using log4net;
 
 namespace FycnApi.Controllers
 {
@@ -145,7 +146,8 @@ namespace FycnApi.Controllers
 
                 //写入交易中转
                 RedisHelper helper = new RedisHelper(0);
-                helper.StringSet(JsApi.payInfo.trade_no, JsApi.payInfo.jsonProduct, new TimeSpan(0, 1, 0));
+                
+                helper.StringSet(JsApi.payInfo.trade_no.Trim(), JsApi.payInfo.jsonProduct, new TimeSpan(0, 10, 30));
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = JsApi.GetUnifiedOrderResult();
@@ -285,7 +287,9 @@ namespace FycnApi.Controllers
             string body = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
             //写入交易中转
             RedisHelper helper = new RedisHelper(0);
-            helper.StringSet(out_trade_no, body,new TimeSpan(0,1,0));
+            var log = LogManager.GetLogger("FycnApi", "tradeNo");
+            log.Info("99999-"+out_trade_no.Trim());
+            helper.StringSet(out_trade_no.Trim(), body,new TimeSpan(0,10,30));
             // FileHandler.WriteFile("data/", out_trade_no + ".wa", body);
 
 

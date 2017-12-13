@@ -18,6 +18,7 @@ namespace Fycn.Sockets
         //处理机器消息
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
+            Program.Logger.InfoFormat("the message is {0}", ByteHelper.byteToHexStr(byteInfo));
             //return byteInfo;
             //ByteHelper.byteToHexStr(byteInfo.Take(4).ToArray());
             //byte[] byteInfo = ByteHelper.strToToHexByte(info);
@@ -84,7 +85,12 @@ namespace Fycn.Sockets
                             //机器编号
                             string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                             //清楚上一个无用的socket连接
-                            CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
+                            /*
+                            if(redisHelper.StringGet(machineNum41)!= m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString())
+                            {
+                                CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
+                            }
+                            */
 
                             redisHelper.StringSet(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                             resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
@@ -123,7 +129,6 @@ namespace Fycn.Sockets
                             return returnByteA1;
 
                         case "43": //上报出货结果
-                            Program.Logger.InfoFormat("the pay result message is {0}", ByteHelper.byteToHexStr(byteInfo));
                             // string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                             string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(22).ToArray(), "stringval");
                             byte[] returnByte43 = new byte[6];
@@ -456,6 +461,7 @@ namespace Fycn.Sockets
                
                     case "10": // 通知出货 42 +机器编号+订单编号+
                      */
+               
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(6).Take(12).ToArray(), "stringval");
                         if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
                         {

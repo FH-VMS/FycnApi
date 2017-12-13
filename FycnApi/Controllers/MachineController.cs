@@ -291,9 +291,11 @@ namespace FycnApi.Controllers
         {
             try
             {
-                string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"];
+                string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"].ToString().Trim();
                 RedisHelper helper = new RedisHelper(0);
-
+                var log = LogManager.GetLogger("FycnApi", "zhifubao");
+                log.Info(outTradeNo);
+                log.Info(helper.KeyExists(outTradeNo));
                 if (!helper.KeyExists(outTradeNo))
                 {
                     return Content(1);
@@ -318,6 +320,9 @@ namespace FycnApi.Controllers
                     //log.Info(Directory.GetCurrentDirectory());
                     //log.Info(outTradeNo);
                     string jsonProduct = helper.StringGet(outTradeNo);
+                   
+                    //log.Info("test");
+                    log.Info(jsonProduct);
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
                     //log.Info(jsonProduct);
 
@@ -349,9 +354,7 @@ namespace FycnApi.Controllers
                             Content = "4",
                             Size = 1
                         });
-                        //var log = LogManager.GetLogger("FycnApi", "zhifubao");
-                        //log.Info("test");
-                        //log.Info(outTradeNo);
+                        
                         SocketHelper.GenerateCommand(10, 47,42, lstCommand);
                         //删除文件
                         helper.KeyDelete(outTradeNo);
