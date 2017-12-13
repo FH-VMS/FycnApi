@@ -287,7 +287,7 @@ namespace FycnApi.Controllers
             return Content(1);
         }
         */
-        public ResultObj<int> PostPayResultA()
+        public string PostPayResultA()
         {
             try
             {
@@ -298,7 +298,7 @@ namespace FycnApi.Controllers
                 log.Info(helper.KeyExists(outTradeNo));
                 if (!helper.KeyExists(outTradeNo))
                 {
-                    return Content(1);
+                    return "";
                 }
                 /*
                 IMachine _imachine = new MachineService();
@@ -332,7 +332,7 @@ namespace FycnApi.Controllers
                     if (result == 1)
                     {
                         //Fycn.Utility.HttpContext.Current.Response.Write("success");
-                        Response.WriteAsync("success");
+                        //Response.WriteAsync("success");
                         List<CommandModel> lstCommand = new List<CommandModel>();
                         lstCommand.Add(new CommandModel()
                         {
@@ -359,14 +359,15 @@ namespace FycnApi.Controllers
                         //删除文件
                         helper.KeyDelete(outTradeNo);
                         //FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
+                        return "success";
                     }
-                   
+                    
                 }
-                return Content(1);
+                return "fail";
             }
             catch (Exception ex)
             {
-                return Content(0);
+                return "fail";
             }
             
         }
