@@ -248,19 +248,19 @@ namespace Fycn.Service
                 SaleModel saleModel = GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions)[0];
                 if (saleModel != null && saleModel.TradeStatus == 1)
                 {
-                    SaleModel saleInfo = new SaleModel();
-                    saleInfo.SalesDate = DateTime.Now;
-                    saleInfo.RealitySaleNumber = 1;
+                    //SaleModel saleInfo = new SaleModel();
+                    saleModel.SalesDate = DateTime.Now;
+                    saleModel.RealitySaleNumber = 1;
                     if (result)
                     {
-                        saleInfo.TradeStatus = 2;
+                        saleModel.TradeStatus = 2;
                     }
                     else
                     {
-                        saleInfo.TradeStatus = 5;
-                        UpdateAddCurrStock(saleInfo.MachineId, saleInfo.GoodsId, 1);
+                        saleModel.TradeStatus = 5;
+                        UpdateAddCurrStock(saleModel.MachineId, saleModel.GoodsId, 1);
                     }
-                    GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleInfo);
+                    GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                 }
                 GenerateDal.CommitTransaction();
             }

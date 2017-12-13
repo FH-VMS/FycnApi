@@ -78,8 +78,12 @@ namespace Fycn.Sockets
                 byte[] handleBuffer = buffer.Take(count).ToArray();
                 MachineLogic machineLogic = new MachineLogic();
                 byte[] result = machineLogic.HandleHexByte(handleBuffer, m_asyncSocketUserToken, m_asyncSocketServer);
-                DoSendBuffer(result, 0, result.Length);
-                receiveBuffer.Clear(count);
+                if(result.Length>0)
+                {
+                    DoSendBuffer(result, 0, result.Length);
+                    receiveBuffer.Clear(count);
+                }
+               
                 return true;
             }
             else

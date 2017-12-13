@@ -135,7 +135,7 @@ namespace Fycn.Sockets
                             returnByte43[0] = byteInfo[0];//包头;
                             returnByte43[1] = 2; //size
                             returnByte43[3] = data[0];
-                            string result43 = data[34].ToString();
+                            string result43 = data[35].ToString();
                             int putResult = 0;
                             if(result43 == "48")
                             {
@@ -462,19 +462,34 @@ namespace Fycn.Sockets
                      */
                
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(6).Take(12).ToArray(), "stringval");
-                        if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
+                try
+                {
+                    if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
+                    {
+                        ip = redisHelper.StringGet(machineId10);
+                    }
+                    else
+                    {
+                        IMachine imachine = new MachineService();
+                        DataTable dt = imachine.GetIpByMachineId(machineId10);
+                        if (dt.Rows.Count > 0)
                         {
-                            ip = redisHelper.StringGet(machineId10);
+                            ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
+                            redisHelper.StringSet(machineId10, ip);
                         }
-                        else
-                        {
-                            IMachine imachine = new MachineService();
-                            DataTable dt = imachine.GetIpByMachineId(machineId10);
-                            if (dt.Rows.Count > 0)
-                            {
-                                ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
-                            }
-                        }
+                    }
+                }
+                catch
+                {
+                    IMachine imachine = new MachineService();
+                    DataTable dt = imachine.GetIpByMachineId(machineId10);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
+                        redisHelper.StringSet(machineId10, ip);
+                    }
+                }
+                        
                         /*
                         break;
                 }
