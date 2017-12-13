@@ -83,8 +83,9 @@ namespace Fycn.Sockets
                             int resultA1 = 0;
                             //机器编号
                             string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            //清楚上一个无用的socket连接
+                            CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
 
-                            
                             redisHelper.StringSet(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                             resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
 
@@ -122,9 +123,33 @@ namespace Fycn.Sockets
                             return returnByteA1;
 
                         case "43": //上报出货结果
-                            int result43 = 0;
-                            string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                            Program.Logger.InfoFormat("the pay result message is {0}", ByteHelper.byteToHexStr(byteInfo));
+                            // string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(22).ToArray(), "stringval");
+                            byte[] returnByte43 = new byte[6];
+                            returnByte43[0] = byteInfo[0];//包头;
+                            returnByte43[1] = 2; //size
+                            returnByte43[3] = data[0];
+                            string result43 = data[34].ToString();
+                            int putResult = 0;
+                            if(result43 == "48")
+                            {
+                                 putResult = imachine.PutPayResultByOrderNo(serialNum, true);
+                            }
+                            else
+                            {
+                                 putResult = imachine.PutPayResultByOrderNo(serialNum, false);
+                               
+                            }
+                            if (putResult == 1)
+                            {
+                                returnByte43[4] = 48;
+                            }
+                            else
+                            {
+                                returnByte43[4] = 49;
+                            }
+                            /*
                             KeyJsonModel jsonModel = new KeyJsonModel();
                             jsonModel.m = machineNum;
                         
@@ -140,7 +165,7 @@ namespace Fycn.Sockets
                                     
                                 });
                             }
-
+                        
                             //IMachine imachine = new MachineService();
                             result43 = imachine.PutPayResult(jsonModel);
 
@@ -161,8 +186,8 @@ namespace Fycn.Sockets
                             {
                                 returnByte43[28] = 31;
                             }
-
-                            data[29]=238;//流水号
+                                */
+                            data[5]=238;//结尾
                             //验证码生成
                             byte result43Chunk = new byte();
                             byte[] finalResult43 = returnByte43.Skip(3).Take(returnByte43[1]).ToArray();
@@ -250,13 +275,13 @@ namespace Fycn.Sockets
                             returnByte[4] = (byte)retResult;
                             returnByte[5] = 238;
                             //验证码生成
-                            byte result = new byte();
+                            byte resultA7 = new byte();
                             byte[] finalResult = returnByte.Skip(3).Take(returnByte[1]).ToArray();
                             for (int i = 0; i < finalResult.Length; i++)
                             {
-                                result ^= finalResult[i];
+                                resultA7 ^= finalResult[i];
                             }
-                            returnByte[2] = result;
+                            returnByte[2] = resultA7;
                             //SendMsg(returnByte, myClientSocket);
 
                             return returnByte;
@@ -431,7 +456,6 @@ namespace Fycn.Sockets
                
                     case "10": // 通知出货 42 +机器编号+订单编号+
                      */
-                Program.Logger.InfoFormat("the pay information's message is {0}", ByteHelper.byteToHexStr(byteInfo));
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(6).Take(12).ToArray(), "stringval");
                         if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
                         {
@@ -521,6 +545,24 @@ namespace Fycn.Sockets
                 return false;
             }
 
+        }
+
+        private void CloseNoUseSocket(string ip, AsyncSocketServer m_asyncSocketServer)
+        {
+            if (string.IsNullOrEmpty(ip))
+            {
+                return;
+            }
+            AsyncSocketUserToken[] list = null;
+            m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                {
+                    list[i].ConnectSocket.Close();
+                    break;
+                }
+            }
         }
     }
 }

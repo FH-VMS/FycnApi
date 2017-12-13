@@ -227,6 +227,51 @@ namespace Fycn.Service
             return result;
         }
 
+        // 根据订单号更新出货结果
+        public int PutPayResultByOrderNo(string tradeNo, bool result)
+        {
+            try
+            {
+                GenerateDal.BeginTransaction();
+                var conditions = new List<Condition>();
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeNo",
+                    DbColumnName = "trade_no",
+                    ParamValue = tradeNo,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                SaleModel saleModel = GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions)[0];
+                if (saleModel != null && saleModel.TradeStatus == 1)
+                {
+                    SaleModel saleInfo = new SaleModel();
+                    saleInfo.SalesDate = DateTime.Now;
+                    saleInfo.RealitySaleNumber = 1;
+                    if (result)
+                    {
+                        saleInfo.TradeStatus = 2;
+                    }
+                    else
+                    {
+                        saleInfo.TradeStatus = 5;
+                        UpdateAddCurrStock(saleInfo.MachineId, saleInfo.GoodsId, 1);
+                    }
+                    GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleInfo);
+                }
+                GenerateDal.CommitTransaction();
+            }
+            catch
+            {
+                return 0;
+            }
+            
+            return 1;
+        }
+
         //上报出货结果  更新销售表状态
         public int PutPayResult(KeyJsonModel keyJsonInfo)
         {

@@ -144,10 +144,12 @@ namespace FycnApi.Controllers
                 JsApi.payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
 
                 //写入交易中转
-                FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
+                RedisHelper helper = new RedisHelper(0);
+                helper.StringSet(JsApi.payInfo.trade_no, JsApi.payInfo.jsonProduct, new TimeSpan(0, 1, 0));
+                // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = JsApi.GetUnifiedOrderResult();
-                Log.Write("GetDataW", "step step");
+                // Log.Write("GetDataW", "step step");
                 string wxJsApiParam = JsApi.GetJsApiParameters();//获取H5调起JS API参数       
                 payState.RequestState = "1";
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProduct, false);
@@ -282,7 +284,9 @@ namespace FycnApi.Controllers
             //商品描述，可空
             string body = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
             //写入交易中转
-            FileHandler.WriteFile("data/", out_trade_no + ".wa", body);
+            RedisHelper helper = new RedisHelper(0);
+            helper.StringSet(out_trade_no, body,new TimeSpan(0,1,0));
+            // FileHandler.WriteFile("data/", out_trade_no + ".wa", body);
 
 
             ////////////////////////////////////////////////////////////////////////////////////////////////

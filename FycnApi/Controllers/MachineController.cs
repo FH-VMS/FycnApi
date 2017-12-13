@@ -206,11 +206,19 @@ namespace FycnApi.Controllers
                 xmlDoc.LoadXml(postStr);
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
+                RedisHelper helper = new RedisHelper(0);
+                
+                if (!helper.KeyExists(tradeNoNode.InnerText))
+                {
+                    return Content(1);
+                }
+                /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
                 {
                     return Content(1);
                 }
+                */
                 //支付结果
                 XmlNode payResultNode = xmlDoc.SelectSingleNode("xml/result_code");
                 if (payResultNode.InnerText.ToUpper() == "SUCCESS")
@@ -218,10 +226,11 @@ namespace FycnApi.Controllers
                     /*******************************放到微信支付通知参数里，因参数只支付最大128个字符长度，所以注释修改*****************************/
                     //XmlNode tunnelNode = xmlDoc.SelectSingleNode("xml/attach");
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(tunnelNode.InnerText);
-
-                    string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
+                   
+                    string jsonProduct = helper.StringGet(tradeNoNode.InnerText);
+                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
-
+                    IMachine _imachine = new MachineService();
                     int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText);
                     if(result == 1)
                     {
@@ -247,12 +256,13 @@ namespace FycnApi.Controllers
                             Size = 1
                         });
 
-                        var log = LogManager.GetLogger("FycnApi", "weixin");
+                        //var log = LogManager.GetLogger("FycnApi", "weixin");
                         //log.Info("test");
-                        log.Info(tradeNoNode.InnerText);
+                        //log.Info(tradeNoNode.InnerText);
                         SocketHelper.GenerateCommand(10, 47,42, lstCommand);
                         //删除文件
-                        FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
+                        helper.KeyDelete(tradeNoNode.InnerText);
+                        //FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
                     }
                    
                 }
@@ -282,12 +292,19 @@ namespace FycnApi.Controllers
             try
             {
                 string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"];
+                RedisHelper helper = new RedisHelper(0);
+
+                if (!helper.KeyExists(outTradeNo))
+                {
+                    return Content(1);
+                }
+                /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(outTradeNo) > 0)
                 {
                     return Content(1);
                 }
-
+                */
                 string tradeStatus = Fycn.Utility.HttpContext.Current.Request.Form["trade_status"].ToString().ToUpper();
                 if (tradeStatus == "TRADE_SUCCESS")
                 {
@@ -300,10 +317,12 @@ namespace FycnApi.Controllers
                     //log.Info("test");
                     //log.Info(Directory.GetCurrentDirectory());
                     //log.Info(outTradeNo);
-                    string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
+                    string jsonProduct = helper.StringGet(outTradeNo);
+                    //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
                     //log.Info(jsonProduct);
 
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
+                    IMachine _imachine = new MachineService();
                     int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo);
                     if (result == 1)
                     {
@@ -330,12 +349,13 @@ namespace FycnApi.Controllers
                             Content = "4",
                             Size = 1
                         });
-                        var log = LogManager.GetLogger("FycnApi", "zhifubao");
+                        //var log = LogManager.GetLogger("FycnApi", "zhifubao");
                         //log.Info("test");
-                        log.Info(outTradeNo);
+                        //log.Info(outTradeNo);
                         SocketHelper.GenerateCommand(10, 47,42, lstCommand);
                         //删除文件
-                        FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
+                        helper.KeyDelete(outTradeNo);
+                        //FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
                     }
                    
                 }
