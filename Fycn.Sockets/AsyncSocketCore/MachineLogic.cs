@@ -205,40 +205,14 @@ namespace Fycn.Sockets
                             ByteHelper.Encryption(returnByte43[1], finalResult43.ToArray()).CopyTo(returnByte43, 3);//加密
 
                             return returnByte43;
-                        case "65": //满仓信息 (一键补货)
+                        case "65": //上报一键补货结果 (一键补货)
                             int result65 = 0;
                             string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                        
-                        
-                            byte[] return65 = new byte[6];
-                            return65[0] = byteInfo[0];//包头;
-                            return65[1] = 2; //size
-                            return65[3] = data[0];
-                        
-
-                            //验证码生成
-                            byte resultChunk65 = new byte();
-                            byte[] finalResult65 = return65.Skip(3).Take(return65[1]).ToArray();
-
-                            result65=imachine.GetFullfilGood(machineNum65);
-                            for (int i = 0; i < finalResult65.Length; i++)
-                            {
-                                resultChunk65 ^= finalResult65[i];
-                            }
-                            if (result65 == 1)
-                            {
-                                return65[4] = 48;
-                            }
-                            else
-                            {
-                                return65[4] = 49;
-                            }
-                            return65[2] = resultChunk65;
-                            return65[5] = 238;
-                            ByteHelper.Encryption(return65[1], finalResult65.ToArray()).CopyTo(return65, 3);//加密
+                            //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
+                            redisHelper.KeyDelete(machineNum65 + "-" + 54);
+                           
                             //SendMsg(returnByteA6, myClientSocket);
-                            return return65;
+                            return new byte[0];
                         case "A0": //心跳包
                             string machineNumA0 = ByteHelper.GenerateRealityData(data.Skip(1).Take(4).ToArray(), "intval");
                             int execResultA0 = 0;//daoBll.ExistMachine(machineNumA0);

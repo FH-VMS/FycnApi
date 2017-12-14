@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using Fycn.Utility;
+using Fycn.Model.Socket;
 
 namespace FycnApi.Controllers
 {
@@ -203,6 +205,33 @@ namespace FycnApi.Controllers
             return file;
 
             //return File(file, "application/vnd.ms-excel", "保税订单.xls");
+        }
+
+        public ResultObj<int> PostFullFilByOneKey(string machineId)
+        {
+            IMachine _IMachine = new MachineService();
+            int result = _IMachine.GetFullfilGood(machineId);
+            if(result == 1)
+            {
+                
+                List<CommandModel> lstCommand = new List<CommandModel>();
+                lstCommand.Add(new CommandModel()
+                {
+                    Content = machineId,
+                    Size = 12
+                });
+
+                //var log = LogManager.GetLogger("FycnApi", "weixin");
+                //log.Info("test");
+                //log.Info(tradeNoNode.InnerText);
+                string hexCommand = SocketHelper.GenerateCommand(11, 13, 84, lstCommand);
+                if (!string.IsNullOrEmpty(hexCommand))
+                {
+                    RedisHelper helper = new RedisHelper(1);
+                    helper.StringSet(machineId + "-" + "54", hexCommand);
+                }
+            }
+            return Content(result);
         }
     }
 }

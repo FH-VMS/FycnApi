@@ -57,7 +57,7 @@ namespace Fycn.Utility
             sock.Close();
         }
 
-        public static void GenerateCommand(byte webCommandType, byte totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
+        public static string GenerateCommand(byte webCommandType, byte totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
         {
             byte[] sendByte = new byte[totalSize+6];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;
@@ -86,13 +86,16 @@ namespace Fycn.Utility
                 //redisHelper.StringSet("senddata", ByteHelper.byteToHexStr(sendByte));
                 //发送数据
                 sock.Send(sendByte);
-
+                sock.Close();
             }
             catch (Exception ex)
             {
-
+                sock.Close();
+                return "";
             }
-            sock.Close();
+           
+
+            return ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray());
 
         }
 

@@ -585,6 +585,7 @@ namespace Fycn.Service
         //向机器下行表插入数据
         public int PostToMachine(string machineId, string machineStatus)
         {
+            /*
             try
             {
                 if (!string.IsNullOrEmpty(machineId) && !string.IsNullOrEmpty(machineStatus))
@@ -606,6 +607,7 @@ namespace Fycn.Service
                 GenerateDal.RollBack();
                 return 0;
             }
+            */
             return 1;
         }
 
