@@ -45,6 +45,7 @@ namespace Fycn.SqlDataAccess
         GetRank,
         GetUserByClientId,
         GetMachineDic,
+        GetMachineDicCount,
         GetCabinetByMachineId,
         GetPictureDic,
         GetProductDic,

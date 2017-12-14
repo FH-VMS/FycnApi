@@ -298,7 +298,7 @@ namespace FycnApi.Controllers
                 log.Info(helper.KeyExists(outTradeNo));
                 if (!helper.KeyExists(outTradeNo))
                 {
-                    return "";
+                    return "success";
                 }
                 /*
                 IMachine _imachine = new MachineService();
