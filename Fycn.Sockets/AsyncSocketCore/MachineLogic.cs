@@ -206,10 +206,15 @@ namespace Fycn.Sockets
 
                             return returnByte43;
                         case "65": //上报一键补货结果 (一键补货)
-                            int result65 = 0;
+                            
                             string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                             //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
-                            redisHelper.KeyDelete(machineNum65 + "-" + 54);
+                            RedisHelper redis65 = new RedisHelper(1);
+                            if(redis65.KeyExists(machineNum65 + "-" + 54))
+                            {
+                                redisHelper.KeyDelete(machineNum65 + "-" + 54);
+                            }
+                           
                            
                             //SendMsg(returnByteA6, myClientSocket);
                             return new byte[0];
@@ -416,7 +421,7 @@ namespace Fycn.Sockets
                 catch (Exception e)
                 {
                     //MessageBox.Show(e.Message);
-                    return byteInfo;
+                    return new byte[0];
                 }
 
             } else if(infoHead=="73") { //推送
@@ -508,7 +513,7 @@ namespace Fycn.Sockets
                 {
                     Program.Logger.InfoFormat("the first by sent was {0}", byteInfo[0]);
 
-                    return byteInfo;
+                    return new byte[0];
                 }
                
                     
