@@ -64,7 +64,10 @@ namespace Fycn.Sockets
                             returnByte40[0] = byteInfo[0];//包头;
                             returnByte40[1] = 2; //size
                             returnByte40[3] = data[0];
-                            
+
+                            string machineNum40 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            MachineHelper.Signature(machineNum40, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
+
                             returnByte40[4] = 0;
 
                             returnByte40[5] = 238;//
@@ -91,11 +94,9 @@ namespace Fycn.Sockets
                                 CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
                             }
                             */
-
-                            redisHelper.StringSet(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
+                            MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                             resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
-
-
+                            m_asyncSocketUserToken.MachineId = machineNum41;
 
                             byte[] returnByteA1 = new byte[20];
                             returnByteA1[0] = byteInfo[0];//包头;
@@ -454,7 +455,7 @@ namespace Fycn.Sockets
                         if (dt.Rows.Count > 0)
                         {
                             ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
-                            redisHelper.StringSet(machineId10, ip);
+                            MachineHelper.Signature(machineId10, ip);
                         }
                     }
                 }
@@ -465,7 +466,7 @@ namespace Fycn.Sockets
                     if (dt.Rows.Count > 0)
                     {
                         ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
-                        redisHelper.StringSet(machineId10, ip);
+                        MachineHelper.Signature(machineId10, ip);
                     }
                 }
                         

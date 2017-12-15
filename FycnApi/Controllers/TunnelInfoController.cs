@@ -209,6 +209,12 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> PostFullFilByOneKey(string machineId)
         {
+            // lstCommandModel的第一条消息为机器编号
+            if (!MachineHelper.IsOnline(machineId))
+            {
+                return Content(0);
+            }
+
             IMachine _IMachine = new MachineService();
             int result = _IMachine.GetFullfilGood(machineId);
             if(result == 1)

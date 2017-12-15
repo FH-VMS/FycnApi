@@ -156,6 +156,8 @@ namespace FycnApi.Controllers
             //List<ProductModel> products = service.GetAllProducts();
             //k = "ABC123456789";
             //机器运行情况
+
+            /*
             DataTable dt = _IMachine.GetMachineByMachineId(k);
             if (dt == null || dt.Rows.Count == 0)
             {
@@ -171,6 +173,13 @@ namespace FycnApi.Controllers
             {
                 return Content(new List<ProductForMachineModel>(), ResultCode.Success, "机器不在线", new Pagination { });
             }
+            */
+
+            if (!MachineHelper.IsOnline(k))
+            {
+                return Content(new List<ProductForMachineModel>(), ResultCode.Success, "机器不在线", new Pagination { });
+            }
+
             ProductForMachineModel machineInfo = new ProductForMachineModel();
             machineInfo.MachineId = k;
             machineInfo.PageIndex = pageIndex;

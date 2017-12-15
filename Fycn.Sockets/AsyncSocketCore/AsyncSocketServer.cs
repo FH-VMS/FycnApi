@@ -1,4 +1,5 @@
 ﻿using Fycn.Sockets.AsyncSocketProtocol;
+using Fycn.Utility;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -270,8 +271,19 @@ namespace Fycn.Sockets
             string socketInfo = string.Format("Local Address: {0} Remote Address: {1}", userToken.ConnectSocket.LocalEndPoint,
                 userToken.ConnectSocket.RemoteEndPoint);
             Program.Logger.InfoFormat("Client connection disconnected. {0}", socketInfo);
+
             try
             {
+                //清除redis连接
+                if(!string.IsNullOrEmpty(userToken.MachineId))
+                {
+                    RedisHelper helper = new RedisHelper(0);
+                    if (helper.KeyExists(userToken.MachineId))
+                    {
+                        helper.KeyDelete(userToken.MachineId);
+                    }
+                    
+                }
                 userToken.ConnectSocket.Shutdown(SocketShutdown.Both);
             }
             catch (Exception E) 

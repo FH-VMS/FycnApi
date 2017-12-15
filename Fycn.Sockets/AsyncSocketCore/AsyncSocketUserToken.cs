@@ -50,6 +50,13 @@ namespace Fycn.Sockets
         protected DateTime m_ActiveDateTime;
         public DateTime ActiveDateTime { get { return m_ActiveDateTime; } set { m_ActiveDateTime = value; } }
 
+        protected string m_machineId;
+        public string MachineId
+        {
+            get { return m_machineId; }
+            set { m_machineId = value; }
+        }
+
         public AsyncSocketUserToken(int asyncReceiveBufferSize)
         {
             m_connectSocket = null;
@@ -61,7 +68,8 @@ namespace Fycn.Sockets
             m_sendEventArgs = new SocketAsyncEventArgs();
             m_sendEventArgs.UserToken = this;
             m_receiveBuffer = new DynamicBufferManager(ProtocolConst.InitBufferSize);
-            m_sendBuffer = new AsyncSendBufferManager(ProtocolConst.InitBufferSize); ;
+            m_sendBuffer = new AsyncSendBufferManager(ProtocolConst.InitBufferSize);
+            m_machineId = "";
         }
     }
 }
