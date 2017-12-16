@@ -77,5 +77,15 @@ namespace FycnApi.Controllers
             char x = (char)88;
             ByteHelper.GenerateRealityData(ByteHelper.strToToTenByte("584230423137313030303031"), "stringval");
         }
+
+        public string TestEn()
+        {
+           return ByteHelper.byteToHexStr(ByteHelper.Encryption(13,ByteHelper.HexToArray("50584230423137313030303031")));
+        }
+
+        public string TestDe() 
+        {
+            return ByteHelper.byteToHexStr(ByteHelper.Deencryption(13,ByteHelper.HexToArray("0A3A2A1E2A1F251F1E1E1E1E1F")));
+        }
     }
 }

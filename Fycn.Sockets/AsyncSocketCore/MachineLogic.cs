@@ -36,11 +36,13 @@ namespace Fycn.Sockets
             
                 //大小
                 int infoSize = Convert.ToInt32(byteInfo[1]);
+                
                 byte[] deencryData = byteInfo;//解密算法
                 //验证码
-                string infoVerify = deencryData[2].ToString();
+                string infoVerify = byteInfo[2].ToString();
                 //数据
-                byte[] data = deencryData.Skip(3).Take(infoSize).ToArray();
+                byte[] data = ByteHelper.Deencryption(infoSize, byteInfo.Skip(3).Take(infoSize).ToArray());
+                //byte[] data = byteInfo.Skip(3).Take(infoSize).ToArray();
                 //string machine_num = Encoding.ASCII.GetString(data, 1, 4); 
                 //验证是否为有效包
                 /*
@@ -206,14 +208,14 @@ namespace Fycn.Sockets
                             ByteHelper.Encryption(returnByte43[1], finalResult43.ToArray()).CopyTo(returnByte43, 3);//加密
 
                             return returnByte43;
-                        case "65": //上报一键补货结果 (一键补货)
+                        case "54": //上报一键补货结果 (一键补货)
                             
                             string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                             //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
                             RedisHelper redis65 = new RedisHelper(1);
                             if(redis65.KeyExists(machineNum65 + "-" + 54))
                             {
-                                redisHelper.KeyDelete(machineNum65 + "-" + 54);
+                                redis65.KeyDelete(machineNum65 + "-" + 54);
                             }
                            
                            
@@ -417,7 +419,7 @@ namespace Fycn.Sockets
                             returnByte88[1] = 238;//包头;
                             return returnByte88;
                     }
-                    return byteInfo;
+                    return new byte[0];
                 }
                 catch (Exception e)
                 {
@@ -476,18 +478,14 @@ namespace Fycn.Sockets
                 */
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
-                    AsyncSocketUserToken[] list = null;
-                    m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
-                    for (int i = 0; i < list.Length; i++)
-                    {
-                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                    RedisHelper helper1=new RedisHelper(1);
+                    sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
+                    SetTimeout(5000, delegate {
+                        if(helper1.KeyExists(machineId10 + "-" + 54))
                         {
-                            list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
-                            bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
-                            break;
+                            sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
                         }
-                    }
-                    
+                    });
                 }
                 
                 //x[0].co
@@ -564,5 +562,38 @@ namespace Fycn.Sockets
                 }
             }
         }
+
+        private void sendToTerminal(AsyncSocketServer m_asyncSocketServer, string ip,byte[] byteInfo,int sendLength)
+        {
+                    AsyncSocketUserToken[] list = null;
+                    m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
+                    for (int i = 0; i < list.Length; i++)
+                    {
+                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                        {
+                            // 发送前加密
+                            ByteHelper.Encryption(byteInfo[3], byteInfo.Skip(5).ToArray()).CopyTo(byteInfo, 5);
+                            list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
+                            bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                            break;
+                        }
+                    }
+        }
+
+          /// <summary> 
+          /// 在指定时间过后执行指定的表达式 
+          /// </summary> 
+          /// <param name="interval">事件之间经过的时间（以毫秒为单位）</param> 
+          /// <param name="action">要执行的表达式</param> 
+         private static void SetTimeout(double interval, Action action) 
+         { 
+             System.Timers.Timer timer = new System.Timers.Timer(interval); 
+             timer.Elapsed += delegate(object sender, System.Timers.ElapsedEventArgs e) 
+             { 
+                 timer.Enabled = false; 
+                 action(); 
+             }; 
+             timer.Enabled = true; 
+         } 
     }
 }

@@ -256,12 +256,17 @@ namespace Fycn.Utility
         }
 
 
-        public static string[] SecretKey = { "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678", "12345678" };
+        public static string[] SecretKey = {"12345678","87654321","ABCDEFGH","HGFEDCBA","abcdefgh","hgfedcba","fy123456","123456yf"};
 
         //加密
         public static byte[] Encryption(int size, byte[] hex)
         {
             string nowSecretKey = SecretKey[size % 8];
+             char[] secretArray = nowSecretKey.ToArray();
+            for(int i=0;i<size;i++) {
+                hex[i]+=Convert.ToByte(secretArray[i%secretArray.Length]%4);
+                 hex[i] ^= Convert.ToByte(secretArray[i%secretArray.Length]);
+            }
             return hex;
         }
 
@@ -269,6 +274,12 @@ namespace Fycn.Utility
         public static byte[] Deencryption(int size, byte[] hex)
         {
             string nowSecretKey = SecretKey[size % 8];
+            char[] secretArray = nowSecretKey.ToArray();
+            for(int i=0;i<size;i++) {
+                hex[i] ^= Convert.ToByte(secretArray[i%secretArray.Length]);
+                hex[i]-=Convert.ToByte(secretArray[i%secretArray.Length]%4);
+                
+            }
             return hex;
         }
     }
