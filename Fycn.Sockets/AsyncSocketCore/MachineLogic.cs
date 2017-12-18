@@ -221,6 +221,18 @@ namespace Fycn.Sockets
                            
                             //SendMsg(returnByteA6, myClientSocket);
                             return new byte[0];
+                        case "53": //上报按货道补货结果
+
+                            string machineNum53 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
+                            RedisHelper redis53 = new RedisHelper(1);
+                            if (redis53.KeyExists(machineNum53 + "-" + 53))
+                            {
+                                redis53.KeyDelete(machineNum53 + "-" + 53);
+                            }
+
+                            //SendMsg(returnByteA6, myClientSocket);
+                            return new byte[0];
                         case "A0": //心跳包
                             string machineNumA0 = ByteHelper.GenerateRealityData(data.Skip(1).Take(4).ToArray(), "intval");
                             int execResultA0 = 0;//daoBll.ExistMachine(machineNumA0);
@@ -481,7 +493,7 @@ namespace Fycn.Sockets
                     RedisHelper helper1=new RedisHelper(1);
                     sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
                     SetTimeout(5000, delegate {
-                        if(helper1.KeyExists(machineId10 + "-" + 54))
+                        if(helper1.KeyExists(machineId10 + "-" + ByteHelper.Ten2Hex(byteInfo[5].ToString())))
                         {
                             sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
                         }
@@ -571,8 +583,6 @@ namespace Fycn.Sockets
                     {
                         if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
                         {
-                            // 发送前加密
-                            ByteHelper.Encryption(byteInfo[3], byteInfo.Skip(5).ToArray()).CopyTo(byteInfo, 5);
                             list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
                             bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
                             break;

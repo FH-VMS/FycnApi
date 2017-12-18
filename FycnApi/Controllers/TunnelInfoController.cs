@@ -81,9 +81,41 @@ namespace FycnApi.Controllers
         //手机补充库存
         public ResultObj<int> PutStockWithMobile([FromBody]List<TunnelInfoModel> lstTunnelInfo)
         {
-              IFullfilBill ifullfilBill = new TunnelInfoService();
-              int result = ifullfilBill.UpdateStockWithMobile(lstTunnelInfo);
-              return Content(result);
+            if (lstTunnelInfo.Count < 1)
+            {
+                return Content(0);
+            }
+            if(!MachineHelper.IsOnline(lstTunnelInfo[0].MachineId))
+            {
+                return Content(0);
+            }
+            IFullfilBill ifullfilBill = new TunnelInfoService();
+            int result = ifullfilBill.UpdateStockWithMobile(lstTunnelInfo);
+            if(result==1)
+            {
+                List<CommandModel> lstCommand = new List<CommandModel>();
+                lstCommand.Add(new CommandModel()
+                {
+                    Content = lstTunnelInfo[0].MachineId,
+                    Size = 12
+                });
+                foreach(TunnelInfoModel tunnel in lstTunnelInfo)
+                {
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = tunnel.TunnelId,
+                        Size = 5
+                    });
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = tunnel.CurrStock.ToString(),
+                        Size = 2
+                    });
+                }
+
+                SocketHelper.GenerateCommand(12, Convert.ToByte(13 + lstTunnelInfo.Count * 7), 83, lstCommand);
+            }
+            return Content(result);
         }
 
         //导出补货单
@@ -230,12 +262,7 @@ namespace FycnApi.Controllers
                 //var log = LogManager.GetLogger("FycnApi", "weixin");
                 //log.Info("test");
                 //log.Info(tradeNoNode.InnerText);
-                string hexCommand = SocketHelper.GenerateCommand(11, 13, 84, lstCommand);
-                if (!string.IsNullOrEmpty(hexCommand))
-                {
-                    RedisHelper helper = new RedisHelper(1);
-                    helper.StringSet(machineId + "-" + "54", hexCommand);
-                }
+                SocketHelper.GenerateCommand(11, 13, 84, lstCommand);
             }
             return Content(result);
         }

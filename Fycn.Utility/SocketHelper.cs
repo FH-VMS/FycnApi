@@ -61,7 +61,7 @@ namespace Fycn.Utility
         {
             byte[] sendByte = new byte[totalSize+6];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;
-            sendByte[1] = webCommandType;
+            sendByte[1] = webCommandType;// 10:通知出货 11:一键补货 12:按货道补货
             sendByte[2] = 72;
             sendByte[3] = totalSize;
             //sendByte[4] = chunk
@@ -75,6 +75,8 @@ namespace Fycn.Utility
             sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
             sendByte[totalSize + 5] = 238;
 
+            // 发送前加密
+            ByteHelper.Encryption(sendByte[3], sendByte.Skip(5).ToArray()).CopyTo(sendByte, 5);
 
             serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -93,9 +95,11 @@ namespace Fycn.Utility
                 sock.Close();
                 return "";
             }
-           
+            RedisHelper redisHelper = new RedisHelper(1);
+            string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(6).Take(12).ToArray(), "stringval");
+            redisHelper.StringSet(machineId+"-"+ ByteHelper.Ten2Hex(socketCommand.ToString()), ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
 
-            return ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray());
+            return "";
 
         }
 
