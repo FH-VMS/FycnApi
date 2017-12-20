@@ -75,6 +75,7 @@ namespace Fycn.Utility
             sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
             sendByte[totalSize + 5] = 238;
 
+            string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(6).Take(12).ToArray(), "stringval");
             // 发送前加密
             ByteHelper.Encryption(sendByte[3], sendByte.Skip(5).ToArray()).CopyTo(sendByte, 5);
 
@@ -96,7 +97,6 @@ namespace Fycn.Utility
                 return "";
             }
             RedisHelper redisHelper = new RedisHelper(1);
-            string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(6).Take(12).ToArray(), "stringval");
             redisHelper.StringSet(machineId+"-"+ ByteHelper.Ten2Hex(socketCommand.ToString()), ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
 
             return "";
