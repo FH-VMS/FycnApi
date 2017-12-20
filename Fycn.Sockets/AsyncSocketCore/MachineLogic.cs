@@ -45,12 +45,12 @@ namespace Fycn.Sockets
                 //byte[] data = byteInfo.Skip(3).Take(infoSize).ToArray();
                 //string machine_num = Encoding.ASCII.GetString(data, 1, 4); 
                 //验证是否为有效包
-                /*
+              
                 if (!IsValidPackage(infoVerify, data))
                 {
                     return new byte[0];
                 }
-                */
+             
                 int retResult = 0;
                 IMachine imachine = new MachineService();
                 //Dao daoBll = new Dao();
@@ -454,7 +454,9 @@ namespace Fycn.Sockets
                
                     case "10": // 通知出货 42 +机器编号+订单编号+
                      */
-               
+                byte[] sendInfo = new byte[byteInfo.Length];
+                byteInfo.CopyTo(sendInfo, 0);
+                ByteHelper.Deencryption(byteInfo[3], byteInfo.Skip(5).Take(byteInfo[3]).ToArray()).CopyTo(byteInfo,5);
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(6).Take(12).ToArray(), "stringval");
                 try
                 {
@@ -491,11 +493,11 @@ namespace Fycn.Sockets
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
                     RedisHelper helper1=new RedisHelper(1);
-                    sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
+                    sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength);
                     SetTimeout(5000, delegate {
                         if(helper1.KeyExists(machineId10 + "-" + ByteHelper.Ten2Hex(byteInfo[5].ToString())))
                         {
-                            sendToTerminal(m_asyncSocketServer,ip,byteInfo,sendLength);
+                            sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength);
                         }
                     });
                 }
