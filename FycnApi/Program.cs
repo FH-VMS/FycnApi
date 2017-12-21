@@ -21,7 +21,7 @@ namespace FycnApi
             WebHost.CreateDefaultBuilder(args)
                      .UseKestrel()
                     .UseContentRoot(Directory.GetCurrentDirectory())
-                    .UseUrls("http://0.0.0.0:8088")
+                    .UseUrls("http://localhost:5000")
                     .UseIISIntegration()
                     .UseStartup<Startup>()
                     .UseApplicationInsights()

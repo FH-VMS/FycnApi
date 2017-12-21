@@ -9,17 +9,41 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Fycn.Utility;
 using Fycn.Model.Socket;
+using Fycn.Model.Pay;
+using System.Threading;
+using log4net;
 
 namespace FycnApi.Controllers
 {
     public class AndroidController : ApiBaseController
     {
+        public string TestPerform(string k)
+        {
+            ISale _isale = new SalesService();
+            //trade_status: (0:待支付，1:支付成功待出货,2：支付成功且已全部出货,3：支付成功部分出货成功未退款，4:支付成功部分出货成功已退款，5：支付成功此货道出货全部出货失败未退款，5：支付成功此货道出货全部出货失败已退款)
+            List<KeyTunnelModel> lstSales = _isale.GetPayResult("", "1", k);
+            if (lstSales.Count == 0)
+            {
+                return "";
+            }
+            
+            return JsonHandler.GetJsonStrFromObject(lstSales, false);
+        }
        public string TestSendMessage(string message)
        {
             //49 10 31 32 33 34 35 36 37 38 39 30 41 42 31 32 33 34 35 36 EE
             SocketHelper.SendMessage(message);
           return "OK";
        }
+
+        public string LogThread()
+        {
+            var log = LogManager.GetLogger("FycnApi", typeof(Startup));
+            //log.Info("test");
+            Thread.CurrentThread.Abort();
+            log.Info(Thread.CurrentThread.ManagedThreadId);
+            return "Ok";
+        }
 
 
         public string TestSendStrMessage(string ip,string message)

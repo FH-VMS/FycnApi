@@ -162,7 +162,8 @@ namespace Fycn.SqlDataAccess
                 logStep++;
                 sqlParameters = sqlKey == CommonSqlKey.Null ? null : SqlConstructor.FilterParmsWithList(sqlParameters, CommSqlText.SqlParms[sqlKey]);
                 logStep++;
-                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters);
+                DbConnection dbConn = null;
+                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters, ref dbConn);
                 logStep = 100;
                 if (dr == null)
                     return tLst;
@@ -272,7 +273,8 @@ namespace Fycn.SqlDataAccess
         {
             var sqlTxt = SqlConstructor.GetSelectSqlByObj(parm);
             var tLst = new List<T>();
-            var dr = DbHelper.ExecuteReader(sqlTxt);
+            DbConnection dbConn = null;
+            var dr = DbHelper.ExecuteReader(sqlTxt, ref dbConn);
             while (dr.Read())
             {
                 var t = MakeMapToObject<T>(dr);
@@ -516,6 +518,7 @@ namespace Fycn.SqlDataAccess
         private List<T> GetFromDictionaryByConditions<T>(CommonSqlKey sqlKey, IDictionary<string, object> parmDic, IList<Condition> conditions)
         {
             DbDataReader dr = null;
+            DbConnection dbConn = null;
             var tLst = new List<T>();
             var logStep = 0;
             try
@@ -533,7 +536,8 @@ namespace Fycn.SqlDataAccess
 
                 logStep++;
                 logStep++;
-                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters);
+                
+                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters, ref dbConn);
                 logStep = 100;
                 if (dr == null)
                     return tLst;
@@ -559,7 +563,7 @@ namespace Fycn.SqlDataAccess
                 {
                     dr.Close();
                     dr.Dispose();
-
+                    DbHelper.Close(dbConn, false);
                 }
             }
             return tLst;
@@ -585,7 +589,8 @@ namespace Fycn.SqlDataAccess
 
                 logStep++;
                 logStep++;
-                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters);
+                DbConnection dbConn = null;
+                dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters, ref dbConn);
                 logStep = 100;
                 if (dr == null)
                     return tLst;

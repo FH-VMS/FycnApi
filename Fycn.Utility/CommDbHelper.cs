@@ -67,6 +67,7 @@ namespace Fycn.Utility
         private DbConnection CreateConnection()
         {
             DbConnection conn = null;
+           
             if (conPool.ContainsKey(Thread.CurrentThread.ManagedThreadId))
             {
                 conn = conPool[Thread.CurrentThread.ManagedThreadId];
@@ -78,6 +79,7 @@ namespace Fycn.Utility
             }
 
             //_logger.LogInfo("Create Oracle Connection........");
+         
             conn = CreateConnectionWithQuery();
             conPool.Add(Thread.CurrentThread.ManagedThreadId, conn);
             return conn;
@@ -206,8 +208,8 @@ namespace Fycn.Utility
             if (CommDbTransaction.CurTranRun) return;
             if ((connection == null) || (connection.State == ConnectionState.Closed) || isReader) return;
             connection.Close();
-            //ClearPool(connection);
-            //connection.Dispose();
+            ClearPool(connection);
+            connection.Dispose();
         }
 
         public void CloseAndDispose(IDbConnection connection)
@@ -371,9 +373,9 @@ namespace Fycn.Utility
         /// </summary>
         /// <param name="sql">Sql statement.</param>
         /// <returns>An instance of DataReader.</returns>
-        public DbDataReader ExecuteReader(string sql)
+        public DbDataReader ExecuteReader(string sql, ref DbConnection connection)
         {
-            return ExecuteReader(sql, CommandType.Text, null);
+            return ExecuteReader(sql, CommandType.Text, null,ref connection);
         }
 
         /// <summary>
@@ -382,10 +384,10 @@ namespace Fycn.Utility
         /// <param name="sql">Sql statement.</param>
         /// <param name="cmdType">The type of the sql statement.</param>
         /// <returns>An instance of DataReader.</returns>
-        public DbDataReader ExecuteReader(string sql, CommandType cmdType)
+        public DbDataReader ExecuteReader(string sql, CommandType cmdType, ref DbConnection connection)
         {
 
-            return ExecuteReader(sql, cmdType, null);
+            return ExecuteReader(sql, cmdType, null, ref connection);
         }
 
         /// <summary>
@@ -394,9 +396,9 @@ namespace Fycn.Utility
         /// <param name="sql">Sql statement.</param>
         /// <param name="parameters">the parameters of the sql statement.</param>
         /// <returns>An instance of DataReader.</returns>
-        public DbDataReader ExecuteReader(string sql, IDictionary<string, object> parameters)
+        public DbDataReader ExecuteReader(string sql, IDictionary<string, object> parameters, ref DbConnection connection)
         {
-            return ExecuteReader(sql, CommandType.Text, parameters);
+            return ExecuteReader(sql, CommandType.Text, parameters, ref connection);
         }
 
         /// <summary>
@@ -406,10 +408,10 @@ namespace Fycn.Utility
         /// <param name="cmdType">The type of the sql statement.</param>
         /// <param name="parameters">the parameters of the sql statement.</param>
         /// <returns>An instance of DataReader.</returns>
-        public DbDataReader ExecuteReader(string sql, CommandType cmdType, IDictionary<string, object> parameters)
+        public DbDataReader ExecuteReader(string sql, CommandType cmdType, IDictionary<string, object> parameters, ref DbConnection connection)
         {
             DbDataReader result = null;
-            DbConnection connection = null;
+            connection = null;
             DbCommand cmd = null;
             var flag = Guid.NewGuid();
             try
