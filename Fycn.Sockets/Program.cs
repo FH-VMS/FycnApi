@@ -19,8 +19,6 @@ namespace Fycn.Sockets
         {
             try
             {
-
-
                 DateTime currentTime = DateTime.Now;
                 //log4net.GlobalContext.Properties["LogDir"] = currentTime.ToString("yyyyMM");
                 //log4net.GlobalContext.Properties["LogFileName"] = "_SocketAsyncServer" + currentTime.ToString("yyyyMMdd");
@@ -66,7 +64,7 @@ namespace Fycn.Sockets
                 AsyncSocketSvr.Start(listenPoint);
                 InitTimer(socketTimeOutMS);
                 Console.WriteLine("Press any key to terminate the server process....");
-                Console.ReadKey();
+                Console.Read();
 
             }
             catch (Exception e)
