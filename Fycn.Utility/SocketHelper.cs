@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Fycn.Utility
 {
@@ -111,6 +112,25 @@ namespace Fycn.Utility
                 resultChunk ^= chunkBytes[i];
             }
             return resultChunk;
+        }
+
+        private void ReceiveSendResult()
+        {
+            bool _isConnected = true;
+            while (_isConnected)
+            {
+                try
+                {
+                   // sock.BeginReceive(info.buffer, 0, info.buffer.Length, SocketFlags.None, ReceiveCallback, info);
+                }
+                catch (SocketException ex)
+                {
+                    _isConnected = false;
+                    sock.Close();
+                    sock.Dispose();
+                }
+                Thread.Sleep(500);
+            }
         }
     }
 }

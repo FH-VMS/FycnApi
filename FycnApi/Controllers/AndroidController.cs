@@ -46,10 +46,10 @@ namespace FycnApi.Controllers
         }
 
 
-        public string TestSendStrMessage(string ip,string message)
+        public string TestSendStrMessage()
         {
             //49 10 31 32 33 34 35 36 37 38 39 30 41 42 31 32 33 34 35 36 EE
-            SocketHelper.SendStrMessageTest(ip,message);
+            SocketHelper.SendStrMessageTest("","aaaaaa");
             return "OK";
         }
 

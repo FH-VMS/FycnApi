@@ -117,7 +117,7 @@ namespace FycnApi.Controllers
                 lstCommonDic.Add(new CommonDic
                 {
                     Id = guild,
-                    Name = fileName
+                    Name = pictureInfo.PicPath
                 });
             }
             /*

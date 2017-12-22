@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 
 namespace FycnApi
 {
@@ -19,7 +20,12 @@ namespace FycnApi
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                     .UseKestrel()
+                     .UseKestrel(options =>
+                     {
+                         options.ApplicationSchedulingMode = SchedulingMode.ThreadPool;
+                         options.AllowSynchronousIO = true;
+                         options.Limits.KeepAliveTimeout = new TimeSpan(0, 0, 5);
+                     })
                     .UseContentRoot(Directory.GetCurrentDirectory())
                     .UseUrls("http://localhost:5000")
                     .UseIISIntegration()
