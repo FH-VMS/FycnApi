@@ -1,10 +1,12 @@
-﻿using log4net;
+﻿using Fycn.Utility;
+using log4net;
 using log4net.Config;
 using log4net.Repository;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Timers;
 
 namespace Fycn.Sockets
 {
@@ -62,7 +64,7 @@ namespace Fycn.Sockets
                 */
                 IPEndPoint listenPoint = new IPEndPoint(IPAddress.Parse(ipV4), port);
                 AsyncSocketSvr.Start(listenPoint);
-
+                InitTimer(socketTimeOutMS);
                 Console.WriteLine("Press any key to terminate the server process....");
                 Console.ReadKey();
 
@@ -71,6 +73,41 @@ namespace Fycn.Sockets
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        private static void InitTimer(int socketTimeOutMS)
+        {
+            Timer t = new Timer(socketTimeOutMS);//实例化Timer类，设置间隔时间为10000毫秒；
+            t.Elapsed += new ElapsedEventHandler(TimeOut);//到达时间的时候执行事件；
+            t.AutoReset = true;//设置是执行一次（false）还是一直执行(true)；
+            t.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
+
+           
+        }
+
+        private static void TimeOut(object source, ElapsedEventArgs e)
+        {
+            RedisHelper redisHelper = new RedisHelper(0);
+           AsyncSocketUserToken[] userTokenArray = null;
+            AsyncSocketSvr.AsyncSocketUserTokenList.CopyList(ref userTokenArray);
+            for (int i = 0; i < userTokenArray.Length; i++)
+            {
+                if (redisHelper.KeyExists(userTokenArray[0].MachineId))
+                    break;
+                try
+                {
+                    lock (userTokenArray[i])
+                    {
+                        AsyncSocketSvr.CloseClientSocket(userTokenArray[i]);
+                    }
+                }
+                catch (Exception E)
+                {
+                    Program.Logger.ErrorFormat("Daemon thread check timeout socket error, message: {0}", E.Message);
+                    Program.Logger.Error(E.StackTrace);
+                }
+            }
+
         }
     }
 }

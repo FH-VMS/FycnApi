@@ -20,6 +20,7 @@ namespace Fycn.Sockets
 
         public void DaemonThreadStart()
         {
+            /*
             while (m_thread.IsAlive)
             {
                 AsyncSocketUserToken[] userTokenArray = null;
@@ -52,6 +53,7 @@ namespace Fycn.Sockets
                     Thread.Sleep(10);
                 }
             }
+            */
         }
 
         public void Close()
