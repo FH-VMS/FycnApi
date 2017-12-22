@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 using Fycn.Utility;
+using System.IO;
 
 namespace Fycn.Utility
 {
@@ -362,17 +363,34 @@ namespace Fycn.Utility
         #endregion
 
         #region Out System Interface
-        private static string _theYunUrl;
+        private static string _resourceUrl;
 
-        public static string TheYunUrl
+        public static string ResourceUrl
         {
             get
             {
-                if (String.IsNullOrEmpty(_theYunUrl))
+                if (String.IsNullOrEmpty(_resourceUrl))
                 {
-                    _theYunUrl = ConfigurationManager.AppSettings["TheYunUrl"] ?? "theyun.cm-dev.cn";
+                    _resourceUrl = ConfigurationManager.AppSettings["ResourceUrl"] ?? "fy-cn.top";
                 }
-                return _theYunUrl;
+                return _resourceUrl;
+            }
+        }
+        #endregion
+
+
+        #region 上传地址
+        private static string _uploadUrl;
+
+        public static string UploadUrl
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_uploadUrl))
+                {
+                    _uploadUrl = ConfigurationManager.AppSettings["UploadAddress"] ?? Directory.GetCurrentDirectory();
+                }
+                return _uploadUrl;
             }
         }
         #endregion

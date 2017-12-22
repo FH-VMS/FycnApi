@@ -80,7 +80,7 @@ namespace FycnApi.Controllers
         {
             var hfc = Request.Form.Files;
             const string localPath = "Attachment/";
-            var path = Directory.GetCurrentDirectory() + "/" + localPath;
+            var path = ConfigHandler.UploadUrl + "/" + localPath;
             List<CommonDic> lstCommonDic = new List<CommonDic>();
             if (hfc.Count == 0)
             {
@@ -112,7 +112,7 @@ namespace FycnApi.Controllers
                 string guild = Guid.NewGuid().ToString();
                 pictureInfo.PicId = guild;
                 pictureInfo.PicName = fileName;
-                pictureInfo.PicPath = "Attachment/" + fileName;
+                pictureInfo.PicPath = ConfigHandler.ResourceUrl+"/Attachment/" + fileName;
                 _ibase.PostData(pictureInfo);
                 lstCommonDic.Add(new CommonDic
                 {
