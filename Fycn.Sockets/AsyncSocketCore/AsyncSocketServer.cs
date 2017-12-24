@@ -275,6 +275,7 @@ namespace Fycn.Sockets
             try
             {
                 //清除redis连接
+                /*
                 if(!string.IsNullOrEmpty(userToken.MachineId))
                 {
                     RedisHelper helper = new RedisHelper(0);
@@ -284,6 +285,7 @@ namespace Fycn.Sockets
                     }
                     
                 }
+                */
                 userToken.ConnectSocket.Shutdown(SocketShutdown.Both);
             }
             catch (Exception E) 

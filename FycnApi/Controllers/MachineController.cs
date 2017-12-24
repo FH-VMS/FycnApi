@@ -371,11 +371,11 @@ namespace FycnApi.Controllers
                     }
                     
                 }
-                return "fail";
+                return "success";
             }
             catch (Exception ex)
             {
-                return "fail";
+                return "success";
             }
             
         }
