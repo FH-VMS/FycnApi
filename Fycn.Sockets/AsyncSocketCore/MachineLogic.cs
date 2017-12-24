@@ -499,9 +499,9 @@ namespace Fycn.Sockets
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
                    
-                    sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength, 1);
+                    sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
                     SetTimeout(5000, delegate {
-                        sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength, 1);
+                        sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
                     }, machineId10, byteInfo);
                 }
                 
@@ -562,22 +562,33 @@ namespace Fycn.Sockets
 
         }
 
-        private void sendToTerminal(AsyncSocketServer m_asyncSocketServer, string ip,byte[] byteInfo,int sendLength, int count)
+        private void sendToTerminal(AsyncSocketServer m_asyncSocketServer,string machineId, string ip,byte[] byteInfo,int sendLength, int count)
         {
+
                     AsyncSocketUserToken[] list = null;
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
                     for (int i = 0; i < list.Length; i++)
                     {
-                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                        if (list[i].MachineId == machineId)
                         {
-                            list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
-                            //发送三次
-                            for(int j=0;j<count;j++)
+                            RedisHelper redis0=new RedisHelper(0);
+                            if(redis0.KeyExists(machineId))
                             {
-                                bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                                ip = redis0.StringGet(machineId);
                             }
-                            
-                            break;
+                            Program.Logger.InfoFormat("loop ip is {0}", ip);
+                            if(list[i].ConnectSocket.RemoteEndPoint.ToString() == ip) 
+                            {
+                                   list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
+                                    
+                                    for(int j=0;j<count;j++)
+                                    {
+                                        bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                                    }
+                                    
+                                    break;
+                            }
+                           
                         }
                     }
         }
@@ -609,7 +620,7 @@ namespace Fycn.Sockets
                     if(key=="42") //是否为出货指令
                     {
                          string outTradeNo = ByteHelper.GenerateRealityData(byteInfo.Skip(18).Take(22).ToArray(), "stringval");
-                          //Program.Logger.InfoFormat("loop order number is {0}", outTradeNo);
+                          Program.Logger.InfoFormat("loop order number is {0}", outTradeNo);
                          if(helper1.KeyExists(outTradeNo))
                          {
                             action();
