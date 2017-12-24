@@ -15,6 +15,7 @@ using Alipay.AopSdk.Core.Domain;
 using Alipay.AopSdk.Core.Request;
 using Alipay.AopSdk.Core.Response;
 using log4net;
+using System.Web;
 
 namespace FycnApi.Controllers
 {
@@ -286,10 +287,10 @@ namespace FycnApi.Controllers
             //商品描述，可空
             string body = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
             //写入交易中转
-            RedisHelper helper = new RedisHelper(0);
+            //RedisHelper helper = new RedisHelper(0);
             var log = LogManager.GetLogger("FycnApi", "tradeNo");
-            log.Info("99999-"+out_trade_no.Trim());
-            helper.StringSet(out_trade_no.Trim(), body,new TimeSpan(0,10,30));
+           
+            //helper.StringSet(out_trade_no.Trim(), body,new TimeSpan(0,10,30));
             // FileHandler.WriteFile("data/", out_trade_no + ".wa", body);
 
 
@@ -333,8 +334,12 @@ namespace FycnApi.Controllers
             model.Subject = subject;
             model.TotalAmount = total_fee;
             model.OutTradeNo = out_trade_no;
+            model.PassbackParams = body;
+             log.Info("99999-"+body);
+            model.TimeoutExpress="1m";
             model.ProductCode = "";
             model.QuitUrl = "";
+            
            
             AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
             // 设置支付完成同步回调地址
@@ -348,6 +353,8 @@ namespace FycnApi.Controllers
             try
             {
                 response = client.pageExecute(request, null, "post");
+                response.OutTradeNo=out_trade_no;
+                
                 payStateModel.ProductJson = JsonHandler.GetJsonStrFromObject(lstProduct, false);
                 payStateModel.RequestData = response.Body;
                 payStateModel.RequestState = "1";

@@ -134,6 +134,12 @@ namespace Fycn.Sockets
                         case "43": //上报出货结果
                             // string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                             string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(22).ToArray(), "stringval");
+                            //清除缓存
+                            RedisHelper redis43=new RedisHelper(1);
+                            if(redis43.KeyExists(serialNum))
+                            {
+                                redis43.KeyDelete(serialNum);
+                            }
                             byte[] returnByte43 = new byte[6];
                             returnByte43[0] = byteInfo[0];//包头;
                             returnByte43[1] = 2; //size
@@ -492,14 +498,11 @@ namespace Fycn.Sockets
                 */
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
-                    RedisHelper helper1=new RedisHelper(1);
-                    sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength);
+                   
+                    sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength, 3);
                     SetTimeout(5000, delegate {
-                        if(helper1.KeyExists(machineId10 + "-" + ByteHelper.Ten2Hex(byteInfo[5].ToString())))
-                        {
-                            sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength);
-                        }
-                    });
+                        sendToTerminal(m_asyncSocketServer,ip, sendInfo, sendLength, 1);
+                    }, machineId10, byteInfo);
                 }
                 
                 //x[0].co
@@ -559,25 +562,7 @@ namespace Fycn.Sockets
 
         }
 
-        private void CloseNoUseSocket(string ip, AsyncSocketServer m_asyncSocketServer)
-        {
-            if (string.IsNullOrEmpty(ip))
-            {
-                return;
-            }
-            AsyncSocketUserToken[] list = null;
-            m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
-            for (int i = 0; i < list.Length; i++)
-            {
-                if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
-                {
-                    list[i].ConnectSocket.Close();
-                    break;
-                }
-            }
-        }
-
-        private void sendToTerminal(AsyncSocketServer m_asyncSocketServer, string ip,byte[] byteInfo,int sendLength)
+        private void sendToTerminal(AsyncSocketServer m_asyncSocketServer, string ip,byte[] byteInfo,int sendLength, int count)
         {
                     AsyncSocketUserToken[] list = null;
                     m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
@@ -586,7 +571,12 @@ namespace Fycn.Sockets
                         if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
                         {
                             list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
-                            bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                            //发送三次
+                            for(int j=0;j<count;j++)
+                            {
+                                bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                            }
+                            
                             break;
                         }
                     }
@@ -597,14 +587,48 @@ namespace Fycn.Sockets
           /// </summary> 
           /// <param name="interval">事件之间经过的时间（以毫秒为单位）</param> 
           /// <param name="action">要执行的表达式</param> 
-         private static void SetTimeout(double interval, Action action) 
+         private static void SetTimeout(double interval, Action action,string machineId, byte[] byteInfo) 
          { 
              System.Timers.Timer timer = new System.Timers.Timer(interval); 
              timer.Elapsed += delegate(object sender, System.Timers.ElapsedEventArgs e) 
              { 
-                 timer.Enabled = false; 
-                 action(); 
+                  RedisHelper helper1=new RedisHelper(1);
+                 //
+                if(!helper1.KeyExists(machineId)) //判断机器是否在线
+                {
+                    timer.Enabled = false; 
+                } 
+                else
+                {
+                    string key =ByteHelper.Ten2Hex(byteInfo[5].ToString());
+                    if(key=="42") //是否为出货指令
+                    {
+                         string outTradeNo = ByteHelper.GenerateRealityData(byteInfo.Skip(18).Take(22).ToArray(), "stringval");
+                         if(helper1.KeyExists(outTradeNo))
+                         {
+                            action();
+                         }
+                         else
+                         {
+                            timer.Enabled=false;
+                         }
+                    }
+                    else //非出货指令发两次
+                    {
+                        if(!helper1.KeyExists(machineId+"-"+key))// 判断该指令是否存在
+                         {
+                            timer.Enabled = false; 
+                        }
+                        else
+                        {
+                             timer.Enabled = false; 
+                             action(); 
+                        }
+                    }
+                }
+                 
              }; 
+             timer.AutoReset= true;
              timer.Enabled = true; 
          } 
     }

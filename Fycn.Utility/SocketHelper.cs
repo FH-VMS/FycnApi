@@ -77,6 +77,11 @@ namespace Fycn.Utility
             sendByte[totalSize + 5] = 238;
 
             string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(6).Take(12).ToArray(), "stringval");
+            string outTradeNo = string.Empty;
+            if(ByteHelper.Ten2Hex(socketCommand.ToString())=="42") //出货结果通知指令
+            {
+                outTradeNo = ByteHelper.GenerateRealityData(sendByte.Skip(18).Take(22).ToArray(), "stringval");
+            } 
             // 发送前加密
             ByteHelper.Encryption(sendByte[3], sendByte.Skip(5).ToArray()).CopyTo(sendByte, 5);
 
@@ -98,7 +103,15 @@ namespace Fycn.Utility
                 return "";
             }
             RedisHelper redisHelper = new RedisHelper(1);
-            redisHelper.StringSet(machineId+"-"+ ByteHelper.Ten2Hex(socketCommand.ToString()), ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+            if(ByteHelper.Ten2Hex(socketCommand.ToString())=="42") //出货结果通知指令
+            {
+                redisHelper.StringSet(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+            } 
+            else 
+            {
+                redisHelper.StringSet(machineId+"-"+ ByteHelper.Ten2Hex(socketCommand.ToString()), ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+            }
+            
 
             return "";
 

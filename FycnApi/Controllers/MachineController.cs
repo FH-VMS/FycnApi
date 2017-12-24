@@ -304,11 +304,13 @@ namespace FycnApi.Controllers
                 RedisHelper helper = new RedisHelper(0);
                 var log = LogManager.GetLogger("FycnApi", "zhifubao");
                 log.Info(outTradeNo);
-                log.Info(helper.KeyExists(outTradeNo));
+                //log.Info(helper.KeyExists(outTradeNo));
+                /* 
                 if (!helper.KeyExists(outTradeNo))
                 {
                     return "success";
                 }
+                */
                 /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(outTradeNo) > 0)
@@ -323,13 +325,10 @@ namespace FycnApi.Controllers
                     //string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["body"];
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     string tradeNo = Fycn.Utility.HttpContext.Current.Request.Form["trade_no"];
-
-                    //var log = LogManager.GetLogger(Startup.repository.Name, typeof(Startup));
-                    //log.Info("test");
-                    //log.Info(Directory.GetCurrentDirectory());
-                    //log.Info(outTradeNo);
-                    string jsonProduct = helper.StringGet(outTradeNo);
-                   
+                    log.Info(Fycn.Utility.HttpContext.Current.Request.Form["passback_params"]);
+                    //string jsonProduct = helper.StringGet(outTradeNo);
+                    string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["passback_params"];
+                  
                     //log.Info("test");
                     log.Info(jsonProduct);
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
@@ -366,7 +365,7 @@ namespace FycnApi.Controllers
                         
                         SocketHelper.GenerateCommand(10, 41,66, lstCommand);
                         //删除文件
-                        helper.KeyDelete(outTradeNo);
+                        //helper.KeyDelete(outTradeNo);
                         //FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
                         return "success";
                     }
