@@ -24,10 +24,14 @@ namespace FycnApi.Controllers
             jsonModel.m = machineId;
             jsonModel.t = new List<KeyTunnelModel>();
             jsonModel.t.Add(new KeyTunnelModel() { tid = waresId, n = "1" });
-            string json = JsonHandler.GetJsonStrFromObject(jsonModel);
+            string json = HttpUtility.UrlDecode(JsonHandler.GetJsonStrFromObject(jsonModel));
             byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
             string hex = ByteHelper.byteToHexStr(byteSend);
-            return Content("http://120.27.217.224/p/m.html#/paybyproduct?k=" + hex); 
+            Dictionary<string, string> dicRet = new Dictionary<string, string>();
+            dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + hex;
+            dicRet["waresId"] = waresId;
+            string retJson = JsonHandler.GetJsonStrFromObject(dicRet);
+            return Content(HttpUtility.UrlDecode(retJson)); 
         }
     }
 }
