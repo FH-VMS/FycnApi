@@ -188,6 +188,10 @@ namespace FycnApi.Controllers
             int totalcount = _IMachine.GetCount(machineInfo);
 
             var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
+            //var log = LogManager.GetLogger("FycnApi", typeof(Startup));
+            //log.Info("test");
+            //string jsonUser = HttpUtility.UrlDecode(JsonHandler.GetJsonStrFromObject(users));
+            //log.Info(jsonUser);
             return Content(users, pagination);
         }
 

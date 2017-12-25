@@ -88,7 +88,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            result = GenerateDal.CountByConditions(CommonSqlKey.GetProductByMachineCount, conditions);
+            result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetProductByMachineCount, conditions).Rows.Count;
 
             return result;
         }
@@ -139,6 +139,11 @@ namespace Fycn.Service
         {
             try
             {
+                int isExist = GetCountByTradeNo(outTradeNo);
+                if(isExist>0)
+                {
+                    return 0;
+                }
                 GenerateDal.BeginTransaction();
 
                 foreach (KeyTunnelModel keyTunnelInfo in keyJsonModel.t)
