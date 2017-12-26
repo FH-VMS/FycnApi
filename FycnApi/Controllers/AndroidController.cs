@@ -18,7 +18,7 @@ namespace FycnApi.Controllers
 {
     public class AndroidController : ApiBaseController
     {
-        public ResultObj<string> RequestPayUrl(string machineId,string waresId)
+        public string RequestPayUrl(string machineId,string waresId)
         {
             KeyJsonModel jsonModel = new KeyJsonModel();
             jsonModel.m = machineId;
@@ -31,7 +31,17 @@ namespace FycnApi.Controllers
             dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + hex;
             dicRet["waresId"] = waresId;
             string retJson = JsonHandler.GetJsonStrFromObject(dicRet);
-            return Content(HttpUtility.UrlDecode(retJson)); 
+            return HttpUtility.UrlDecode(retJson); 
+        }
+
+        public void TestInt()
+        {
+            byte[] x = ByteHelper.strToToHexByte("03E8");
+            string y = ByteHelper.GenerateRealityData(x, "intval");
+            int value = 4;
+            int hValue = (value >> 8) & 0xFF;
+            int lValue = value & 0xFF;
+            byte[] arr = new byte[] { (byte)hValue, (byte)lValue };
         }
     }
 }

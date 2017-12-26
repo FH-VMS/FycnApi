@@ -70,6 +70,7 @@ namespace Fycn.Utility
             int i = 0;
             foreach(CommandModel cmdModel in lstCommandModel)
             {
+                //byte[] transByte = ByteHelper.strToAscii(cmdModel.Content);
                 ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 6 + i);
                 i = i + cmdModel.Size;
             }

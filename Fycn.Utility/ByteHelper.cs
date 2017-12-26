@@ -255,6 +255,14 @@ namespace Fycn.Utility
             return System.Text.Encoding.Default.GetBytes(str);
         }
 
+        public static byte[] IntToTwoByte(int value)
+        {
+            int hValue = (value >> 8) & 0xFF;
+            int lValue = value & 0xFF;
+            byte[] arr = new byte[] { (byte)hValue, (byte)lValue };
+            return arr;
+        }
+
 
         public static string[] SecretKey = {"12345678","87654321","ABCDEFGH","HGFEDCBA","abcdefgh","hgfedcba","fy123456","123456yf"};
 

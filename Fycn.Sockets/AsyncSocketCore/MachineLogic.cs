@@ -499,7 +499,7 @@ namespace Fycn.Sockets
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
                    
-                    sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
+                    sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 3);
                     SetTimeout(5000, delegate {
                         sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
                     }, machineId10, byteInfo);
@@ -576,7 +576,7 @@ namespace Fycn.Sockets
                             {
                                 ip = redis0.StringGet(machineId);
                             }
-                            Program.Logger.InfoFormat("loop ip is {0}", ip);
+                            // Program.Logger.InfoFormat("loop ip is {0}", ip);
                             if(list[i].ConnectSocket.RemoteEndPoint.ToString() == ip) 
                             {
                                    list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
@@ -603,10 +603,7 @@ namespace Fycn.Sockets
              System.Timers.Timer timer = new System.Timers.Timer(interval); 
              timer.Elapsed += delegate(object sender, System.Timers.ElapsedEventArgs e) 
              { 
-                  //Program.Logger.InfoFormat("loop started");
                  RedisHelper helper0=new RedisHelper(0);
-                 //
-                 //Program.Logger.InfoFormat("loop machine is {0}", machineId);
                 if(!helper0.KeyExists(machineId)) //判断机器是否在线
                 {
                     timer.Enabled = false; 
@@ -614,13 +611,10 @@ namespace Fycn.Sockets
                 else
                 {
                      RedisHelper helper1=new RedisHelper(1);
-                    //Program.Logger.InfoFormat("loop command is {0}", ByteHelper.byteToHexStr(byteInfo));
                     string key =ByteHelper.Ten2Hex(byteInfo[5].ToString());
-                    //Program.Logger.InfoFormat("loop key is {0}", key);
                     if(key=="42") //是否为出货指令
                     {
                          string outTradeNo = ByteHelper.GenerateRealityData(byteInfo.Skip(18).Take(22).ToArray(), "stringval");
-                          Program.Logger.InfoFormat("loop order number is {0}", outTradeNo);
                          if(helper1.KeyExists(outTradeNo))
                          {
                             action();
