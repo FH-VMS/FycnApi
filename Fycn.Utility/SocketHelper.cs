@@ -60,31 +60,31 @@ namespace Fycn.Utility
 
         public static string GenerateCommand(byte webCommandType, byte totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
         {
-            byte[] sendByte = new byte[totalSize+6];  //49+commandType + 48+size+chunk+content+EE
+            byte[] sendByte = new byte[totalSize+7];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;
             sendByte[1] = webCommandType;// 10:通知出货 11:一键补货 12:按货道补货
             sendByte[2] = 72;
-            sendByte[3] = totalSize;
+            ByteHelper.IntToTwoByte(totalSize).CopyTo(sendByte, 3); //size
             //sendByte[4] = chunk
-            sendByte[5]= socketCommand;
+            sendByte[6]= socketCommand;
             int i = 0;
             foreach(CommandModel cmdModel in lstCommandModel)
             {
                 //byte[] transByte = ByteHelper.strToAscii(cmdModel.Content);
-                ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 6 + i);
+                ByteHelper.strToAscii(cmdModel.Content).CopyTo(sendByte, 7 + i);
                 i = i + cmdModel.Size;
             }
-            sendByte[4] = GetChunk(sendByte.Skip(5).Take(totalSize).ToArray());
-            sendByte[totalSize + 5] = 238;
+            sendByte[5] = GetChunk(sendByte.Skip(6).Take(totalSize).ToArray());
+            sendByte[totalSize + 6] = 238;
 
-            string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(6).Take(12).ToArray(), "stringval");
+            string machineId = ByteHelper.GenerateRealityData(sendByte.Skip(7).Take(12).ToArray(), "stringval");
             string outTradeNo = string.Empty;
             if(ByteHelper.Ten2Hex(socketCommand.ToString())=="42") //出货结果通知指令
             {
-                outTradeNo = ByteHelper.GenerateRealityData(sendByte.Skip(18).Take(22).ToArray(), "stringval");
+                outTradeNo = ByteHelper.GenerateRealityData(sendByte.Skip(19).Take(22).ToArray(), "stringval");
             } 
             // 发送前加密
-            ByteHelper.Encryption(sendByte[3], sendByte.Skip(5).ToArray()).CopyTo(sendByte, 5);
+            ByteHelper.Encryption(totalSize, sendByte.Skip(6).ToArray()).CopyTo(sendByte, 6);
 
             serverFullAddr = new IPEndPoint(serverIp, int.Parse(ConfigurationManager.AppSettings["SocketPort"]));//设置IP，端口
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
