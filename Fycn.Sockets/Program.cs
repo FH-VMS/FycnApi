@@ -75,7 +75,7 @@ namespace Fycn.Sockets
 
         private static void InitTimer(int socketTimeOutMS)
         {
-            Timer t = new Timer(socketTimeOutMS);//实例化Timer类，设置间隔时间为10000毫秒；
+            Timer t = new Timer(socketTimeOutMS);//实例化Timer类，单位毫秒；
             t.Elapsed += new ElapsedEventHandler(TimeOut);//到达时间的时候执行事件；
             t.AutoReset = true;//设置是执行一次（false）还是一直执行(true)；
             t.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
@@ -90,13 +90,18 @@ namespace Fycn.Sockets
             AsyncSocketSvr.AsyncSocketUserTokenList.CopyList(ref userTokenArray);
             for (int i = 0; i < userTokenArray.Length; i++)
             {
-                if (redisHelper.KeyExists(userTokenArray[0].MachineId))
+                Program.Logger.InfoFormat("clear machine id is {0}", userTokenArray[i].MachineId);
+                if (redisHelper.KeyExists(userTokenArray[i].MachineId))
+                {
                     break;
+                }
+                   
                 try
                 {
                     lock (userTokenArray[i])
                     {
                         AsyncSocketSvr.CloseClientSocket(userTokenArray[i]);
+                        Program.Logger.InfoFormat("clear ip is {0}", userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString());
                     }
                 }
                 catch (Exception E)
