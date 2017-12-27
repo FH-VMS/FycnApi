@@ -27,6 +27,10 @@ namespace Fycn.Sockets
             //保活
             if (infoHead == "57")
             {
+                if (string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId))
+                {
+                    return new byte[0];
+                }
                 return byteInfo;
             }
             RedisHelper redisHelper = new RedisHelper(0);
@@ -49,6 +53,15 @@ namespace Fycn.Sockets
                 if (!IsValidPackage(infoVerify, data))
                 {
                     return new byte[0];
+                }
+
+                //不签到不回复
+                if(ByteHelper.Ten2Hex(data[0].ToString()).ToUpper()!="41")
+                {
+                    if(string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId))
+                    {
+                        return new byte[0];
+                    }
                 }
              
                 int retResult = 0;
