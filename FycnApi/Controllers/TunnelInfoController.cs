@@ -108,7 +108,7 @@ namespace FycnApi.Controllers
                     });
                     lstCommand.Add(new CommandModel()
                     {
-                        Content = tunnel.CurrStock.ToString(),
+                        Content = (tunnel.CurrStock>10?tunnel.CurrStock.ToString():"0"+ tunnel.CurrStock.ToString()),
                         Size = 2
                     });
                 }

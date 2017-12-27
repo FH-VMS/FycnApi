@@ -36,6 +36,7 @@ namespace FycnApi.Controllers
 
         public void TestInt()
         {
+            byte[] m = ByteHelper.strToAscii("01");
             byte[] x = ByteHelper.strToToHexByte("03E8");
             string y = ByteHelper.GenerateRealityData(x, "intval");
             int value = 4;
