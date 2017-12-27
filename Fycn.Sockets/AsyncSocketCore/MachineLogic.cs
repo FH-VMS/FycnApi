@@ -204,7 +204,7 @@ namespace Fycn.Sockets
                                 returnByte43[28] = 31;
                             }
                                 */
-                            data[6]=238;//结尾
+                            returnByte43[6]=238;//结尾
                             //验证码生成
                             byte result43Chunk = new byte();
                             byte[] finalResult43 = returnByte43.Skip(4).Take(size43).ToArray();
@@ -217,6 +217,38 @@ namespace Fycn.Sockets
                             ByteHelper.Encryption(size43, finalResult43.ToArray()).CopyTo(returnByte43, 4);//加密
 
                             return returnByte43;
+                        case "4A": //验证订单是否合法
+                            int size4A = 14;
+                            string orerNum4A = ByteHelper.GenerateRealityData(data.Skip(13).Take(22).ToArray(), "stringval");
+                       
+                            byte[] returnByte4A = new byte[19];
+                            returnByte4A[0] = byteInfo[0];//包头;
+                            ByteHelper.IntToTwoByte(size4A).CopyTo(returnByte4A, 1); //size
+                            returnByte4A[4] = data[0];
+                            data.Skip(1).Take(12).ToArray().CopyTo(returnByte4A, 5);
+                            RedisHelper redis4A = new RedisHelper(1);
+                            if (redis4A.KeyExists(orerNum4A))
+                            {
+                                returnByte4A[17] = 48;
+                            }
+                            else
+                            {
+                                returnByte4A[17] = 49;
+                            }
+
+                            returnByte4A[18] = 238;//结尾
+                            //验证码生成
+                            byte result4AChunk = new byte();
+                            byte[] finalResult4A = returnByte4A.Skip(4).Take(size4A).ToArray();
+                            for (int i = 0; i < finalResult4A.Length; i++)
+                            {
+                                result4AChunk ^= finalResult4A[i];
+                            }
+                            returnByte4A[3] = result4AChunk;
+                            //SendMsg(finalResultA1, myClientSocket);
+                            ByteHelper.Encryption(size4A, finalResult4A.ToArray()).CopyTo(returnByte4A, 4);//加密
+
+                            return returnByte4A;
                         case "54": //上报一键补货结果 (一键补货)
                             
                             string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
