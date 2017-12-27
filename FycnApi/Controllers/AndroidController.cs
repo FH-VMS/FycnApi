@@ -44,5 +44,11 @@ namespace FycnApi.Controllers
             int lValue = value & 0xFF;
             byte[] arr = new byte[] { (byte)hValue, (byte)lValue };
         }
+
+        public string TestStr(string k)
+        {
+            
+            return System.Text.Encoding.Default.GetString(ByteHelper.strToToHexByte(k));
+        }
     }
 }

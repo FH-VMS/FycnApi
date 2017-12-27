@@ -44,6 +44,12 @@ namespace FycnApi.Controllers
             //解码机器传过来的key值
             //解析k值
             KeyJsonModel keyJsonInfo = AnalizeKey(k);
+            RedisHelper redisHelper=new RedisHelper(0);
+            if(!redisHelper.KeyExists(keyJsonInfo.m))
+            {
+                PayStateModel payStateNull = new PayStateModel();
+                return Content(payStateNull,ResultCode.Success, "机器不在线", new Pagination { });
+            }
             //移动支付赋值
             GenerateConfigModel("w", keyJsonInfo.m);
             JsApi.payInfo = new PayModel();
@@ -178,7 +184,15 @@ namespace FycnApi.Controllers
         //对k进行解码 k格式：{"m":"ABC123456789","t":[{"tid":"1-2","n":3},{"tid":"1-3","n":2}]}
         private KeyJsonModel AnalizeKey(string key)
         {
-            KeyJsonModel keyJsonInfo = JsonHandler.GetObjectFromJson<KeyJsonModel>(key);
+            KeyJsonModel keyJsonInfo = null;
+            try
+            {
+              keyJsonInfo = JsonHandler.GetObjectFromJson<KeyJsonModel>(key);
+            }
+            catch(Exception e) {
+              keyJsonInfo = JsonHandler.GetObjectFromJson<KeyJsonModel>(System.Text.Encoding.Default.GetString(ByteHelper.strToToHexByte(key)));
+            }
+            
 
             return keyJsonInfo;
         }
@@ -211,6 +225,11 @@ namespace FycnApi.Controllers
                 payStateModel.ProductJson = "";
                 payStateModel.RequestData = "";
                 return Content(payStateModel);
+            }
+            RedisHelper redisHelper = new RedisHelper(0);
+            if(!redisHelper.KeyExists(keyJsonInfo.m))
+            {
+                return Content(payStateModel,ResultCode.Success, "机器不在线", new Pagination { });
             }
             //移动支付赋值
             GenerateConfigModel("a",keyJsonInfo.m);
