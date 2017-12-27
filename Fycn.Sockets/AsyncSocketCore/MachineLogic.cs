@@ -110,9 +110,7 @@ namespace Fycn.Sockets
                             {
                                 CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
                             }
-                            */
-                            MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
-                            resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
+                            */resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
                             m_asyncSocketUserToken.MachineId = machineNum41;
 
                             byte[] returnByteA1 = new byte[21];
@@ -125,6 +123,7 @@ namespace Fycn.Sockets
                             
                             if (resultA1 == 1)
                             {
+                                MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                                 returnByteA1[19] = 48;
                             }
                             else
