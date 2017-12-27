@@ -139,6 +139,10 @@ namespace Fycn.Service
         {
             try
             {
+                if (string.IsNullOrEmpty(outTradeNo))
+                {
+                    return 0;
+                }
                 int isExist = GetCountByTradeNo(outTradeNo);
                 if(isExist>0)
                 {
