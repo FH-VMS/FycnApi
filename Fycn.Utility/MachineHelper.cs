@@ -42,23 +42,23 @@ namespace Fycn.Utility
             redisHelper.StringSet(machineId, ip, new TimeSpan(0,15,2));
         }
 
-        //生成签到码
-        public static string GenerateSignCode(string machineId)
+        //生成验证码
+        public static string GenerateCode(string machineId, string code)
         {
             RedisHelper redisHelper = new RedisHelper(1);
             Random ran = new Random();
             int RandKey = ran.Next(100000, 999999);
-            redisHelper.StringSet(machineId+"-code", RandKey.ToString(), new TimeSpan(0, 0, 20));
+            redisHelper.StringSet(machineId+"-"+code, RandKey.ToString(), new TimeSpan(0, 0, 20));
             return RandKey.ToString();
         }
 
-        //判断签到是否合法
-        public static bool IsLegalSign(string machineId, string signCode)
+        //判断验证码是否合法
+        public static bool IsLegal(string machineId, string signCode,string code)
         {
             RedisHelper redis4A = new RedisHelper(1);
-            if (redis4A.KeyExists(machineId+"-code"))
+            if (redis4A.KeyExists(machineId+"-"+code))
             {
-                return redis4A.StringGet(machineId + "-code") == signCode;
+                return redis4A.StringGet(machineId + "-"+code) == signCode;
             }
             else
             {
@@ -66,13 +66,13 @@ namespace Fycn.Utility
             }
         }
 
-        //清除机器码
-        public static void ClearSignCode(string machineId)
+        //清除验证码
+        public static void ClearCode(string machineId, string code)
         {
             RedisHelper redisHelper = new RedisHelper(1);
-            if (redisHelper.KeyExists(machineId + "-code"))
+            if (redisHelper.KeyExists(machineId + "-"+code))
             {
-                redisHelper.KeyDelete(machineId + "-code");
+                redisHelper.KeyDelete(machineId + "-"+code);
             }
         }
 
