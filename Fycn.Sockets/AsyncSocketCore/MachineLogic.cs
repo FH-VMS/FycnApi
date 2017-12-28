@@ -33,7 +33,7 @@ namespace Fycn.Sockets
                 }
                 return byteInfo;
             }
-            RedisHelper redisHelper = new RedisHelper(0);
+            
             if (infoHead=="72")
             {
 
@@ -56,7 +56,8 @@ namespace Fycn.Sockets
                 }
 
                 //不签到不回复
-                if(ByteHelper.Ten2Hex(data[0].ToString()).ToUpper()!="41")
+                string commandStr = ByteHelper.Ten2Hex(data[0].ToString()).ToUpper();
+                if (commandStr != "41"&& commandStr != "30")
                 {
                     if(string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId))
                     {
@@ -72,7 +73,7 @@ namespace Fycn.Sockets
 
 
                     //验证通过
-                    switch (ByteHelper.Ten2Hex(data[0].ToString()).ToUpper())
+                    switch (commandStr)
                     {
                         case "40": //心跳
                             int size40 = 2;
@@ -98,19 +99,41 @@ namespace Fycn.Sockets
                             ByteHelper.Encryption(size40, finalResult40.ToArray()).CopyTo(returnByte40, 4);//加密
 
                             return returnByte40;
+                        case "30": //申请签到随机码
+                            int size30 = 20;
+                            //机器编号
+                            string machineNum30 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                            
+                            byte[] returnByte30 = new byte[24];
+                            returnByte30[0] = byteInfo[0];//包头;
+                            ByteHelper.IntToTwoByte(size30).CopyTo(returnByte30, 1); //size
+                            //returnByte30[4] = data[0];
+                            data.Take(13).ToArray().CopyTo(returnByte30, 4);
 
+                            ByteHelper.StrToByte(MachineHelper.GenerateSignCode(machineNum30)).CopyTo(returnByte30, 17);//机器编号
+
+
+                            returnByte30[23] = 238;//
+                            //验证码生成
+                            byte result30Chunk = new byte();
+                            byte[] finalResult30 = returnByte30.Skip(4).Take(size30).ToArray();
+                            for (int i = 0; i < finalResult30.Length; i++)
+                            {
+                                result30Chunk ^= finalResult30[i];
+                            }
+                            returnByte30[3] = result30Chunk;
+                            //SendMsg(finalResultA1, myClientSocket);
+                            ByteHelper.Encryption(size30, finalResult30.ToArray()).CopyTo(returnByte30, 4);//加密
+
+                            return returnByte30;
                         case "41": //签到
                             int size41 = 16;
                             int resultA1 = 0;
                             //机器编号
                             string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                            //清楚上一个无用的socket连接
-                            /*
-                            if(redisHelper.StringGet(machineNum41)!= m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString())
-                            {
-                                CloseNoUseSocket(redisHelper.StringGet(machineNum41), m_asyncSocketServer);
-                            }
-                            */resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
+                            string signCode = ByteHelper.GenerateRealityData(data.Skip(13).Take(6).ToArray(), "stringval");
+
+                            //resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
                             m_asyncSocketUserToken.MachineId = machineNum41;
 
                             byte[] returnByteA1 = new byte[21];
@@ -121,8 +144,9 @@ namespace Fycn.Sockets
 
                             ByteHelper.StrToByte(DateTime.Now.ToString("yyyyMMddHHmmss")).CopyTo(returnByteA1, 5);//机器编号
                             
-                            if (resultA1 == 1)
+                            if (MachineHelper.IsLegalSign(machineNum41, signCode))
                             {
+                                MachineHelper.ClearSignCode(machineNum41);
                                 MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                                 returnByteA1[19] = 48;
                             }
@@ -238,8 +262,8 @@ namespace Fycn.Sockets
                             ByteHelper.IntToTwoByte(size4A).CopyTo(returnByte4A, 1); //size
                             returnByte4A[4] = data[0];
                             data.Skip(1).Take(12).ToArray().CopyTo(returnByte4A, 5);
-                            RedisHelper redis4A = new RedisHelper(1);
-                            if (redis4A.KeyExists(orerNum4A))
+
+                            if (MachineHelper.IsLegalOrder(orerNum4A)) //判断是否为合法订单
                             {
                                 returnByte4A[17] = 48;
                             }
@@ -465,14 +489,18 @@ namespace Fycn.Sockets
                 int size73 = int.Parse(ByteHelper.GenerateRealityData(byteInfo.Skip(3).Take(2).ToArray(),"intval"));
                 ByteHelper.Deencryption(size73, byteInfo.Skip(6).Take(size73).ToArray()).CopyTo(byteInfo,6);
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(7).Take(12).ToArray(), "stringval");
+                /*
                 try
                 {
-                    if (redisHelper.KeyExists(machineId10)) // 若redis里没有 则去库里查询
+                   
+                    if (MachineHelper.IsOnline(machineId10)) // 若redis里没有 则去库里查询
                     {
+                        RedisHelper redisHelper = new RedisHelper(0);
                         ip = redisHelper.StringGet(machineId10);
                     }
                     else
                     {
+                       
                         IMachine imachine = new MachineService();
                         DataTable dt = imachine.GetIpByMachineId(machineId10);
                         if (dt.Rows.Count > 0)
@@ -480,10 +508,12 @@ namespace Fycn.Sockets
                             ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
                             MachineHelper.Signature(machineId10, ip);
                         }
+                       
                     }
                 }
                 catch
                 {
+                   
                     IMachine imachine = new MachineService();
                     DataTable dt = imachine.GetIpByMachineId(machineId10);
                     if (dt.Rows.Count > 0)
@@ -491,12 +521,11 @@ namespace Fycn.Sockets
                         ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
                         MachineHelper.Signature(machineId10, ip);
                     }
+                  
                 }
-                        
-                        /*
-                        break;
-                }
-                */
+                 */
+                ip = MachineHelper.GetIp(machineId10);
+                       
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))
                 {
                    
