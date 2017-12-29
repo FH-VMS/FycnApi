@@ -44,7 +44,7 @@ namespace Fycn.Sockets
 
                 //不签到不回复
                 string commandStr = ByteHelper.Ten2Hex(data[0].ToString()).ToUpper();
-              
+         
                 if (commandStr != "41"&& commandStr != "30")
                 {
                     if(string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId))
@@ -52,7 +52,7 @@ namespace Fycn.Sockets
                         return new byte[0];
                     }
                 }
-     
+                
                 try
                 {
                     //处理机器上传指令的逻辑

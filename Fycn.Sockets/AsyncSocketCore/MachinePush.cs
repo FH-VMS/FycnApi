@@ -395,7 +395,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                         lstPrice68.Add(new PriceAndMaxStockModel()
                         {
                             tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(5).ToArray(), "stringval"),
-                            ms = int.Parse(ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(2).ToArray(),"intval"))
+                            ms = int.Parse(ByteHelper.GenerateRealityData(data.Skip(18 + i * 7).Take(2).ToArray(),"stringval"))
                         });
                     }
                     try
