@@ -789,6 +789,67 @@ namespace Fycn.Service
            
         }
 
+        //机器端设置现金价格
+        public int PostCashPrice(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId)
+        {
+            try
+            {
+                GenerateDal.BeginTransaction();
+                foreach (PriceAndMaxStockModel priceAndStock in lstPriceAndStock)
+                {
+                    TunnelConfigModel tc = new TunnelConfigModel();
+                    tc.MachineId = machineId;
+                    tc.TunnelId = priceAndStock.tid;
+                    tc.CashPrices = priceAndStock.p1;
+                    
+                    GenerateDal.Update(CommonSqlKey.UpdateCashPrice, tc);
+
+
+                }
+                PostToMachine(machineId, "p");
+                //操作日志
+                operationService.PostData(new OperationLogModel() { MachineId = machineId, OptContent = "机器端设置价格和库存" });
+                GenerateDal.CommitTransaction();
+
+            }
+            catch (Exception e)
+            {
+                //GenerateDal.RollBack();
+                return 0;
+            }
+            return 1;
+
+        }
+
+        //机器端设置最大库存
+        public int PostMaxPuts(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId)
+        {
+            try
+            {
+                GenerateDal.BeginTransaction();
+                foreach (PriceAndMaxStockModel priceAndStock in lstPriceAndStock)
+                {
+                    TunnelConfigModel tc = new TunnelConfigModel();
+                    tc.MachineId = machineId;
+                    tc.TunnelId = priceAndStock.tid;
+                    tc.MaxPuts = priceAndStock.ms;
+
+                    GenerateDal.Update(CommonSqlKey.UpdateMaxPuts, tc);
+
+
+                }
+                GenerateDal.CommitTransaction();
+
+            }
+            catch (Exception e)
+            {
+                //GenerateDal.RollBack();
+                return 0;
+            }
+            return 1;
+
+        }
+
         //机器配置发给机器
         public DataTable GetMachineSetting(string machineId)
         {

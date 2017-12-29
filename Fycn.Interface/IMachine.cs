@@ -64,7 +64,14 @@ namespace Fycn.Interface
 
         [Remark("取Ip根据machine_id", ParmsNote = "机器编号", ReturnNote = "DataTable")]
         DataTable GetIpByMachineId(string machineId);
+
         [Remark("根据订单号更新结果", ParmsNote = "订单号,出货结果", ReturnNote = "DataTable")]
         int PutPayResultByOrderNo(string tradeNo, bool result);
+
+        [Remark("设置最大库存", ParmsNote = "", ReturnNote = "")]
+        int PostMaxPuts(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId);
+
+        [Remark("设置现金", ParmsNote = "", ReturnNote = "")]
+        int PostCashPrice(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId);
     }
 }

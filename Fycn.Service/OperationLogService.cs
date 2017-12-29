@@ -16,6 +16,8 @@ namespace Fycn.Service
         /// <returns></returns>
         public int PostData(OperationLogModel operationLogInfo)
         {
+            return 1;
+            /*
             try
             {
                 int result;
@@ -33,7 +35,7 @@ namespace Fycn.Service
             {
                 return 0;
             }
-            
+            */
         }
     }
 }

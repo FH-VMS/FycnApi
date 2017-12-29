@@ -146,6 +146,7 @@
   "ToMachineStock": "SELECT goods_stu_id AS TID,curr_stock as cs, curr_status as csta FROM table_goods_status  ",
   "PostPriceAndMaxStock": "UPDATE table_goods_config SET  max_puts=?p_MaxPuts, cash_prices=?p_CashPrices, wpay_prices=?p_WpayPrices, alipay_prices=?p_AlipayPrices, ic_prices=?p_IcPrices WHERE machine_id=?p_MachineId AND  tunnel_id=?p_TunnelId",
   "UpdatePrice": "UPDATE table_goods_config SET  cash_prices=?p_CashPrices, wpay_prices=?p_WpayPrices, alipay_prices=?p_AlipayPrices, ic_prices=?p_IcPrices WHERE machine_id=?p_MachineId AND  tunnel_id=?p_TunnelId",
+  "UpdateCashPrice": "UPDATE table_goods_config SET  cash_prices=?p_CashPrices WHERE machine_id=?p_MachineId AND  tunnel_id=?p_TunnelId",
   "UpdateMaxPuts": "UPDATE table_goods_config SET  max_puts=?p_MaxPuts WHERE machine_id=?p_MachineId AND  tunnel_id=?p_TunnelId",
   "GetMachineSetting": "SELECT mc_area1_temp as t1, mc_area2_temp as t2, mc_area3_temp as t3, mc_area4_temp as t4, mc_status as s  FROM table_machine_config ",
   "UpdateMachineInlineTime": "UPDATE table_machine SET latest_date=?p_LatestDate WHERE machine_id=?p_MachineId",

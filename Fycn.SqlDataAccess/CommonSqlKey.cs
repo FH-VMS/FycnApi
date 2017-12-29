@@ -162,6 +162,7 @@ namespace Fycn.SqlDataAccess
         UpdateMachineInlineTimeAndIpv4,
         GetCabinetId,
         GetSalesByNo,
+        UpdateCashPrice,
         //支付对应接口
         GetProductInfo,
         GetProductInfoByWaresId,

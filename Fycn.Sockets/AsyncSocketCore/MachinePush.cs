@@ -284,12 +284,13 @@ namespace Fycn.Sockets.AsyncSocketCore
                    
                     KeyJsonModel jsonModel66 = new KeyJsonModel();
                     jsonModel66.m = machineNum66;
+                    jsonModel66.t = new List<KeyTunnelModel>();
                     for (int i = 0; i < loopTimes66; i++)
                     {
                         jsonModel66.t.Add(new KeyTunnelModel()
                         {
                             tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(5).ToArray(), "stringval"),
-                            n = ByteHelper.GenerateRealityData(data.Skip(18 + i * 7).Take(2).ToArray(),"intval")
+                            n = ByteHelper.GenerateRealityData(data.Skip(18 + i * 7).Take(2).ToArray(),"stringval")
                         });
                     }
                     try
@@ -342,12 +343,12 @@ namespace Fycn.Sockets.AsyncSocketCore
                         lstPrice67.Add(new PriceAndMaxStockModel()
                         {
                             tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 10).Take(5).ToArray(), "stringval"),
-                            p1 = int.Parse(ByteHelper.GenerateRealityData(data.Skip(18 + i * 10).Take(5).ToArray(), "stringval"))/100
+                            p1 = (decimal)int.Parse(ByteHelper.GenerateRealityData(data.Skip(18 + i * 10).Take(5).ToArray(), "stringval"))/100
                         });
                     }
                     try
                     {
-                        int result67 = imachine.PostMaxStockAndPrice(lstPrice67, machineNum67);
+                        int result67 = imachine.PostCashPrice(lstPrice67, machineNum67);
                         if (result67 == 1)
                         {
                             returnByte67[17] = 48;
@@ -399,7 +400,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                     }
                     try
                     {
-                        int result68 = imachine.PostMaxStockAndPrice(lstPrice68, machineNum68);
+                        int result68 = imachine.PostMaxPuts(lstPrice68, machineNum68);
                         if (result68 == 1)
                         {
                             returnByte68[17] = 48;
