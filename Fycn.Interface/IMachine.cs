@@ -73,5 +73,11 @@ namespace Fycn.Interface
 
         [Remark("设置现金", ParmsNote = "", ReturnNote = "")]
         int PostCashPrice(List<PriceAndMaxStockModel> lstPriceAndStock, string machineId);
+
+        [Remark("安卓取商品列表", ParmsNote = "", ReturnNote = "")]
+        List<ProductForMachineModel> GetProductAndroid(ProductForMachineModel machineInfo);
+        
+        [Remark("安卓取商品数量", ParmsNote = "", ReturnNote = "")]
+        int GetProductAndroidCount(ProductForMachineModel machineInfo);
     }
 }

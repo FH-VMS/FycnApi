@@ -56,9 +56,7 @@ namespace Fycn.Service
 
         }
 
-
-
-        public int GetCount(ProductForMachineModel machineInfo)
+             public int GetCount(ProductForMachineModel machineInfo)
         {
             var result = 0;
 
@@ -89,6 +87,76 @@ namespace Fycn.Service
             });
 
             result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetProductByMachineCount, conditions).Rows.Count;
+
+            return result;
+        }
+
+
+         //取商品列表安卓
+        public List<ProductForMachineModel> GetProductAndroid(ProductForMachineModel machineInfo)
+        {
+            var conditions = new List<Condition>();
+
+            if (!string.IsNullOrEmpty(machineInfo.MachineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = machineInfo.MachineId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "",
+                DbColumnName = "a.wares_id",
+                ParamValue = "",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.AddRange(CreatePaginConditions(machineInfo.PageIndex, machineInfo.PageSize));
+            return GenerateDal.LoadByConditions<ProductForMachineModel>(CommonSqlKey.GetProductAndroid, conditions);
+
+
+        }
+
+     public int GetProductAndroidCount(ProductForMachineModel machineInfo)
+        {
+            var result = 0;
+
+         
+            var conditions = new List<Condition>();
+            if (!string.IsNullOrEmpty(machineInfo.MachineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = machineInfo.MachineId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "",
+                DbColumnName = "a.wares_id",
+                ParamValue = "",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetProductAndroidCount, conditions).Rows.Count;
 
             return result;
         }

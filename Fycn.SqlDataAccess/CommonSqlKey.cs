@@ -141,6 +141,8 @@ namespace Fycn.SqlDataAccess
         //机器对应接口
         GetProductByMachine,
         GetProductByMachineCount,
+        GetProductAndroid, //安卓取商品列表  没有货道和库存限制
+        GetProductAndroidCount,
         GetCountByTradeNo,
         UpdatePayResult,
         DeleteTunnelStatusByMachine,
