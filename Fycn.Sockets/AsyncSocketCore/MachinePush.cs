@@ -44,7 +44,7 @@ namespace Fycn.Sockets.AsyncSocketCore
 
                     return returnByte40;
                 case "30": //申请签到随机码
-                    int size30 = 20;
+                    int size30 = 19;
                     //机器编号
                     string machineNum30 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
 
@@ -72,7 +72,6 @@ namespace Fycn.Sockets.AsyncSocketCore
                     return returnByte30;
                 case "41": //签到
                     int size41 = 16;
-                    int resultA1 = 0;
                     //机器编号
                     string machineNum41 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                     string signCode = ByteHelper.GenerateRealityData(data.Skip(13).Take(6).ToArray(), "stringval");
@@ -163,44 +162,6 @@ namespace Fycn.Sockets.AsyncSocketCore
                     {
                         returnByte43[5] = 49;
                     }
-                    /*
-                    KeyJsonModel jsonModel = new KeyJsonModel();
-                    jsonModel.m = machineNum;
-
-                    byte[] lstTunnel = data.Skip(25).Take(data.Length-25).ToArray();
-                    int loopTimes43 = lstTunnel.Length / 28;
-                    for (int i = 0; i < loopTimes43; i++)
-                    {
-                        jsonModel.t.Add(new KeyTunnelModel()
-                        {
-                            tn = ByteHelper.GenerateRealityData(data.Skip(25 + i * 28).Take(22).ToArray(), "stringval"),
-                            tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 28+22).Take(5).ToArray(), "stringval"),
-                            n = data.Skip(25 + i * 28 + 27).Take(1).ToArray()[0].ToString()
-
-                        });
-                    }
-
-                    //IMachine imachine = new MachineService();
-                    result43 = imachine.PutPayResult(jsonModel);
-
-
-
-                    byte[] returnByte43 = new byte[30];
-                    returnByte43[0] = byteInfo[0];//包头;
-                    returnByte43[1] = 26; //size
-                    returnByte43[3] = data[0];
-                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte43, 4);//机器编号
-                    data.Skip(13).Take(12).ToArray().CopyTo(returnByte43, 15);//流水号
-
-                    if (result43 == 1)
-                    {
-                        returnByte43[28] = 30;
-                    }
-                    else
-                    {
-                        returnByte43[28] = 31;
-                    }
-                        */
                     returnByte43[6] = 238;//结尾
                                           //验证码生成
                     byte result43Chunk = new byte();
@@ -256,8 +217,6 @@ namespace Fycn.Sockets.AsyncSocketCore
                         redis65.KeyDelete(machineNum65 + "-" + 54);
                     }
 
-
-                    //SendMsg(returnByteA6, myClientSocket);
                     return new byte[0];
                 case "53": //上报按货道补货结果
 
@@ -271,157 +230,200 @@ namespace Fycn.Sockets.AsyncSocketCore
 
                     //SendMsg(returnByteA6, myClientSocket);
                     return new byte[0];
-                case "46": //按货道补货
-                    int size46 = 26;
-                    string machineNum46 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                    string serialNum46 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+                case "65": // 终端->服务器 一键补货
+                    int size65 = 14;
+                    string machineId65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
 
-                    byte[] returnByte46 = new byte[31];
-                    returnByte46[0] = byteInfo[0];//包头;
-                    ByteHelper.IntToTwoByte(size46).CopyTo(returnByte46, 1); //size
-                    returnByte46[4] = data[0];
-                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte46, 5);//机器编号
-                    data.Skip(13).Take(12).ToArray().CopyTo(returnByte46, 16);//流水号
-                    returnByte46[30] = 238;
-
-                    byte[] tunnels = data.Skip(25).Take(data.Length - 25).ToArray();
-                    int loopTimes = (tunnels.Length / 6);
-                    int result46 = 0;//daoBll.FullfilGoodsByTunnel(tunnels, loopTimes, machineNumA5);
-                    KeyJsonModel jsonModel46 = new KeyJsonModel();
-                    jsonModel46.m = machineNum46;
-                    for (int i = 0; i < loopTimes; i++)
+                    byte[] returnByte65 = new byte[19];
+                    returnByte65[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size65).CopyTo(returnByte65, 1); //size
+                    returnByte65[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte65, 5);
+                    
+                    int result = imachine.GetFullfilGood(machineId65);
+                    try
                     {
-                        jsonModel46.t.Add(new KeyTunnelModel()
+                        if (result > 0)
                         {
-                            tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 6).Take(5).ToArray(), "stringval"),
-                            n = data.Skip(30 + i * 6).Take(1).ToArray()[0].ToString()
+                            returnByte65[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte65[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte65[17] = 49;
+                    }
+                    returnByte65[18] = 238;//结尾
+                                           //验证码生成
+                    byte result65Chunk = new byte();
+                    byte[] finalResult65 = returnByte65.Skip(4).Take(size65).ToArray();
+                    for (int i = 0; i < finalResult65.Length; i++)
+                    {
+                        result65Chunk ^= finalResult65[i];
+                    }
+                    returnByte65[3] = result65Chunk;
+                    //SendMsg(finalResultA1, myClientSocket);
+                    ByteHelper.Encryption(size65, finalResult65.ToArray()).CopyTo(returnByte65, 4);//加密
+
+                    return returnByte65;
+                case "66": // 终端->服务器 详细补货
+                    int size66 = 14;
+                    string machineNum66 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+
+                    byte[] returnByte66 = new byte[19];
+                    returnByte66[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size66).CopyTo(returnByte66, 1); //size
+                    returnByte66[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte66, 5);//机器编号
+
+                    byte[] tunnels66 = data.Skip(13).Take(data.Length - 13).ToArray();
+                    int loopTimes66 = (tunnels66.Length / 7);
+                   
+                    KeyJsonModel jsonModel66 = new KeyJsonModel();
+                    jsonModel66.m = machineNum66;
+                    for (int i = 0; i < loopTimes66; i++)
+                    {
+                        jsonModel66.t.Add(new KeyTunnelModel()
+                        {
+                            tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(5).ToArray(), "stringval"),
+                            n = ByteHelper.GenerateRealityData(data.Skip(18 + i * 7).Take(2).ToArray(),"intval")
                         });
                     }
-
-                    result46 = imachine.GetFullfilGoodByTunnel(jsonModel46);
-                    if (result46 == 1)
+                    try
                     {
-                        returnByte46[29] = 30;
+                        int result66 = imachine.GetFullfilGoodByTunnel(jsonModel66);
+                        if (result66 > 0)
+                        {
+                            returnByte66[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte66[17] = 49;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        returnByte46[29] = 31;
+                        returnByte66[17] = 49;
                     }
-                    byte resultChunk46 = new byte();
-                    byte[] finalResult46 = returnByte46.Skip(4).Take(size46).ToArray();
-                    for (int i = 0; i < returnByte46.Length; i++)
+                    returnByte66[18] = 238;
+                    byte resultChunk66 = new byte();
+                    byte[] finalResult66 = returnByte66.Skip(4).Take(size66).ToArray();
+                    for (int i = 0; i < finalResult66.Length; i++)
                     {
-                        resultChunk46 ^= returnByte46[i];
+                        resultChunk66 ^= finalResult66[i];
                     }
-                    returnByte46[3] = resultChunk46;
+                    returnByte66[3] = resultChunk66;
                     //SendMsg(returnByteA5, myClientSocket);
-                    ByteHelper.Encryption(size46, finalResult46.ToArray()).CopyTo(returnByte46, 4);//加密
-                    return returnByte46;
-                case "48": //补价格
-                    int size48 = 26;
-                    string machineNum48 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                    string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    ByteHelper.Encryption(size66, finalResult66.ToArray()).CopyTo(returnByte66, 4);//加密
+                    return returnByte66;
+                case "67": // 终端->服务器 补现金价格
+                    int size67 = 14;
+                    string machineNum67 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
                     //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
 
-                    byte[] returnByte48 = new byte[31];
-                    returnByte48[0] = byteInfo[0];//包头;
-                    ByteHelper.IntToTwoByte(size48).CopyTo(returnByte48, 1); //size
-                    returnByte48[4] = data[0];
-                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte48, 5);//机器编号
-                    data.Skip(13).Take(12).ToArray().CopyTo(returnByte48, 16);//流水号
-                    returnByte48[30] = 238;
+                    byte[] returnByte67 = new byte[19];
+                    returnByte67[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size67).CopyTo(returnByte67, 1); //size
+                    returnByte67[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte67, 5);//机器编号
+                    
 
-                    byte[] tunnels48 = data.Skip(25).Take(data.Length - 25).ToArray();
-                    int loopTimes48 = (tunnels48.Length / 11);
-                    int result48 = 0;//daoBll.FullfilGoodsByTunnel(tunnels, loopTimes, machineNumA5);
-                    List<PriceAndMaxStockModel> lstPrice48 = new List<PriceAndMaxStockModel>();
+                    byte[] tunnels67 = data.Skip(13).Take(data.Length - 13).ToArray();
+                    int loopTimes67 = (tunnels67.Length / 10);
+                 
+                    List<PriceAndMaxStockModel> lstPrice67 = new List<PriceAndMaxStockModel>();
 
-                    for (int i = 0; i < loopTimes48; i++)
+                    for (int i = 0; i < loopTimes67; i++)
                     {
-                        lstPrice48.Add(new PriceAndMaxStockModel()
+                        lstPrice67.Add(new PriceAndMaxStockModel()
                         {
-                            tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 11).Take(5).ToArray(), "stringval"),
-                            p1 = Convert.ToDecimal(data.Skip(30 + i * 11).Take(6).ToArray()[0])
+                            tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 10).Take(5).ToArray(), "stringval"),
+                            p1 = int.Parse(ByteHelper.GenerateRealityData(data.Skip(18 + i * 10).Take(5).ToArray(), "stringval"))/100
                         });
                     }
-
-                    result48 = imachine.PostMaxStockAndPrice(lstPrice48, machineNum48);
-                    if (result48 == 1)
+                    try
                     {
-                        returnByte48[29] = 30;
-                    }
-                    else
-                    {
-                        returnByte48[29] = 31;
-                    }
-                    byte resultChunk48 = new byte();
-                    byte[] finalResult48 = returnByte48.Skip(4).Take(size48).ToArray();
-                    for (int i = 0; i < returnByte48.Length; i++)
-                    {
-                        resultChunk48 ^= returnByte48[i];
-                    }
-                    returnByte48[3] = resultChunk48;
-                    //SendMsg(returnByteA5, myClientSocket);
-                    ByteHelper.Encryption(size48, finalResult48.ToArray()).CopyTo(returnByte48, 4);//加密
-                    return returnByte48;
-                case "49": //设置最大库存
-                    int size49 = 26;
-                    string machineNum49 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                    string serialNum49 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
-                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
-
-                    byte[] returnByte49 = new byte[31];
-                    returnByte49[0] = byteInfo[0];//包头;
-                    returnByte49[1] = 26; //size
-                    returnByte49[4] = data[0];
-                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte49, 5);//机器编号
-                    data.Skip(13).Take(12).ToArray().CopyTo(returnByte49, 16);//流水号
-                    returnByte49[30] = 238;
-
-                    byte[] tunnels49 = data.Skip(25).Take(data.Length - 25).ToArray();
-                    int loopTimes49 = (tunnels49.Length / 7);
-                    int result49 = 0;//daoBll.FullfilGoodsByTunnel(tunnels, loopTimes, machineNumA5);
-                    List<PriceAndMaxStockModel> lstPrice49 = new List<PriceAndMaxStockModel>();
-
-                    for (int i = 0; i < loopTimes49; i++)
-                    {
-                        lstPrice49.Add(new PriceAndMaxStockModel()
+                        int result67 = imachine.PostMaxStockAndPrice(lstPrice67, machineNum67);
+                        if (result67 == 1)
                         {
-                            tid = ByteHelper.GenerateRealityData(data.Skip(25 + i * 7).Take(5).ToArray(), "stringval"),
-                            ms = Convert.ToInt32(data.Skip(30 + i * 7).Take(2).ToArray()[0])
+                            returnByte67[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte67[17] = 49;
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        returnByte67[17] = 49;
+                    }
+                    
+                    returnByte67[18] = 238;
+                    byte resultChunk67 = new byte();
+                    byte[] finalResult67 = returnByte67.Skip(4).Take(size67).ToArray();
+                    for (int i = 0; i < finalResult67.Length; i++)
+                    {
+                        resultChunk67 ^= finalResult67[i];
+                    }
+                    returnByte67[3] = resultChunk67;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size67, finalResult67.ToArray()).CopyTo(returnByte67, 4);//加密
+                    return returnByte67;
+                case "68": // 终端->服务器 补最大库存
+                    int size68 = 14;
+                    string machineNum68 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+
+                    byte[] returnByte68 = new byte[19];
+                    returnByte68[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size68).CopyTo(returnByte68, 1); //size
+                    returnByte68[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte68, 5);//机器编号
+
+
+                    byte[] tunnels68 = data.Skip(13).Take(data.Length - 13).ToArray();
+                    int loopTimes68 = (tunnels68.Length / 7);
+
+                    List<PriceAndMaxStockModel> lstPrice68 = new List<PriceAndMaxStockModel>();
+
+                    for (int i = 0; i < loopTimes68; i++)
+                    {
+                        lstPrice68.Add(new PriceAndMaxStockModel()
+                        {
+                            tid = ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(5).ToArray(), "stringval"),
+                            ms = int.Parse(ByteHelper.GenerateRealityData(data.Skip(13 + i * 7).Take(2).ToArray(),"intval"))
                         });
                     }
-
-                    result49 = imachine.PostMaxStockAndPrice(lstPrice49, machineNum49);
-                    if (result49 == 1)
+                    try
                     {
-                        returnByte49[29] = 30;
+                        int result68 = imachine.PostMaxStockAndPrice(lstPrice68, machineNum68);
+                        if (result68 == 1)
+                        {
+                            returnByte68[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte68[17] = 49;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        returnByte49[29] = 31;
+                        returnByte68[17] = 49;
                     }
-                    byte resultChunk49 = new byte();
-                    byte[] finalResult49 = returnByte49.Skip(4).Take(size49).ToArray();
-                    for (int i = 0; i < returnByte49.Length; i++)
+                    returnByte68[18] = 238;
+                    byte resultChunk68 = new byte();
+                    byte[] finalResult68 = returnByte68.Skip(4).Take(size68).ToArray();
+                    for (int i = 0; i < finalResult68.Length; i++)
                     {
-                        resultChunk49 ^= returnByte49[i];
+                        resultChunk68 ^= finalResult68[i];
                     }
-                    returnByte49[3] = resultChunk49;
+                    returnByte68[3] = resultChunk68;
                     //SendMsg(returnByteA5, myClientSocket);
-                    ByteHelper.Encryption(size49, finalResult49.ToArray()).CopyTo(returnByte49, 4);//加密
-                    return returnByte49;
-                case "58":
-                    SaleModel saleInfo = new SaleModel();
-                    saleInfo.SalesIcId = Guid.NewGuid().ToString();
-                    saleInfo.MachineId = "XXXXXX";
-                    IBase<SaleModel> ibase = new SalesService();
-                    ibase.PostData(saleInfo);
-                    byte[] returnByte88 = new byte[2];
-                    returnByte88[0] = byteInfo[0];//包头;
-                    returnByte88[1] = 238;//包头;
-                    return returnByte88;
+                    ByteHelper.Encryption(size68, finalResult68.ToArray()).CopyTo(returnByte68, 4);//加密
+                    return returnByte68;
             }
             return new byte[0];
         }
