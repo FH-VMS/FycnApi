@@ -58,7 +58,7 @@ namespace Fycn.Utility
             sock.Close();
         }
 
-        public static string GenerateCommand(byte webCommandType, byte totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
+        public static string GenerateCommand(byte webCommandType, int totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
         {
             byte[] sendByte = new byte[totalSize+7];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;

@@ -73,41 +73,7 @@ namespace Fycn.Sockets
                 int size73 = int.Parse(ByteHelper.GenerateRealityData(byteInfo.Skip(3).Take(2).ToArray(),"intval"));
                 ByteHelper.Deencryption(size73, byteInfo.Skip(6).Take(size73).ToArray()).CopyTo(byteInfo,6);
                 string machineId10 = ByteHelper.GenerateRealityData(byteInfo.Skip(7).Take(12).ToArray(), "stringval");
-                /*
-                try
-                {
-                   
-                    if (MachineHelper.IsOnline(machineId10)) // 若redis里没有 则去库里查询
-                    {
-                        RedisHelper redisHelper = new RedisHelper(0);
-                        ip = redisHelper.StringGet(machineId10);
-                    }
-                    else
-                    {
-                       
-                        IMachine imachine = new MachineService();
-                        DataTable dt = imachine.GetIpByMachineId(machineId10);
-                        if (dt.Rows.Count > 0)
-                        {
-                            ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
-                            MachineHelper.Signature(machineId10, ip);
-                        }
-                       
-                    }
-                }
-                catch
-                {
-                   
-                    IMachine imachine = new MachineService();
-                    DataTable dt = imachine.GetIpByMachineId(machineId10);
-                    if (dt.Rows.Count > 0)
-                    {
-                        ip = dt.Rows[0]["ip_v4"].ToString().Split("-")[0];
-                        MachineHelper.Signature(machineId10, ip);
-                    }
-                  
-                }
-                 */
+
                 ip = MachineHelper.GetIp(machineId10);
                        
                 if (sendLength > 0 && !string.IsNullOrEmpty(ip))

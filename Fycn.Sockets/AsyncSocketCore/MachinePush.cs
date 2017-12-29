@@ -41,7 +41,14 @@ namespace Fycn.Sockets.AsyncSocketCore
                     }
                     returnByte40[3] = result40Chunk;
                     ByteHelper.Encryption(size40, finalResult40.ToArray()).CopyTo(returnByte40, 4);//加密
-
+                    try
+                    {
+                        imachine.UpdateMachineInlineTimeAndIpv4(machineNum40, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
+                    }
+                    catch(Exception e)
+                    {
+                        return returnByte40;
+                    }
                     return returnByte40;
                 case "30": //申请签到随机码
                     int size30 = 19;

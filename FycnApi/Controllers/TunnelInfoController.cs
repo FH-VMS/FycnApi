@@ -113,7 +113,7 @@ namespace FycnApi.Controllers
                     });
                 }
 
-                SocketHelper.GenerateCommand(12, Convert.ToByte(13 + lstTunnelInfo.Count * 7), 83, lstCommand);
+                SocketHelper.GenerateCommand(12, 13 + lstTunnelInfo.Count * 7, 83, lstCommand);
             }
             return Content(result);
         }
