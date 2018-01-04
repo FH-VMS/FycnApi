@@ -25,6 +25,23 @@ namespace Fycn.Sockets
                 _dicTimer = value;
             }
         }
+
+        private RedisHelper _redis0;
+        private RedisHelper redisHelper0
+        {
+            get
+            {
+                if (_redis0 == null)
+                {
+                    _redis0 = new RedisHelper(0);
+                }
+                return _redis0;
+            }
+            set
+            {
+                _redis0 = value;
+            }
+        }
         //处理机器消息
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
@@ -34,7 +51,8 @@ namespace Fycn.Sockets
             //保活
             if (infoHead == "57")
             {
-                if (string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId))
+                //Program.Logger.InfoFormat("machine id is {0}", m_asyncSocketUserToken.MachineId);
+                if (string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId) || !redisHelper0.KeyExists(m_asyncSocketUserToken.MachineId))
                 {
                     return new byte[0];
                 }
@@ -198,8 +216,7 @@ namespace Fycn.Sockets
           /// <param name="action">要执行的表达式</param> 
          private void SetTimeout(double interval, Action action,string machineId, byte[] byteInfo) 
          {
-            RedisHelper helper0 = new RedisHelper(0);
-            if (!helper0.KeyExists(machineId)) //判断机器是否在线
+            if (!redisHelper0.KeyExists(machineId)) //判断机器是否在线
             {
                 return;
             }

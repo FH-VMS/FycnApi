@@ -39,7 +39,7 @@ namespace Fycn.Utility
         public static void Signature(string machineId, string ip)
         {
             RedisHelper redisHelper = new RedisHelper(0);
-            redisHelper.StringSet(machineId, ip, new TimeSpan(0,15,2));
+            redisHelper.StringSet(machineId, ip, new TimeSpan(0,17,2));
         }
 
         //生成验证码
