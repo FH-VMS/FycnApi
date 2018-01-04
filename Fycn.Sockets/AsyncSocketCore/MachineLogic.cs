@@ -216,10 +216,6 @@ namespace Fycn.Sockets
           /// <param name="action">要执行的表达式</param> 
          private void SetTimeout(double interval, Action action,string machineId, byte[] byteInfo) 
          {
-            if (!redisHelper0.KeyExists(machineId)) //判断机器是否在线
-            {
-                return;
-            }
             string key = ByteHelper.Ten2Hex(byteInfo[6].ToString());
             if (key == "42") //是否为出货指令
             {
