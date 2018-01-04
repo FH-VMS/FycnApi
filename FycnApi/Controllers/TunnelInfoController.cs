@@ -239,6 +239,7 @@ namespace FycnApi.Controllers
             //return File(file, "application/vnd.ms-excel", "保税订单.xls");
         }
 
+        //一键补货
         public ResultObj<int> PostFullFilByOneKey(string machineId)
         {
             // lstCommandModel的第一条消息为机器编号
@@ -264,6 +265,19 @@ namespace FycnApi.Controllers
                 //log.Info(tradeNoNode.InnerText);
                 SocketHelper.GenerateCommand(11, 13, 84, lstCommand);
             }
+            return Content(result);
+        }
+
+        //手机端设置最大库存
+        public ResultObj<int> PostMaxStock([FromBody]List<PriceAndMaxStockModel> lstPriceAndStock, string machineId)
+        {
+            if (!MachineHelper.IsOnline(machineId))
+            {
+                return Content(0);
+            }
+            IMachine _IMachine = new MachineService();
+            int result = _IMachine.PostMaxPuts(lstPriceAndStock, machineId);
+
             return Content(result);
         }
     }

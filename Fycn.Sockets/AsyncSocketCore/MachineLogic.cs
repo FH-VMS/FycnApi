@@ -25,23 +25,7 @@ namespace Fycn.Sockets
                 _dicTimer = value;
             }
         }
-
-        private RedisHelper _redis0;
-        private RedisHelper redisHelper0
-        {
-            get
-            {
-                if (_redis0 == null)
-                {
-                    _redis0 = new RedisHelper(0);
-                }
-                return _redis0;
-            }
-            set
-            {
-                _redis0 = value;
-            }
-        }
+        
         //处理机器消息
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
@@ -52,7 +36,7 @@ namespace Fycn.Sockets
             if (infoHead == "57")
             {
                 //Program.Logger.InfoFormat("machine id is {0}", m_asyncSocketUserToken.MachineId);
-                if (string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId) || !redisHelper0.KeyExists(m_asyncSocketUserToken.MachineId))
+                if (string.IsNullOrEmpty(m_asyncSocketUserToken.MachineId) || !MachineHelper.IsOnline(m_asyncSocketUserToken.MachineId))
                 {
                     return new byte[0];
                 }
@@ -116,10 +100,12 @@ namespace Fycn.Sockets
                 {
                    
                     sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 3);
+                    /*
                     SetTimeout(5000, delegate {
                         Program.Logger.InfoFormat("loop machineId is {0}, loop ip is {1}, message is {2}", machineId10, ip, ByteHelper.byteToHexStr(sendInfo));
                         sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
                     }, machineId10, byteInfo);
+                    */
                 }
                 
                 //x[0].co
