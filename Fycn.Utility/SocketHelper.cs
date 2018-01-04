@@ -114,7 +114,7 @@ namespace Fycn.Utility
             RedisHelper redisHelper = new RedisHelper(1);
             if(key == "42") //出货结果通知指令
             {
-                redisHelper.StringSet(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()), new TimeSpan(0,15,1));
+                redisHelper.StringSet(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()), new TimeSpan(0,5,1));
             } 
             else 
             {
