@@ -1,12 +1,30 @@
 ﻿using Fycn.Sockets.AsyncSocketCore;
 using Fycn.Utility;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 
 namespace Fycn.Sockets
 {
     public class MachineLogic
     {
+        private Dictionary<string, Timer> _dicTimer;
+        protected Dictionary<string,Timer> dicTimers
+        {
+            get
+            {
+                if (_dicTimer == null)
+                {
+                    _dicTimer = new Dictionary<string, Timer>();
+                }
+                return _dicTimer;
+            }
+            set
+            {
+                _dicTimer = value;
+            }
+        }
         //处理机器消息
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
@@ -81,6 +99,7 @@ namespace Fycn.Sockets
                    
                     sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 3);
                     SetTimeout(5000, delegate {
+                        Program.Logger.InfoFormat("loop machineId is {0}, loop ip is {1}, message is {2}", machineId10, ip, ByteHelper.byteToHexStr(sendInfo));
                         sendToTerminal(m_asyncSocketServer,machineId10,ip, sendInfo, sendLength, 1);
                     }, machineId10, byteInfo);
                 }
@@ -177,49 +196,57 @@ namespace Fycn.Sockets
           /// </summary> 
           /// <param name="interval">事件之间经过的时间（以毫秒为单位）</param> 
           /// <param name="action">要执行的表达式</param> 
-         private static void SetTimeout(double interval, Action action,string machineId, byte[] byteInfo) 
-         { 
-             System.Timers.Timer timer = new System.Timers.Timer(interval); 
-             timer.Elapsed += delegate(object sender, System.Timers.ElapsedEventArgs e) 
-             { 
-                 RedisHelper helper0=new RedisHelper(0);
-                if(!helper0.KeyExists(machineId)) //判断机器是否在线
+         private void SetTimeout(double interval, Action action,string machineId, byte[] byteInfo) 
+         {
+            RedisHelper helper0 = new RedisHelper(0);
+            if (!helper0.KeyExists(machineId)) //判断机器是否在线
+            {
+                return;
+            }
+            string key = ByteHelper.Ten2Hex(byteInfo[6].ToString());
+            if (key == "42") //是否为出货指令
+            {
+                string outTradeNo = ByteHelper.GenerateRealityData(byteInfo.Skip(19).Take(22).ToArray(), "stringval");
+             
+                if (!dicTimers.ContainsKey(outTradeNo))
                 {
-                    timer.Enabled = false; 
-                } 
-                else
-                {
-                     RedisHelper helper1=new RedisHelper(1);
-                    string key =ByteHelper.Ten2Hex(byteInfo[6].ToString());
-                    if(key=="42") //是否为出货指令
+                    dicTimers.Add(outTradeNo, new Timer(interval));
+                    dicTimers[outTradeNo].Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
                     {
-                         string outTradeNo = ByteHelper.GenerateRealityData(byteInfo.Skip(19).Take(22).ToArray(), "stringval");
-                         if(helper1.KeyExists(outTradeNo))
-                         {
+                        RedisHelper helper1 = new RedisHelper(1);
+                        if (helper1.KeyExists(outTradeNo))
+                        {
                             action();
-                         }
-                         else
-                         {
-                            timer.Enabled=false;
-                         }
-                    }
-                    else //非出货指令发两次
-                    {
-                        if(!helper1.KeyExists(machineId+"-"+key))// 判断该指令是否存在
-                         {
-                            timer.Enabled = false; 
                         }
                         else
                         {
-                             timer.Enabled = false; 
-                             action(); 
+
+                            dicTimers[outTradeNo].Enabled = false;
+                            dicTimers.Remove(outTradeNo);
                         }
-                    }
+                    };
                 }
-                 
-             }; 
-             timer.AutoReset= true;
-             timer.Enabled = true; 
+                dicTimers[outTradeNo].Enabled = true;
+                dicTimers[outTradeNo].AutoReset = true;
+            }
+            else //非出货指令发两次
+            {
+                Timer timer = new Timer(interval);
+                RedisHelper helper1 = new RedisHelper(1);
+                timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
+                {
+                    if (!helper1.KeyExists(machineId + "-" + key))// 判断该指令是否存在
+                    {
+                        timer.Enabled = false;
+                    }
+                    else
+                    {
+                        timer.Enabled = false;
+                        action();
+                    }
+                };
+            }
+           
          } 
     }
 }

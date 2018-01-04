@@ -286,6 +286,7 @@ namespace Fycn.Sockets
                     
                 }
                 */
+                userToken.MachineId = "";
                 userToken.ConnectSocket.Shutdown(SocketShutdown.Both);
             }
             catch (Exception E) 
