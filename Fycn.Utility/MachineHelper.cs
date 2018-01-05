@@ -6,6 +6,41 @@ namespace Fycn.Utility
 {
     public class MachineHelper
     {
+        private static RedisHelper _redisHelper0;
+
+        private static RedisHelper redisHelper0
+        {
+            get
+            {
+                if(_redisHelper0==null)
+                {
+                    _redisHelper0 = new RedisHelper(0);
+                }
+                return _redisHelper0;
+            }
+            set
+            {
+                _redisHelper0 = value;
+            }
+        }
+
+        private static RedisHelper _redisHelper1;
+
+        private static RedisHelper redisHelper1
+        {
+            get
+            {
+                if (_redisHelper1 == null)
+                {
+                    _redisHelper1 = new RedisHelper(1);
+                }
+                return _redisHelper1;
+            }
+            set
+            {
+                _redisHelper1 = value;
+            }
+        }
         //判断机器是否在线
         public static bool IsOnline(string machineId)
         {
@@ -13,8 +48,7 @@ namespace Fycn.Utility
             {
                 return false;
             }
-            RedisHelper redisHelper = new RedisHelper(0);
-            return redisHelper.KeyExists(machineId);
+            return redisHelper0.KeyExists(machineId);
         }
 
         //获取机器ip
@@ -24,10 +58,9 @@ namespace Fycn.Utility
             {
                 return "";
             }
-            RedisHelper redisHelper = new RedisHelper(0);
-            if (redisHelper.KeyExists(machineId))
+            if (redisHelper0.KeyExists(machineId))
             {
-                return redisHelper.StringGet(machineId);
+                return redisHelper0.StringGet(machineId);
             }
             else
             {
@@ -38,27 +71,24 @@ namespace Fycn.Utility
         //签到
         public static void Signature(string machineId, string ip)
         {
-            RedisHelper redisHelper = new RedisHelper(0);
-            redisHelper.StringSet(machineId, ip, new TimeSpan(0,17,2));
+            redisHelper0.StringSet(machineId, ip, new TimeSpan(0,17,2));
         }
 
         //生成验证码
         public static string GenerateCode(string machineId, string code)
         {
-            RedisHelper redisHelper = new RedisHelper(1);
             Random ran = new Random();
             int RandKey = ran.Next(100000, 999999);
-            redisHelper.StringSet(machineId+"-"+code, RandKey.ToString(), new TimeSpan(0, 0, 20));
+            redisHelper1.StringSet(machineId+"-"+code, RandKey.ToString(), new TimeSpan(0, 0, 20));
             return RandKey.ToString();
         }
 
         //判断验证码是否合法
         public static bool IsLegal(string machineId, string signCode,string code)
         {
-            RedisHelper redis4A = new RedisHelper(1);
-            if (redis4A.KeyExists(machineId+"-"+code))
+            if (redisHelper1.KeyExists(machineId+"-"+code))
             {
-                return redis4A.StringGet(machineId + "-"+code) == signCode;
+                return redisHelper1.StringGet(machineId + "-"+code) == signCode;
             }
             else
             {
@@ -69,24 +99,53 @@ namespace Fycn.Utility
         //清除验证码
         public static void ClearCode(string machineId, string code)
         {
-            RedisHelper redisHelper = new RedisHelper(1);
-            if (redisHelper.KeyExists(machineId + "-"+code))
+            if (redisHelper1.KeyExists(machineId + "-"+code))
             {
-                redisHelper.KeyDelete(machineId + "-"+code);
+                redisHelper1.KeyDelete(machineId + "-"+code);
             }
         }
 
         //验证订单是否合法
         public static bool IsLegalOrder(string orderNum)
         {
-            RedisHelper redis4A = new RedisHelper(1);
-            if (redis4A.KeyExists(orderNum))
+            if (redisHelper1.KeyExists(orderNum))
             {
                 return true;
             }
             else
             {
                 return false;
+            }
+        }
+
+        //清除缓存订单
+        public static void ClearCacheOrder(string orderNum)
+        {
+            if (redisHelper1.KeyExists(orderNum))
+            {
+                redisHelper1.KeyDelete(orderNum);
+            }
+        }
+
+        //验证是否存在需要下推的指令
+        public static bool IsExistPush(string machineId, string key)
+        {
+            if (redisHelper1.KeyExists(machineId + "-" + key))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //清除下推缓存
+        public static void ClearCachePush(string machineId, string key)
+        {
+            if (redisHelper1.KeyExists(machineId + "-" + key))
+            {
+                redisHelper1.KeyDelete(machineId + "-" + key);
             }
         }
     }

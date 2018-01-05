@@ -167,32 +167,47 @@ namespace Fycn.Sockets
 
         private void sendToTerminal(AsyncSocketServer m_asyncSocketServer,string machineId, string ip,byte[] byteInfo,int sendLength, int count)
         {
-                    AsyncSocketUserToken[] list = null;
-                    m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
-                    for (int i = 0; i < list.Length; i++)
+            AsyncSocketUserToken dicUserToken = SocketDictionary.Get(machineId);
+            if (dicUserToken != null)
+            {
+                Program.Logger.InfoFormat("machine id was {0}", machineId);
+                dicUserToken.SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
+                for (int j = 0; j < count; j++)
+                {
+                    bool willRaiseEvent = dicUserToken.ConnectSocket.SendAsync(dicUserToken.SendEventArgs);
+                }
+                return;
+            }
+            else
+            {
+                AsyncSocketUserToken[] list = null;
+                m_asyncSocketServer.AsyncSocketUserTokenList.CopyList(ref list);
+                for (int i = 0; i < list.Length; i++)
+                {
+                    if (list[i].MachineId == machineId)
                     {
-                        if (list[i].MachineId == machineId)
+                        
+                        if (MachineHelper.IsOnline(machineId))
                         {
-                            RedisHelper redis0=new RedisHelper(0);
-                            if(redis0.KeyExists(machineId))
-                            {
-                                ip = redis0.StringGet(machineId);
-                            }
-                            // Program.Logger.InfoFormat("loop ip is {0}", ip);
-                            if(list[i].ConnectSocket.RemoteEndPoint.ToString() == ip) 
-                            {
-                                   list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
-                                    
-                                    for(int j=0;j<count;j++)
-                                    {
-                                        bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
-                                    }
-                                    
-                                    break;
-                            }
-                           
+                            ip = MachineHelper.GetIp(machineId);
                         }
+                        // Program.Logger.InfoFormat("loop ip is {0}", ip);
+                        if (list[i].ConnectSocket.RemoteEndPoint.ToString() == ip)
+                        {
+                            list[i].SendEventArgs.SetBuffer(byteInfo.Skip(2).ToArray(), 0, sendLength);
+
+                            for (int j = 0; j < count; j++)
+                            {
+                                bool willRaiseEvent = list[i].ConnectSocket.SendAsync(list[i].SendEventArgs);
+                            }
+
+                            break;
+                        }
+
                     }
+                }
+            }
+            
         }
 
           /// <summary> 
@@ -212,14 +227,12 @@ namespace Fycn.Sockets
                     dicTimers.Add(outTradeNo, new Timer(interval));
                     dicTimers[outTradeNo].Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
                     {
-                        RedisHelper helper1 = new RedisHelper(1);
-                        if (helper1.KeyExists(outTradeNo))
+                        if (MachineHelper.IsLegalOrder(outTradeNo))
                         {
                             action();
                         }
                         else
                         {
-
                             dicTimers[outTradeNo].Enabled = false;
                             dicTimers.Remove(outTradeNo);
                         }
@@ -231,10 +244,9 @@ namespace Fycn.Sockets
             else //非出货指令发两次
             {
                 Timer timer = new Timer(interval);
-                RedisHelper helper1 = new RedisHelper(1);
                 timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
                 {
-                    if (!helper1.KeyExists(machineId + "-" + key))// 判断该指令是否存在
+                    if (!MachineHelper.IsExistPush(machineId, key))// 判断该指令是否存在
                     {
                         timer.Enabled = false;
                     }

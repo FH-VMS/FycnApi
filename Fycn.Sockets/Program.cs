@@ -1,4 +1,5 @@
-﻿using Fycn.Utility;
+﻿using Fycn.Sockets.AsyncSocketCore;
+using Fycn.Utility;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -100,6 +101,8 @@ namespace Fycn.Sockets
                 {
                     lock (userTokenArray[i])
                     {
+                        //清除缓存字典
+                        SocketDictionary.Remove(userTokenArray[i].MachineId);
                         AsyncSocketSvr.CloseClientSocket(userTokenArray[i]);
                         Program.Logger.InfoFormat("clear ip is {0}", userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString());
                     }

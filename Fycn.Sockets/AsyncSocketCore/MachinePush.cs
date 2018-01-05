@@ -85,6 +85,7 @@ namespace Fycn.Sockets.AsyncSocketCore
 
                     //resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
                     m_asyncSocketUserToken.MachineId = machineNum41;
+                    SocketDictionary.Add(machineNum41, m_asyncSocketUserToken);
 
                     byte[] returnByteA1 = new byte[21];
                     returnByteA1[0] = byteInfo[0];//包头;
@@ -141,11 +142,8 @@ namespace Fycn.Sockets.AsyncSocketCore
                     // string machineNum = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                     string serialNum = ByteHelper.GenerateRealityData(data.Skip(13).Take(22).ToArray(), "stringval");
                     //清除缓存
-                    RedisHelper redis43 = new RedisHelper(1);
-                    if (redis43.KeyExists(serialNum))
-                    {
-                        redis43.KeyDelete(serialNum);
-                    }
+                    MachineHelper.ClearCacheOrder(serialNum);
+
                     byte[] returnByte43 = new byte[7];
                     returnByte43[0] = byteInfo[0];//包头;
                     ByteHelper.IntToTwoByte(size43).CopyTo(returnByte43, 1); //size
@@ -218,23 +216,14 @@ namespace Fycn.Sockets.AsyncSocketCore
 
                     string machineNum65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                     //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
-                    RedisHelper redis65 = new RedisHelper(1);
-                    if (redis65.KeyExists(machineNum65 + "-" + 54))
-                    {
-                        redis65.KeyDelete(machineNum65 + "-" + 54);
-                    }
+                    MachineHelper.ClearCachePush(machineNum65, "54");
 
                     return new byte[0];
                 case "53": //上报按货道补货结果
 
                     string machineNum53 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
                     //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
-                    RedisHelper redis53 = new RedisHelper(1);
-                    if (redis53.KeyExists(machineNum53 + "-" + 53))
-                    {
-                        redis53.KeyDelete(machineNum53 + "-" + 53);
-                    }
-
+                    MachineHelper.ClearCachePush(machineNum53, "53");
                     //SendMsg(returnByteA6, myClientSocket);
                     return new byte[0];
                 case "65": // 终端->服务器 一键补货
