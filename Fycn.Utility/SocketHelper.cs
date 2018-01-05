@@ -110,15 +110,30 @@ namespace Fycn.Utility
             SetTimeout(5000, delegate {
                 socketSend(sendByte);
             },outTradeNo,key, machineId);
-
-            RedisHelper redisHelper = new RedisHelper(1);
+            
             if(key == "42") //出货结果通知指令
             {
-                redisHelper.StringSet(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()), new TimeSpan(0,5,1));
+                try
+                {
+                    MachineHelper.CacheOrder(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+                }
+                catch(Exception ex)
+                {
+                    MachineHelper.CacheOrder(outTradeNo, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+                }
+                
             } 
             else 
             {
-                redisHelper.StringSet(machineId+"-"+ key, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+                try
+                {
+                    MachineHelper.CachePush(machineId, key, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+                }
+                catch (Exception ex)
+                {
+                    MachineHelper.CachePush(machineId, key, ByteHelper.byteToHexStr(sendByte.Skip(2).ToArray()));
+                }
+
             }
             
 
@@ -171,8 +186,7 @@ namespace Fycn.Utility
                     dicTimers.Add(outTradeNo, new Timer(interval));
                     dicTimers[outTradeNo].Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
                     {
-                        RedisHelper helper1 = new RedisHelper(1);
-                        if (helper1.KeyExists(outTradeNo))
+                        if (MachineHelper.IsLegalOrder(outTradeNo))
                         {
                             action();
                         }
@@ -190,10 +204,10 @@ namespace Fycn.Utility
             else //非出货指令发两次
             {
                 Timer timer = new Timer(interval);
-                RedisHelper helper1 = new RedisHelper(1);
                 timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
                 {
-                    if (!helper1.KeyExists(machineId + "-" + key))// 判断该指令是否存在
+                    
+                    if (!MachineHelper.IsExistPush(machineId, key))// 判断该指令是否存在
                     {
                         timer.Enabled = false;
                     }

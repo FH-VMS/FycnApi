@@ -127,6 +127,12 @@ namespace Fycn.Utility
             }
         }
 
+        //缓存订单
+        public static void CacheOrder(string orderNum, string content)
+        {
+            redisHelper1.StringSet(orderNum, content, new TimeSpan(0, 5, 1));
+        }
+
         //验证是否存在需要下推的指令
         public static bool IsExistPush(string machineId, string key)
         {
@@ -147,6 +153,12 @@ namespace Fycn.Utility
             {
                 redisHelper1.KeyDelete(machineId + "-" + key);
             }
+        }
+
+        //缓存下推
+        public static void CachePush(string machineId, string key,string content)
+        {
+            redisHelper1.StringSet(machineId + "-" + key, content);
         }
     }
 }

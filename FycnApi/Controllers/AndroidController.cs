@@ -95,5 +95,10 @@ namespace FycnApi.Controllers
             
             return System.Text.Encoding.Default.GetString(ByteHelper.strToToHexByte(k));
         }
+
+        public string TestRedis()
+        {
+            RedisHelper redis0 = new RedisHelper(0);
+            return redis0.KeyExists("adfadfasd").ToString();        }
     }
 }
