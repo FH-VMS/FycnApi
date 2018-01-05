@@ -86,13 +86,13 @@ namespace Fycn.Sockets
 
         private static void TimeOut(object source, ElapsedEventArgs e)
         {
-            RedisHelper redisHelper = new RedisHelper(0);
            AsyncSocketUserToken[] userTokenArray = null;
             AsyncSocketSvr.AsyncSocketUserTokenList.CopyList(ref userTokenArray);
             for (int i = 0; i < userTokenArray.Length; i++)
             {
-                Program.Logger.InfoFormat("clear machine id is {0}", userTokenArray[i].MachineId);
-                if (redisHelper.KeyExists(userTokenArray[i].MachineId))
+                //Program.Logger.InfoFormat("clear machine id is {0}", userTokenArray[i].MachineId);
+                
+                if (MachineHelper.IsOnline(userTokenArray[i].MachineId))
                 {
                     break;
                 }
@@ -109,8 +109,8 @@ namespace Fycn.Sockets
                 }
                 catch (Exception E)
                 {
-                    Program.Logger.ErrorFormat("Daemon thread check timeout socket error, message: {0}", E.Message);
-                    Program.Logger.Error(E.StackTrace);
+                    //Program.Logger.ErrorFormat("Daemon thread check timeout socket error, message: {0}", E.Message);
+                    //Program.Logger.Error(E.StackTrace);
                 }
             }
 
