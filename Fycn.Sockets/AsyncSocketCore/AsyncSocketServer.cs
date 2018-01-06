@@ -293,12 +293,13 @@ namespace Fycn.Sockets
             {
                 Program.Logger.ErrorFormat("CloseClientSocket Disconnect client {0} error, message: {1}", socketInfo, E.Message);
             }
-            userToken.ConnectSocket.Close();
-            userToken.ConnectSocket = null; //释放引用，并清理缓存，包括释放协议对象等资源
-
             m_maxNumberAcceptedClients.Release();
             m_asyncSocketUserTokenPool.Push(userToken);
             m_asyncSocketUserTokenList.Remove(userToken);
+            userToken.ConnectSocket.Close();
+            userToken.ConnectSocket = null; //释放引用，并清理缓存，包括释放协议对象等资源
+
+            
         }
     }
 }
