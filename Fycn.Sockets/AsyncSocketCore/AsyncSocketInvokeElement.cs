@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using Fycn.Utility;
 
 namespace Fycn.Sockets
 {
@@ -80,6 +81,7 @@ namespace Fycn.Sockets
                 byte[] result = machineLogic.HandleHexByte(handleBuffer, m_asyncSocketUserToken, m_asyncSocketServer);
                 if(result.Length>0)
                 {
+                    Program.Logger.InfoFormat("return message is {0}, machine  is {1}", ByteHelper.byteToHexStr(result), m_asyncSocketUserToken.MachineId);
                     DoSendBuffer(result, 0, result.Length);
                     receiveBuffer.Clear(count);
                 }
