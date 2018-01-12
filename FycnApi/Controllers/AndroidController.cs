@@ -14,6 +14,7 @@ using System.Threading;
 using log4net;
 using System.Web;
 using Fycn.Model.Machine;
+using System.Linq;
 
 namespace FycnApi.Controllers
 {
@@ -99,6 +100,14 @@ namespace FycnApi.Controllers
         public string TestRedis()
         {
             RedisHelper redis0 = new RedisHelper(0);
-            return redis0.KeyExists("adfadfasd").ToString();        }
+            return redis0.KeyExists("adfadfasd").ToString();
+        }
+
+        public string De(string code)
+        {
+            byte[] b = ByteHelper.strToToHexByte(code);
+            ByteHelper.Deencryption(b.Length - 5, b.Skip(4).Take(b.Length - 5).ToArray()).CopyTo(b,4);
+            return ByteHelper.byteToHexStr(b);
+        }
     }
 }
