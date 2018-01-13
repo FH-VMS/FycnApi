@@ -74,12 +74,16 @@ namespace Fycn.Utility
             }
             sock.Close();
         }
-
+    
+        //49(十六进制)开头为后端向socket的标识头
+        //webCommandType标识指令的意思(十进制) 10:通知出货 11:一键补货 12:按货道补货 13:修改最大库存
+        //totalSize表示需要加密的内容  去除49+webCommandType 48 size(两个字节) chunksum验证 和结尾 EE
+        //socketCommand表示向机器下推的指令标识
         public static string GenerateCommand(byte webCommandType, int totalSize,byte socketCommand, List<CommandModel> lstCommandModel)
         {
             byte[] sendByte = new byte[totalSize+7];  //49+commandType + 48+size+chunk+content+EE
             sendByte[0] = 73;
-            sendByte[1] = webCommandType;// 10:通知出货 11:一键补货 12:按货道补货
+            sendByte[1] = webCommandType;//
             sendByte[2] = 72;
             ByteHelper.IntToTwoByte(totalSize).CopyTo(sendByte, 3); //size
             //sendByte[4] = chunk

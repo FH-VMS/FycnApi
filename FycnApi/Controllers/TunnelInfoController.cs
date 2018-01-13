@@ -85,12 +85,15 @@ namespace FycnApi.Controllers
             {
                 return Content(0);
             }
+            
             if(!MachineHelper.IsOnline(lstTunnelInfo[0].MachineId))
             {
                 return Content(0);
             }
+            
             IFullfilBill ifullfilBill = new TunnelInfoService();
             int result = ifullfilBill.UpdateStockWithMobile(lstTunnelInfo);
+           
             if(result==1)
             {
                 List<CommandModel> lstCommand = new List<CommandModel>();
@@ -271,13 +274,41 @@ namespace FycnApi.Controllers
         //手机端设置最大库存
         public ResultObj<int> PostMaxStock([FromBody]List<PriceAndMaxStockModel> lstPriceAndStock, string machineId)
         {
+            if (lstPriceAndStock.Count < 1)
+            {
+                return Content(0);
+            }
+
             if (!MachineHelper.IsOnline(machineId))
             {
                 return Content(0);
             }
             IMachine _IMachine = new MachineService();
             int result = _IMachine.PostMaxPuts(lstPriceAndStock, machineId);
+            if(result==1)
+            {
+                List<CommandModel> lstCommand = new List<CommandModel>();
+                lstCommand.Add(new CommandModel()
+                {
+                    Content = machineId,
+                    Size = 12
+                });
+                foreach(PriceAndMaxStockModel tunnel in lstPriceAndStock)
+                {
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = tunnel.tid,
+                        Size = 5
+                    });
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = (tunnel.ms>10?tunnel.ms.ToString():"0"+ tunnel.ms.ToString()),
+                        Size = 2
+                    });
+                }
 
+                SocketHelper.GenerateCommand(13, 13 + lstPriceAndStock.Count * 7, 86, lstCommand);
+            }
             return Content(result);
         }
     }
