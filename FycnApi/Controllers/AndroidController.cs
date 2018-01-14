@@ -27,10 +27,10 @@ namespace FycnApi.Controllers
             jsonModel.t = new List<KeyTunnelModel>();
             jsonModel.t.Add(new KeyTunnelModel() { tid = waresId, n = "1" });
             string json = HttpUtility.UrlDecode(JsonHandler.GetJsonStrFromObject(jsonModel));
-            byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
-            string hex = ByteHelper.byteToHexStr(byteSend);
+            //byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
+            //string hex = ByteHelper.byteToHexStr(byteSend);
             Dictionary<string, string> dicRet = new Dictionary<string, string>();
-            dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + hex;
+            dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + json;
             dicRet["waresId"] = waresId;
             string retJson = JsonHandler.GetJsonStrFromObject(dicRet);
             return HttpUtility.UrlDecode(retJson); 
