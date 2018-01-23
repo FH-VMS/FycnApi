@@ -22,7 +22,10 @@ namespace Fycn.Interface
          [Remark("按产品导出", ParmsNote = "机器编号", ReturnNote = "datatable")]
         DataTable ExportByProduct(string machineId);
 
-         [Remark("按货道导出", ParmsNote = "机器编号", ReturnNote = "datatable")]
+        [Remark("按货道导出", ParmsNote = "机器编号", ReturnNote = "datatable")]
         DataTable ExportByTunnel(string machineId);
+
+        [Remark("根据商品编号取价格", ParmsNote = "商品编号", ReturnNote = "string")]
+        string GetPriceByWaresId(string waresId);
     }
 }

@@ -45,5 +45,11 @@ namespace FycnApi.Controllers
         {
             return Content(_IBase.DeleteData(idList));
         }
+
+        public ResultObj<string> GetPriceByWaresId(string waresId)
+        {
+            IFullfilBill ifullfil = new TunnelInfoService();
+            return Content(ifullfil.GetPriceByWaresId(waresId));
+        }
     }
 }

@@ -320,7 +320,7 @@ namespace Fycn.Service
             return 1;
         }
 
-        private string GetPriceByWaresId(string waresId)
+        public string GetPriceByWaresId(string waresId)
         {
             var conditions = new List<Condition>();
 
