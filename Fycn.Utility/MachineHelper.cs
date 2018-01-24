@@ -108,14 +108,20 @@ namespace Fycn.Utility
         //验证订单是否合法
         public static bool IsLegalOrder(string orderNum)
         {
-            if (redisHelper1.KeyExists(orderNum))
-            {
-                return true;
+            try{
+                if (redisHelper1.KeyExists(orderNum))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                return false;
+            catch{
+                return redisHelper1.KeyExists(orderNum);
             }
+            
         }
 
         //清除缓存订单

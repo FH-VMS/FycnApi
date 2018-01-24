@@ -305,7 +305,7 @@ namespace FycnApi.Controllers
             try
             {
                 string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"].ToString().Trim();
-                RedisHelper helper = new RedisHelper(0);
+                //RedisHelper helper = new RedisHelper(0);
                 var log = LogManager.GetLogger("FycnApi", "zhifubao");
                 log.Info(outTradeNo);
                 //log.Info(helper.KeyExists(outTradeNo));

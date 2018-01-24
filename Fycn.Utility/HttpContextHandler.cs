@@ -12,9 +12,12 @@ namespace Fycn.Utility
 
         public static object GetHeaderObj(string key)
         {
-            var wiiCookies = HttpContext.Current.Request.Headers["FH-COOKIES"].ToString();
-            if (string.IsNullOrEmpty(wiiCookies)) return null;
-            var cookies = JsonHandler.GetObjectFromJson<Dictionary<string, object>>(wiiCookies);
+            object wiiCookies = HttpContext.Current.Request.Headers["FH-COOKIES"];
+            if(wiiCookies == null){
+                return null;
+            }
+            if (string.IsNullOrEmpty(wiiCookies.ToString())) return null;
+            var cookies = JsonHandler.GetObjectFromJson<Dictionary<string, object>>(wiiCookies.ToString());
             return cookies.ContainsKey(key) ? cookies[key] : null;
         }
 
