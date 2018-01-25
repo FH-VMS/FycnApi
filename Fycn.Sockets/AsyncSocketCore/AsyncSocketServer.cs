@@ -31,7 +31,7 @@ namespace Fycn.Sockets
         private DownloadSocketProtocolMgr m_downloadSocketProtocolMgr;
         public DownloadSocketProtocolMgr DownloadSocketProtocolMgr { get { return m_downloadSocketProtocolMgr; } }
 
-        private DaemonThread m_daemonThread;
+        //private DaemonThread m_daemonThread;
 
         public AsyncSocketServer(int numConnections)
         {
@@ -68,7 +68,7 @@ namespace Fycn.Sockets
             Program.Logger.InfoFormat("Start listen socket {0} success", localEndPoint.ToString());
             //for (int i = 0; i < 64; i++) //不能循环投递多次AcceptAsync，会造成只接收8000连接后不接收连接了
             StartAccept(null);
-            m_daemonThread = new DaemonThread(this);
+            //m_daemonThread = new DaemonThread(this);
         }
 
         public void StartAccept(SocketAsyncEventArgs acceptEventArgs)
