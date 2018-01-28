@@ -83,7 +83,7 @@
 
   "_comment": "商品列表",
   "GetProductList": "SELECT a.*,b.client_name as ClientName FROM table_product a INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",
-  "GetProductListCount": "SELECT count(1) FROM table_product a LEFT JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",
+  "GetProductListCount": "SELECT count(1) FROM table_product a INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",
   "DeleteProductList": "DELETE from table_product where wares_id=?p_WaresId",
   "UpdateProductList": "UPDATE table_product SET  wares_name =?p_WaresName,  wares_unitprice =?p_WaresUnitPrice,wares_weight=?p_WaresWeight,  wares_specifications =?p_WaresSpecifications, wares_manufacture_date=?p_WaresManufactureDate, wares_quality_period=?p_WaresQualityPeriod, pic_id=?p_PicId, wares_type_id=?p_WaresTypeId, supplier_id=?p_SupplierId, creator=?p_Creator, update_date=?p_UpdateDate WHERE wares_id =?p_WaresId",
   "GetProductAllList": "SELECT *,b.client_name as ClientName FROM table_product a LEFT JOIN table_client b ON a.client_id=b.client_id ",
