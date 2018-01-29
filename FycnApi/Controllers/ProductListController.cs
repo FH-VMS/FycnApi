@@ -44,7 +44,7 @@ namespace FycnApi.Controllers
         {
             return Content(_IBase.PostData(productListInfo));
         }
-
+        
         public ResultObj<int> PutData([FromBody]ProductListModel productListInfo)
         {
             return Content(_IBase.UpdateData(productListInfo));

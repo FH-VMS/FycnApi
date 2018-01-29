@@ -17,6 +17,7 @@ namespace Fycn.Service
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");
             dics.Add("UserName", userInfo.UserName + "%");
@@ -29,22 +30,79 @@ namespace Fycn.Service
                 dics.Add("PageIndex", userInfo.PageIndex);
             }
             dics.Add("PageSize", userInfo.PageSize);
+            */
 
-            
+            var conditions = new List<Condition>();
+            if (!string.IsNullOrEmpty(userInfo.UserAccount))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "UserAccount",
+                    DbColumnName = "a.usr_account",
+                    ParamValue = "%" + userInfo.UserAccount + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
 
+            if (!string.IsNullOrEmpty(userInfo.UserName))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "UserName",
+                    DbColumnName = "a.usr_name",
+                    ParamValue = "%" + userInfo.UserName + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
             if (userStatus == "100" || userStatus == "99")
             {
-                dics.Add("ClientFatherId", "self");
+                //dics.Add("ClientFatherId", "self");
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "ClientFatherId",
+                    DbColumnName = "",
+                    ParamValue = "self",
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
             }
             else
             {
-                dics.Add("ClientFatherId", userClientId);
+                //dics.Add("ClientFatherId", userClientId);
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "ClientFatherId",
+                    DbColumnName = "",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
             }
 
+           
+
+           
+
+           
+
+         
+
+            conditions.AddRange(CreatePaginConditions(userInfo.PageIndex, userInfo.PageSize));
 
 
 
-            return GenerateDal.Load<UserModel>(CommonSqlKey.GetUser, dics);
+
+            return GenerateDal.LoadByConditions<UserModel>(CommonSqlKey.GetUser, conditions);
         }
 
         private List<UserModel> GetCustomersFinalResult(List<UserModel> result)
@@ -81,6 +139,7 @@ namespace Fycn.Service
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");
             dics.Add("UserName", userInfo.UserName + "%");
@@ -96,10 +155,67 @@ namespace Fycn.Service
             {
                 dics.Add("ClientFatherId", userClientId);
             }
-
+          
 
             result = GenerateDal.CountByDictionary<UserModel>(CommonSqlKey.GetUserCount, dics);
+              */
+            var conditions = new List<Condition>();
+            if (!string.IsNullOrEmpty(userInfo.UserAccount))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "UserAccount",
+                    DbColumnName = "a.usr_account",
+                    ParamValue = "%" + userInfo.UserAccount + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
 
+            if (!string.IsNullOrEmpty(userInfo.UserName))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "UserName",
+                    DbColumnName = "a.usr_name",
+                    ParamValue = "%" + userInfo.UserName + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            if (userStatus == "100" || userStatus == "99")
+            {
+                //dics.Add("ClientFatherId", "self");
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "ClientFatherId",
+                    DbColumnName = "",
+                    ParamValue = "self",
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                //dics.Add("ClientFatherId", userClientId);
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "ClientFatherId",
+                    DbColumnName = "",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            result = GenerateDal.CountByConditions(CommonSqlKey.GetUserCount, conditions);
             return result;
         }
 
