@@ -268,7 +268,7 @@ namespace Fycn.Service
                 GenerateDal.BeginTransaction();
                 foreach (TunnelInfoModel tunnelInfo in lstTunnelInfo)
                 {
-                    decimal price = Convert.ToDecimal(GetPriceByWaresId(tunnelInfo.WaresId));
+                    //decimal price = Convert.ToDecimal(GetPriceByWaresId(tunnelInfo.WaresId));
                     if (string.IsNullOrEmpty(tunnelInfo.GoodsStuId))
                     {
                         tunnelInfo.GoodsStuId = tunnelInfo.TunnelId;
@@ -280,8 +280,8 @@ namespace Fycn.Service
                         tunnelInfo.UpdateDate = DateTime.Now;
                         GenerateDal.Update(CommonSqlKey.UpdateTunnelCurrStock, tunnelInfo);
                     }
-                   
 
+                    /*
                     TunnelConfigModel tunnelConfig = new TunnelConfigModel();
                     tunnelConfig.MachineId = tunnelInfo.MachineId;
                     tunnelConfig.CabinetId = tunnelInfo.CabinetId;
@@ -291,9 +291,9 @@ namespace Fycn.Service
                     tunnelConfig.AlipayPrices = price;
                     tunnelConfig.IcPrices = price;
                     tunnelConfig.WaresId = tunnelInfo.WaresId;
-
+                   
                     GenerateDal.Update(CommonSqlKey.UpdateTunnelPrice, tunnelConfig);
-                    
+                     */
                 }
                 MachineService ms = new MachineService();
                 //往机器下行表里插入库存改变的数据
@@ -319,6 +319,8 @@ namespace Fycn.Service
             }
             return 1;
         }
+
+
 
         public string GetPriceByWaresId(string waresId)
         {
@@ -398,7 +400,41 @@ namespace Fycn.Service
             }
             return GenerateDal.LoadDataTableByConditions(CommonSqlKey.ExportByTunnel, conditions);
         }
-        
+
+        //手机修改价格
+        public int UpdatePriceWithMobile(List<TunnelInfoModel> lstTunnelInfo)
+        {
+            try
+            {
+
+                GenerateDal.BeginTransaction();
+                foreach (TunnelInfoModel tunnelInfo in lstTunnelInfo)
+                {
+                    
+                    TunnelConfigModel tunnelConfig = new TunnelConfigModel();
+                    tunnelConfig.MachineId = tunnelInfo.MachineId;
+                    tunnelConfig.CabinetId = tunnelInfo.CabinetId;
+                    tunnelConfig.TunnelId = tunnelInfo.TunnelId;
+                    tunnelConfig.CashPrices = tunnelInfo.Price;
+                    tunnelConfig.WpayPrices = tunnelInfo.Price;
+                    tunnelConfig.AlipayPrices = tunnelInfo.Price;
+                    tunnelConfig.IcPrices = tunnelInfo.Price;
+                    tunnelConfig.WaresId = tunnelInfo.WaresId;
+                   
+                    GenerateDal.Update(CommonSqlKey.UpdateTunnelPrice, tunnelConfig);
+                    
+                }
+                GenerateDal.CommitTransaction();
+
+            }
+            catch (Exception e)
+            {
+                GenerateDal.RollBack();
+                return 0;
+            }
+            return 1;
+        }
+
 
     }
 }

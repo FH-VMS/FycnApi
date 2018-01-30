@@ -27,5 +27,8 @@ namespace Fycn.Interface
 
         [Remark("根据商品编号取价格", ParmsNote = "商品编号", ReturnNote = "string")]
         string GetPriceByWaresId(string waresId);
+
+        [Remark("手机端修改价格", ParmsNote = "列表实体", ReturnNote = "int")]
+        int UpdatePriceWithMobile(List<TunnelInfoModel> lstTunnelInfo);
     }
 }

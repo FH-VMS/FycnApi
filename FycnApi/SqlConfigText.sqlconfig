@@ -117,7 +117,7 @@
   "GetRefundDetail": "SELECT * FROM table_refund ",
 
   "_comment": "货道信息",
-  "GetTunnelInfo": "SELECT a.wares_id as WaresId,c.wares_name as ProductName,a.machine_id,a.tunnel_id as TunnelId,a.cabinet_id,a.max_puts as MaxPuts, b.* FROM table_goods_config a LEFT JOIN table_goods_status b ON a.machine_id=b.machine_id AND a.tunnel_id=b.goods_stu_id AND a.cabinet_id=b.cabinet_id LEFT JOIN table_product c ON a.wares_id=c.wares_id ",
+  "GetTunnelInfo": "SELECT a.wares_id as WaresId,c.wares_name as ProductName,a.machine_id,a.tunnel_id as TunnelId,a.cabinet_id,a.max_puts as MaxPuts, a.cash_prices as Price, b.* FROM table_goods_config a LEFT JOIN table_goods_status b ON a.machine_id=b.machine_id AND a.tunnel_id=b.goods_stu_id AND a.cabinet_id=b.cabinet_id LEFT JOIN table_product c ON a.wares_id=c.wares_id ",
   "GetTunnelInfoCount": "SELECT COUNT(1) FROM table_goods_config a LEFT JOIN table_goods_status b ON a.machine_id=b.machine_id AND a.tunnel_id=b.goods_stu_id AND a.cabinet_id=b.cabinet_id ",
   "DeleteTunnelInfo": "DELETE from table_goods_status WHERE machine_id=?p_MachineId",
   "UpdateTunnelInfo": "UPDATE table_goods_status SET curr_status=?p_CurrStatus,update_date=?p_UpdateDate WHERE machine_id=?p_MachineId AND goods_stu_id=?p_GoodsStuId AND cabinet_id=?p_CabinetId",

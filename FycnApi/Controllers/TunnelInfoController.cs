@@ -311,5 +311,50 @@ namespace FycnApi.Controllers
             }
             return Content(result);
         }
+
+
+        //手机修改价格
+        public ResultObj<int> PutPriceWithMobile([FromBody]List<TunnelInfoModel> lstTunnelInfo)
+        {
+            if (lstTunnelInfo.Count < 1)
+            {
+                return Content(0);
+            }
+            /*
+            if (!MachineHelper.IsOnline(lstTunnelInfo[0].MachineId))
+            {
+                return Content(0);
+            }
+            */
+            IFullfilBill ifullfilBill = new TunnelInfoService();
+            int result = ifullfilBill.UpdatePriceWithMobile(lstTunnelInfo);
+            /*
+            if (result == 1)
+            {
+                List<CommandModel> lstCommand = new List<CommandModel>();
+                lstCommand.Add(new CommandModel()
+                {
+                    Content = lstTunnelInfo[0].MachineId,
+                    Size = 12
+                });
+                foreach (TunnelInfoModel tunnel in lstTunnelInfo)
+                {
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = tunnel.TunnelId,
+                        Size = 5
+                    });
+                    lstCommand.Add(new CommandModel()
+                    {
+                        Content = (tunnel.Price > 10 ? tunnel.Price.ToString() : "0" + tunnel.Price.ToString()),
+                        Size = 5
+                    });
+                }
+
+                SocketHelper.GenerateCommand(14, 13 + lstTunnelInfo.Count * 10, 82, lstCommand);
+            }
+            */
+            return Content(result);
+        }
     }
 }

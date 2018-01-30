@@ -226,6 +226,13 @@ namespace Fycn.Sockets.AsyncSocketCore
                     MachineHelper.ClearCachePush(machineNum53, "53");
                     //SendMsg(returnByteA6, myClientSocket);
                     return new byte[0];
+                case "52": //上报现金设置结果
+
+                    string machineNum52 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum45 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval
+                    MachineHelper.ClearCachePush(machineNum52, "52");
+                    //SendMsg(returnByteA6, myClientSocket);
+                    return new byte[0];
                 case "65": // 终端->服务器 一键补货
                     int size65 = 14;
                     string machineId65 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");

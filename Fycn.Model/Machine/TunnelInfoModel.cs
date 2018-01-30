@@ -96,6 +96,12 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        public decimal Price
+        {
+            get;
+            set;
+        }
+
         public int PageIndex
         {
             get;

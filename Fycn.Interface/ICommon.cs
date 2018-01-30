@@ -15,7 +15,7 @@ namespace Fycn.Interface
         [Remark("取数据列表", ParmsNote = "当前页,每页显示行数", ReturnNote = "返回返页列表")]
         List<MenuModel> GetMenus(string userAccount);
 
-        [Remark("取数据列表", ParmsNote = "当前页,每页显示行数", ReturnNote = "返回返页列表")]
+        [Remark("登录", ParmsNote = "当前页,每页显示行数", ReturnNote = "返回返页列表")]
         UserModel PostUser(UserModel userInfo);
 
         [Remark("取字典方法", ParmsNote = "字典对应的key值", ReturnNote = "实体列表")]
