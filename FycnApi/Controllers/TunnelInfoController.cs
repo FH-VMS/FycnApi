@@ -320,15 +320,14 @@ namespace FycnApi.Controllers
             {
                 return Content(0);
             }
-            /*
+           
             if (!MachineHelper.IsOnline(lstTunnelInfo[0].MachineId))
             {
                 return Content(0);
             }
-            */
             IFullfilBill ifullfilBill = new TunnelInfoService();
             int result = ifullfilBill.UpdatePriceWithMobile(lstTunnelInfo);
-            /*
+           
             if (result == 1)
             {
                 List<CommandModel> lstCommand = new List<CommandModel>();
@@ -344,16 +343,23 @@ namespace FycnApi.Controllers
                         Content = tunnel.TunnelId,
                         Size = 5
                     });
+                    int price = Convert.ToInt32(Decimal.Parse(tunnel.Price.ToString()));
+                    string priceContent = price.ToString();
+                    int fillZero = 5 - price.ToString().Length;
+                    for(int i = 0; i < fillZero; i++)
+                    {
+                        priceContent = "0" + priceContent;
+                    }
                     lstCommand.Add(new CommandModel()
                     {
-                        Content = (tunnel.Price > 10 ? tunnel.Price.ToString() : "0" + tunnel.Price.ToString()),
+                        Content = priceContent,
                         Size = 5
                     });
                 }
 
                 SocketHelper.GenerateCommand(14, 13 + lstTunnelInfo.Count * 10, 82, lstCommand);
             }
-            */
+         
             return Content(result);
         }
     }
