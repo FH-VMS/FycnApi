@@ -69,10 +69,10 @@ namespace FycnApi.Controllers
         }
 
         // 机器字典
-        public ResultObj<List<CommonDic>> GetMachineDic()
+        public ResultObj<List<CommonDic>> GetMachineDic(string name="", int pageIndex=1, int pageSize=15)
         {
             ICommon menusService = new CommonService();
-            return Content(menusService.GetMachineDic());
+            return Content(menusService.GetMachineDic(name, pageIndex, pageSize));
         }
 
         // 上传图片

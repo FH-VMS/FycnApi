@@ -257,7 +257,7 @@ namespace Fycn.Service
         }
 
         // 根据客户取对应机器
-        public List<CommonDic> GetMachineDic()
+        public List<CommonDic> GetMachineDic(string name, int pageIndex, int pageSize)
         {
             string clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var conditions = new List<Condition>();
@@ -271,7 +271,32 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            if (!string.IsNullOrEmpty(name))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + name + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "Remark",
+                    DbColumnName = "a.remark",
+                    ParamValue = "%" + name + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
             List<CommonDic> machines = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetMachineDic, conditions);
+            /*
             foreach (CommonDic commDic in machines)
             {
                 var innerConditions = new List<Condition>();
@@ -287,8 +312,10 @@ namespace Fycn.Service
                 });
                 commDic.children = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetCabinetByMachineId, innerConditions);
             }
+            */
             return machines;
         }
+        
 
         //取图片资源字典
         public List<CommonDic> GetPictureDic()
