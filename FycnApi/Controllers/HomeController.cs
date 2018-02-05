@@ -34,6 +34,10 @@ namespace FycnApi.Controllers
         //机器 销售额
         public ResultObj<string> GetSalesAmountByMachine(string salesDateStart="", string salesDateEnd="", bool needPage=false,  int pageIndex = 1, int pageSize = 10)
         {
+            if (string.IsNullOrEmpty(salesDateStart)||string.IsNullOrEmpty(salesDateEnd))
+            {
+                return Content("");
+            }
             IStatistic istatistic = new StatisticService();
             string retutStr = JsonHandler.DataTable2Json(istatistic.GetSalesAmountByMachine(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize));
             if (!needPage)
