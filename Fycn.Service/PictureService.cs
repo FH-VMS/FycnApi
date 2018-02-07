@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fycn.Utility;
+using System.IO;
 
 namespace Fycn.Service
 {
@@ -118,20 +119,48 @@ namespace Fycn.Service
 
             try
             {
-                GenerateDal.BeginTransaction();
+                List<PictureModel> lstPic = GetResourceById(id);
+                if(lstPic.Count>0)
+                {
+                    GenerateDal.BeginTransaction();
 
-                PictureModel pictureInfo = new PictureModel();
-                pictureInfo.PicId = id;
-                GenerateDal.Delete<PictureModel>(CommonSqlKey.DeletePictureList, pictureInfo);
-                GenerateDal.CommitTransaction();
+                    PictureModel pictureInfo = lstPic[0];
+                    pictureInfo.PicId = id;
+                    GenerateDal.Delete<PictureModel>(CommonSqlKey.DeletePictureList, pictureInfo);
+                    string path = ConfigHandler.UploadUrl + pictureInfo.PicPath;
+                    if(File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                    GenerateDal.CommitTransaction();
+                    return 1;
+                }
 
-                return 1;
+                return 0;
+                
             }
             catch (Exception e)
             {
                 GenerateDal.RollBack();
                 return 0;
             }
+        }
+
+        // 根据id取资源路径
+        private List<PictureModel> GetResourceById(string id)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PicId",
+                DbColumnName = "pic_id",
+                ParamValue = id,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            return GenerateDal.LoadByConditions<PictureModel>(CommonSqlKey.GetResourceById, conditions);
         }
 
         public int UpdateData(PictureModel pictureInfo)

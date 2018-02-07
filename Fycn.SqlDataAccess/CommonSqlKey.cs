@@ -187,6 +187,9 @@ namespace Fycn.SqlDataAccess
         GetPayConfigList,
         GetPayConfigListCount,
         DeletePayConfig,
-        UpdatePayConfig
+        UpdatePayConfig,
+
+        //资源
+        GetResourceById
     }
 }
