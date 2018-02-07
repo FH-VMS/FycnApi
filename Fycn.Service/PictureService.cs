@@ -31,6 +31,20 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            if (pictureInfo.FileType != 0)
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "FileType",
+                    DbColumnName = "a.file_type",
+                    ParamValue = pictureInfo.FileType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
             conditions.AddRange(CreatePaginConditions(pictureInfo.PageIndex, pictureInfo.PageSize));
 
             return GenerateDal.LoadByConditions<PictureModel>(CommonSqlKey.GetPictureList, conditions);
@@ -56,6 +70,19 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            if (pictureInfo.FileType != 0)
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "FileType",
+                    DbColumnName = "a.file_type",
+                    ParamValue = pictureInfo.FileType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
 
 
             result = GenerateDal.CountByConditions(CommonSqlKey.GetPictureListCount, conditions);

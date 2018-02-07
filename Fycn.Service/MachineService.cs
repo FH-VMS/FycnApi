@@ -50,6 +50,16 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
             conditions.AddRange(CreatePaginConditions(machineInfo.PageIndex, machineInfo.PageSize));
             return GenerateDal.LoadByConditions<ProductForMachineModel>(CommonSqlKey.GetProductByMachine, conditions);
 
@@ -110,6 +120,16 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",

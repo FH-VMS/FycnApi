@@ -112,7 +112,7 @@ namespace FycnApi.Controllers
                 string guild = Guid.NewGuid().ToString();
                 pictureInfo.PicId = guild;
                 pictureInfo.PicName = fileName;
-                pictureInfo.PicPath = ConfigHandler.ResourceUrl+"/Attachment/" + fileName;
+                pictureInfo.PicPath = "/Attachment/" + fileName;
                 _ibase.PostData(pictureInfo);
                 lstCommonDic.Add(new CommonDic
                 {

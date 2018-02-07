@@ -38,7 +38,14 @@ namespace Fycn.Model.Resource
              set;
          }
 
-         public int PageIndex
+        [Column(Name = "file_type")]
+        public int FileType
+        {
+            get;
+            set;
+        }
+
+        public int PageIndex
          {
              get;
              set;

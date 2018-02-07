@@ -342,6 +342,16 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetPictureDic, conditions);
         }
 
