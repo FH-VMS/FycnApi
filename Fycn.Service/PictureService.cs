@@ -46,6 +46,17 @@ namespace Fycn.Service
                 });
             }
 
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
             conditions.AddRange(CreatePaginConditions(pictureInfo.PageIndex, pictureInfo.PageSize));
 
             return GenerateDal.LoadByConditions<PictureModel>(CommonSqlKey.GetPictureList, conditions);

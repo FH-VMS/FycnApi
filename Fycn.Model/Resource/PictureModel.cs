@@ -45,6 +45,12 @@ namespace Fycn.Model.Resource
             set;
         }
 
+        public string PicUrl
+        {
+            get;
+            set;
+        }
+
         public int PageIndex
          {
              get;
