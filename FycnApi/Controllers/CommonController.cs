@@ -113,6 +113,7 @@ namespace FycnApi.Controllers
                 pictureInfo.PicId = guild;
                 pictureInfo.PicName = fileName;
                 pictureInfo.PicPath = "/Attachment/" + fileName;
+                pictureInfo.UploadTime = DateTime.Now;
                 _ibase.PostData(pictureInfo);
                 lstCommonDic.Add(new CommonDic
                 {

@@ -57,6 +57,17 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "UploadTime",
+                DbColumnName = "upload_time",
+                ParamValue = "desc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
             conditions.AddRange(CreatePaginConditions(pictureInfo.PageIndex, pictureInfo.PageSize));
 
             return GenerateDal.LoadByConditions<PictureModel>(CommonSqlKey.GetPictureList, conditions);

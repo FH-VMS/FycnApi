@@ -45,6 +45,13 @@ namespace Fycn.Model.Resource
             set;
         }
 
+        [Column(Name = "upload_time")]
+        public DateTime UploadTime
+        {
+            get;
+            set;
+        }
+
         public string PicUrl
         {
             get;
