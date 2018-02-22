@@ -114,6 +114,7 @@ namespace FycnApi.Controllers
                 pictureInfo.PicName = fileName;
                 pictureInfo.PicPath = "/Attachment/" + fileName;
                 pictureInfo.UploadTime = DateTime.Now;
+                pictureInfo.FileType = FileType(readFile.Split('.')[1]);
                 _ibase.PostData(pictureInfo);
                 lstCommonDic.Add(new CommonDic
                 {
@@ -148,6 +149,28 @@ namespace FycnApi.Controllers
             */
             return Content(lstCommonDic);
         }
+
+        /// <summary>
+        /// 判断文件类型 1：图片  2：视频
+        /// </summary>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
+        private int FileType(string fileType)
+        {
+            string[] images = { "jpg", "jpeg", "png", "bmp", "gif" };
+            if (images.Contains(fileType.ToLower()))
+            {
+                return 1;
+            }
+
+            string[] videos = { "mp4","avi","mkv","flv","f4v","rmvb","rm","swf" };
+            if (videos.Contains(fileType.ToLower()))
+            {
+                return 2;
+            }
+            return 0;
+        }
+        
 
         // 图片字典
         public ResultObj<List<CommonDic>> GetPictureDic()
