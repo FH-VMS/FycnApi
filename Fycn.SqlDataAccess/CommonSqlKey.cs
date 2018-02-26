@@ -190,6 +190,10 @@ namespace Fycn.SqlDataAccess
         UpdatePayConfig,
 
         //资源
-        GetResourceById
+        GetResourceById,
+        GetAd,
+        DeleteAdRelation,
+        DeleteAd,
+        UpdateAd
     }
 }
