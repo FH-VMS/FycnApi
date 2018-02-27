@@ -196,7 +196,7 @@ namespace Fycn.Utility
         /// </summary>
         public static void WriteWebModels()
         {
-            var typeList = new List<Type>(Assembly.Load("Model").GetTypes()).FindAll(t => t.FullName.IndexOf("Sys", StringComparison.Ordinal) == -1);
+            var typeList = new List<Type>(Assembly.Load("Fycn.Model").GetTypes()).FindAll(t => t.FullName.IndexOf("Sys", StringComparison.Ordinal) == -1);
             typeList.Sort((x, y) => String.CompareOrdinal(x.FullName, y.FullName));
 
             var fs = new FileStream("E:\\models.js", FileMode.Create);
@@ -212,7 +212,9 @@ namespace Fycn.Utility
             sw.WriteLine("**************** */");
             sw.WriteLine("const Front = { ");
             sw.WriteLine("   BaseSetting: {");
-            sw.WriteLine("      PageSize: 10");
+            sw.WriteLine("      Root: rootApi,");
+            sw.WriteLine("      PageSize: __WEBCONFIG__.defaultpagesize,");
+            sw.WriteLine("      NoPage: __WEBCONFIG__.nopage");
             sw.WriteLine("   }, ");
             sw.WriteLine(" ");
 
@@ -277,7 +279,7 @@ namespace Fycn.Utility
                             sw.WriteLine();
                         }
                     }
-                    sw.WriteLine("      }");
+                    sw.Write("      }");
                     isFirstEntity = false;
                 }
                 sOldModule = sCurModule;
