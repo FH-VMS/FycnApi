@@ -43,5 +43,15 @@ namespace FycnApi.Controllers
         {
             return Content(_IBase.DeleteData(idList));
         }
+
+        public ResultObj<List<AdRelationModel>> GetRelationByIdAndType(int adId, int adType=0)
+        {
+            AdRelationModel adRelationInfo = new AdRelationModel();
+            adRelationInfo.AdId = adId;
+            adRelationInfo.AdType = adType;
+            IAdRelation _iRelation = new AdRelationService();
+            var adRelation = _iRelation.GetRelationByIdAndType(adRelationInfo);
+            return Content(adRelation);
+        }
     }
 }

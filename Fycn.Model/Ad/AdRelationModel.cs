@@ -34,5 +34,17 @@ namespace Fycn.Model.Ad
             get;
             set;
         }
+
+        public string ResourcePath
+        {
+            get;
+            set;
+        }
+
+        public string ResourceName
+        {
+            get;
+            set;
+        }
     }
 }

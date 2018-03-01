@@ -194,6 +194,7 @@ namespace Fycn.SqlDataAccess
         GetAd,
         DeleteAdRelation,
         DeleteAd,
-        UpdateAd
+        UpdateAd,
+        GetRelationByIdAndType
     }
 }

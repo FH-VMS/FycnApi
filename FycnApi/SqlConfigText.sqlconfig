@@ -181,5 +181,6 @@
   "GetAd": "SELECT a.*, b.client_name as UserClientName FROM table_ad a RIGHT JOIN (select * from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId))) b ON a.usr_client_id = b.client_id ",
   "DeleteAdRelation": "DELETE from table_ad_relation where ad_id=?p_AdId",
   "DeleteAd": "DELETE from table_ad where id=?p_Id",
-  "UpdateAd": "UPDATE table_ad SET  name =?p_Name,  client_id=?p_ClientId WHERE id =?p_Id"
+  "UpdateAd": "UPDATE table_ad SET  name =?p_Name,  client_id=?p_ClientId WHERE id =?p_Id",
+  "GetRelationByIdAndType": "SELECT *,b.pic_path as ResourcePath,b.pic_name as ResourceName FROM table_ad_relation a LEFT JOIN table_pic b ON a.source_id=b.pic_id "
 }
