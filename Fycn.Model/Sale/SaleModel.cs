@@ -168,7 +168,13 @@ namespace Fycn.Model.Sale
               set;
           }
 
-         public int PageIndex
+        public string MachineName
+        {
+            get;
+            set;
+        }
+
+        public int PageIndex
          {
              get;
              set;
