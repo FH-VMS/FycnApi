@@ -205,6 +205,7 @@ namespace Fycn.Service
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
                     saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
+                    saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid);
                     GenerateDal.Create(saleInfo);
                     //更新存存
                     UpdateCurrStock(keyJsonModel.m, keyTunnelInfo.tid, saleInfo.SalesNumber);
@@ -255,6 +256,7 @@ namespace Fycn.Service
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
                     saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
+                    saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid);
                     GenerateDal.Create(saleInfo);
                     //更新存存
                     UpdateCurrStock(keyJsonModel.m, keyTunnelInfo.tid, saleInfo.SalesNumber);
@@ -271,6 +273,35 @@ namespace Fycn.Service
             }
 
 
+        }
+
+        //根据商品id取商品名称
+        private string GetProductNameByWaresId(string waresId)
+        {
+            var conditions = new List<Condition>();
+
+            if (!string.IsNullOrEmpty(waresId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "WaresId",
+                    DbColumnName = "wares_id",
+                    ParamValue = waresId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetProductNameByWaresId, conditions);
+            if (result.Rows.Count > 0)
+            {
+                return result.Rows[0][0].ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
         //支付后更新减库存

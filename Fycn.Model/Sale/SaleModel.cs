@@ -137,7 +137,14 @@ namespace Fycn.Model.Sale
              set;
          }
 
-         public string SaleDateStart
+        [Column(Name = "wares_name")]
+        public string WaresName
+        {
+            get;
+            set;
+        }
+
+        public string SaleDateStart
          {
              get;
              set;

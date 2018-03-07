@@ -79,35 +79,6 @@ namespace FycnApi.Controllers
             
             return Content(users, pagination);
         }
-
-        public void TestInt()
-        {
-            byte[] m = ByteHelper.strToAscii("01");
-            byte[] x = ByteHelper.strToToHexByte("03E8");
-            string y = ByteHelper.GenerateRealityData(x, "intval");
-            int value = 4;
-            int hValue = (value >> 8) & 0xFF;
-            int lValue = value & 0xFF;
-            byte[] arr = new byte[] { (byte)hValue, (byte)lValue };
-        }
-
-        public string TestStr(string k)
-        {
-            
-            return System.Text.Encoding.Default.GetString(ByteHelper.strToToHexByte(k));
-        }
-
-        public string TestRedis()
-        {
-            RedisHelper redis0 = new RedisHelper(0);
-            return redis0.KeyExists("adfadfasd").ToString();
-        }
-
-        public string De(string code)
-        {
-            byte[] b = ByteHelper.strToToHexByte(code);
-            ByteHelper.Deencryption(b.Length - 5, b.Skip(4).Take(b.Length - 5).ToArray()).CopyTo(b,4);
-            return ByteHelper.byteToHexStr(b);
-        }
+        
     }
 }
