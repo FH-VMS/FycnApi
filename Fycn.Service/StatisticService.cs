@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Fycn.Utility;
 using Fycn.Model.Sys;
+using Fycn.Model.Statistic;
 
 namespace Fycn.Service
 {
@@ -206,6 +207,145 @@ namespace Fycn.Service
             result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetStatisticSalesMoneyByDate, conditions);
 
             return result;
+        }
+
+        /// <summary>
+        /// 取支付笔数
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassModel> GetPayNumbers()
+        {
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            var result = new List<ClassModel>();
+            var conditions = new List<Condition>();
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "ClientId",
+                DbColumnName = "",
+                ParamValue = userClientId,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+            result = GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetPayNumbers, conditions);
+            return result;
+        }
+
+        /// <summary>
+        /// 取销售额
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type)
+        {
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var conditions = new List<Condition>();
+          
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "ClientId",
+                DbColumnName = "",
+                ParamValue = clientId,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "a.trade_status",
+                ParamValue = 2,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            if (type == "year")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else if(type=="month")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date),month(a.sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else if (type == "day")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date),month(a.sales_date),day(sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else if(type == "week")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "week(a.sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+
+            return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupSalesMoney, conditions);
         }
     }
 }

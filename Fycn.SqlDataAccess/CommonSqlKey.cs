@@ -183,6 +183,8 @@ namespace Fycn.SqlDataAccess
         GetSalesAmountByMachine,
         GetSalesAmountByMachineCount,
         GetStatisticSalesMoneyByDate,
+        GetPayNumbers,
+        GetGroupSalesMoney,
 
         //支付配置
         GetPayConfigList,

@@ -1,4 +1,5 @@
 ﻿using Fycn.Model.Sale;
+using Fycn.Model.Statistic;
 using Fycn.Model.Sys;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,11 @@ namespace Fycn.Interface
 
         [Remark("统计销售额根据销售日期", ParmsNote = "", ReturnNote = "DataTable")]
         DataTable GetStatisticSalesMoneyByDate(SaleModel saleInfo);
+
+        [Remark("统计支付笔数", ParmsNote = "", ReturnNote = "列表实体")]
+        List<ClassModel> GetPayNumbers();
+
+        [Remark("根据时间分类取销售额", ParmsNote = "", ReturnNote = "列表实体")]
+        List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type);
     }
 }

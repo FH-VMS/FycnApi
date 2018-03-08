@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Fycn.Utility;
+using Fycn.Model.Statistic;
 
 namespace FycnApi.Controllers
 {
@@ -32,9 +33,9 @@ namespace FycnApi.Controllers
 
 
         //机器 销售额
-        public ResultObj<string> GetSalesAmountByMachine(string salesDateStart="", string salesDateEnd="", bool needPage=false,  int pageIndex = 1, int pageSize = 10)
+        public ResultObj<string> GetSalesAmountByMachine(string salesDateStart = "", string salesDateEnd = "", bool needPage = false, int pageIndex = 1, int pageSize = 10)
         {
-            if (string.IsNullOrEmpty(salesDateStart)||string.IsNullOrEmpty(salesDateEnd))
+            if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
             {
                 return Content("");
             }
@@ -49,7 +50,23 @@ namespace FycnApi.Controllers
 
             var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
             return Content(retutStr, pagination);
-          
+
+        }
+
+        public ResultObj<List<ClassModel>> GetPayNumbers()
+        {
+            IStatistic istatistic = new StatisticService();
+            return Content(istatistic.GetPayNumbers());
+        }
+
+        public ResultObj<List<ClassModel>> GetGroupSalesMoney(string salesDateStart = "", string salesDateEnd = "", string type = "")
+        {
+            if (string.IsNullOrEmpty(salesDateStart)|| string.IsNullOrEmpty(salesDateEnd) || string.IsNullOrEmpty(type))
+            {
+                return null;
+            }
+            IStatistic istatistic = new StatisticService();
+            return Content(istatistic.GetGroupSalesMoney( salesDateStart,  salesDateEnd,  type));
         }
     }
 }
