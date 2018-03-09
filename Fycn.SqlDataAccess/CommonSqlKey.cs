@@ -185,6 +185,7 @@ namespace Fycn.SqlDataAccess
         GetStatisticSalesMoneyByDate,
         GetPayNumbers,
         GetGroupSalesMoney,
+        GetGroupProduct,
 
         //支付配置
         GetPayConfigList,

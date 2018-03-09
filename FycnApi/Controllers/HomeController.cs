@@ -68,5 +68,15 @@ namespace FycnApi.Controllers
             IStatistic istatistic = new StatisticService();
             return Content(istatistic.GetGroupSalesMoney( salesDateStart,  salesDateEnd,  type));
         }
+
+        public ResultObj<List<ClassModel>> GetGroupProduct(string salesDateStart = "", string salesDateEnd = "")
+        {
+            if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
+            {
+                return null;
+            }
+            IStatistic istatistic = new StatisticService();
+            return Content(istatistic.GetGroupProduct(salesDateStart, salesDateEnd));
+        }
     }
 }

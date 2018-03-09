@@ -347,5 +347,90 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupSalesMoney, conditions);
         }
+
+
+        /// <summary>
+        /// 根据时间取商品销售数量
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd)
+        {
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var conditions = new List<Condition>();
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "ClientId",
+                DbColumnName = "",
+                ParamValue = clientId,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "a.trade_status",
+                ParamValue = 2,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "",
+                DbColumnName = "",
+                ParamValue = "a.wares_name",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "Count",
+                DbColumnName = "count(1)",
+                ParamValue = "desc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupProduct, conditions);
+        }
     }
 }
