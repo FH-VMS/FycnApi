@@ -409,6 +409,10 @@ namespace FycnApi.Controllers
                     Config.new_app_id = cModel.AliAppId;
                     Config.private_key = cModel.AliPrivateKey;
                     Config.alipay_public_key = cModel.AliPublicKey;
+                    if (Config.private_key.Length > 1000)
+                    {
+                        Config.new_sign_type = "RSA2";
+                    }
                 }
                 else if (isAliOrWx == "w")
                 {
