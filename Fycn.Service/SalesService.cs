@@ -401,7 +401,7 @@ namespace Fycn.Service
             return result;
         }
 
-        private string GetClientIds(string clientId)
+        public string GetClientIds(string clientId)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition

@@ -218,17 +218,41 @@ namespace Fycn.Service
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var result = new List<ClassModel>();
             var conditions = new List<Condition>();
+            string clientIds = new SalesService().GetClientIds(userClientId);
+            if(clientIds.Contains("self")){
+                clientIds = clientIds.Replace("self,","");
+            }
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND (",
+                    ParamName = "ClientIdA",
+                    DbColumnName = "b.client_id",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
 
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "ClientIdB",
+                    DbColumnName = "b.client_id",
+                    ParamValue = clientIds,
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = " ) ",
+                    Logic = ""
+                });
             conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
+                {
+                    LeftBrace = " ",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "a.trade_status",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
             result = GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetPayNumbers, conditions);
             return result;
         }
@@ -242,16 +266,31 @@ namespace Fycn.Service
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
             var conditions = new List<Condition>();
           
-            conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
+            string clientIds = new SalesService().GetClientIds(clientId.ToString());
+            if(clientIds.Contains("self")){
+                clientIds = clientIds.Replace("self,","");
+            }
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND (",
+                    ParamName = "ClientIdA",
+                    DbColumnName = "b.client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "ClientIdB",
+                    DbColumnName = "b.client_id",
+                    ParamValue = clientIds,
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = " ) ",
+                    Logic = ""
+                });
 
             conditions.Add(new Condition
             {
@@ -358,16 +397,31 @@ namespace Fycn.Service
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
             var conditions = new List<Condition>();
 
-            conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
+             string clientIds = new SalesService().GetClientIds(clientId.ToString());
+            if(clientIds.Contains("self")){
+                clientIds = clientIds.Replace("self,","");
+            }
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND (",
+                    ParamName = "ClientIdA",
+                    DbColumnName = "b.client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "ClientIdB",
+                    DbColumnName = "b.client_id",
+                    ParamValue = clientIds,
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = " ) ",
+                    Logic = ""
+                });
 
             conditions.Add(new Condition
             {
