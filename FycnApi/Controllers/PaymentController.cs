@@ -413,6 +413,10 @@ namespace FycnApi.Controllers
                     {
                         Config.new_sign_type = "RSA2";
                     }
+                    else
+                    {
+                        Config.new_sign_type = "RSA";
+                    }
                 }
                 else if (isAliOrWx == "w")
                 {
