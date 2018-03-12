@@ -127,6 +127,19 @@ namespace Fycn.SqlDataAccess
         GetClientParentIds,
         GetRefundDetail,
 
+        //现金销售
+        GetCashSaleList,
+        GetCashSaleCount,
+
+        //投币器
+        GetCashEquipmentList,
+        GetCashEquipmentCount,
+        UpdateCashStatus,
+        UpdateCashStock,
+        UpdateCoinStatus,
+        UpdateCoinStock,
+        DeleteCashSale,
+
         //货道信息
         GetTunnelInfoCount,
         GetTunnelInfo,
