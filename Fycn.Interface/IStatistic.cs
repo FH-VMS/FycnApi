@@ -24,6 +24,9 @@ namespace Fycn.Interface
         [Remark("统计支付笔数", ParmsNote = "", ReturnNote = "列表实体")]
         List<ClassModel> GetPayNumbers();
 
+        [Remark("根据时间统计支付笔数", ParmsNote = "", ReturnNote = "列表实体")]
+        List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type);
+
         [Remark("根据时间分类取销售额", ParmsNote = "", ReturnNote = "列表实体")]
         List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type);
 

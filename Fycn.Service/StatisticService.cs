@@ -258,6 +258,111 @@ namespace Fycn.Service
         }
 
         /// <summary>
+        /// 根据日期取支付笔数
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type)
+        {
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            var result = new List<ClassModel>();
+            var conditions = new List<Condition>();
+            string clientIds = new SalesService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = clientIds.Replace("self,", "");
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND (",
+                ParamName = "ClientIdA",
+                DbColumnName = "b.client_id",
+                ParamValue = userClientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " OR ",
+                ParamName = "ClientIdB",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ) ",
+                Logic = ""
+            });
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            if (type == "year")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else if (type == "month")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date),month(a.sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else if (type == "day")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "",
+                    ParamName = "",
+                    DbColumnName = "",
+                    ParamValue = "year(a.sales_date),month(a.sales_date),day(sales_date)",
+                    Operation = ConditionOperate.GroupBy,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            result = GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetPayNumbers, conditions);
+            return result;
+        }
+
+        /// <summary>
         /// 取销售额
         /// </summary>
         /// <returns></returns>
