@@ -199,6 +199,7 @@ namespace Fycn.SqlDataAccess
         GetPayNumbers,
         GetGroupSalesMoney,
         GetGroupProduct,
+        GetGroupMoneyByMachine,
 
         //支付配置
         GetPayConfigList,

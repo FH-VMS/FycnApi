@@ -31,6 +31,9 @@ namespace Fycn.Interface
         List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type);
 
         [Remark("根据时间分类商品", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd);
+        List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize);
+
+        [Remark("根据机器分类销售额", ParmsNote = "", ReturnNote = "列表实体")]
+        List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, bool needPage = true, int pageIndex = 1, int pageSize = 10);
     }
 }

@@ -79,14 +79,24 @@ namespace FycnApi.Controllers
             return Content(istatistic.GetPayNumbersByDate(salesDateStart, salesDateEnd, type));
         }
 
-        public ResultObj<List<ClassModel>> GetGroupProduct(string salesDateStart = "", string salesDateEnd = "")
+        public ResultObj<List<ClassModel>> GetGroupProduct(string salesDateStart = "", string salesDateEnd = "", bool needPage=false, int pageIndex=1, int pageSize=10)
         {
             if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
             {
                 return null;
             }
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetGroupProduct(salesDateStart, salesDateEnd));
+            return Content(istatistic.GetGroupProduct(salesDateStart, salesDateEnd, needPage, pageIndex,pageSize));
+        }
+
+        public ResultObj<List<ClassModel>> GetGroupMoneyByMachine(string salesDateStart = "", string salesDateEnd = "", bool needPage = false, int pageIndex = 1, int pageSize = 10)
+        {
+            if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
+            {
+                return null;
+            }
+            IStatistic istatistic = new StatisticService();
+            return Content(istatistic.GetGroupMoneyByMachine(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize));
         }
     }
 }

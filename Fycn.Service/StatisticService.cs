@@ -497,7 +497,7 @@ namespace Fycn.Service
         /// 根据时间取商品销售数量
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd)
+        public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, bool needPage = false, int pageIndex = 1, int pageSize = 10)
         {
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
             var conditions = new List<Condition>();
@@ -578,6 +578,11 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            if (needPage)
+            {
+                conditions.AddRange(CreatePaginConditions(pageIndex, pageSize));
+            }
+
             conditions.Add(new Condition
             {
                 LeftBrace = "",
@@ -590,6 +595,110 @@ namespace Fycn.Service
             });
 
             return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupProduct, conditions);
+        }
+
+        /// <summary>
+        /// 取销售额根据机器进行分类
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, bool needPage=true, int pageIndex=1, int pageSize=10)
+        {
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var conditions = new List<Condition>();
+
+            string clientIds = new SalesService().GetClientIds(clientId.ToString());
+            if (clientIds.Contains("self"))
+            {
+                clientIds = clientIds.Replace("self,", "");
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND (",
+                ParamName = "ClientIdA",
+                DbColumnName = "b.client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " OR ",
+                ParamName = "ClientIdB",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ) ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "a.trade_status",
+                ParamValue = 2,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "",
+                DbColumnName = "",
+                ParamValue = "a.machine_id",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Data",
+                DbColumnName = "SUM(a.trade_amount*a.reality_sale_number)",
+                ParamValue = "DESC",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (needPage)
+            {
+                conditions.AddRange(CreatePaginConditions(pageIndex, pageSize));
+            }
+
+            return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupMoneyByMachine, conditions);
         }
     }
 }
