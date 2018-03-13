@@ -428,6 +428,54 @@ namespace Fycn.Sockets.AsyncSocketCore
                     //SendMsg(returnByteA5, myClientSocket);
                     ByteHelper.Encryption(size68, finalResult68.ToArray()).CopyTo(returnByte68, 4);//加密
                     return returnByte68;
+                case "6B": // 终端->服务器 上报现金出货
+                    int size6B = 14; //加密的长度
+                    string machineNum6B = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte6B = new byte[19]; //返回的长度
+                    returnByte6B[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size6B).CopyTo(returnByte6B, 1); //size
+                    returnByte6B[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte6B, 5);//机器编号
+
+                    string tunnelId = ByteHelper.GenerateRealityData(data.Skip(13).Take(5).ToArray(), "stringval");
+                    string price = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+                   
+                   
+                    try
+                    {
+                        CashSaleModel cashInfo = new CashSaleModel();
+                        cashInfo.MachineId = machineNum6B;
+                        cashInfo.GoodsId = tunnelId;
+                        cashInfo.SalesPrices = (Convert.ToInt32(price) / 100).ToString();
+                        int result6B = new CashSaleService().PostData(cashInfo);
+                        if (result6B == 1)
+                        {
+                            returnByte6B[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte6B[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte6B[17] = 49;
+                    }
+
+                    returnByte6B[18] = 238;
+                    byte resultChunk6B = new byte();
+                    byte[] finalResult6B = returnByte6B.Skip(4).Take(size6B).ToArray();
+                    for (int i = 0; i < finalResult6B.Length; i++)
+                    {
+                        resultChunk6B ^= finalResult6B[i];
+                    }
+                    returnByte6B[3] = resultChunk6B;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size6B, finalResult6B.ToArray()).CopyTo(returnByte6B, 4);//加密
+                    return returnByte6B;
             }
             return new byte[0];
         }

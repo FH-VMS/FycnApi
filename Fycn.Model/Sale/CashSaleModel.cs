@@ -43,8 +43,15 @@ namespace Fycn.Model.Sale
             set;
         }
 
-        [Column(Name = "com_id")]
-        public string ComId
+        [Column(Name = "wares_id")]
+        public string WaresId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "wares_name")]
+        public string WaresName
         {
             get;
             set;

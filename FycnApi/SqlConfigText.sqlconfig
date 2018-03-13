@@ -80,6 +80,7 @@
   "UpdateTunnelConfig": "UPDATE table_goods_config SET  device_id =?p_DeviceId,  type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate WHERE machine_id =?p_MachineId",
   "UpdateTunnelPrice": "UPDATE table_goods_config SET wares_id=?p_WaresId,  cash_prices =?p_CashPrices,wpay_prices=?p_WpayPrices,  alipay_prices =?p_AlipayPrices, ic_prices=?p_IcPrices WHERE machine_id =?p_MachineId AND tunnel_id=?p_TunnelId AND cabinet_id=?p_CabinetId ",
   "GetPriceByWaresId": "select wares_unitprice from table_product ",
+  "GetWaresByTunnel": "SELECT b.wares_id as Id, b.wares_name as Name FROM table_goods_config a LEFT JOIN table_product b ON a.wares_id=b.wares_id ",
 
   "_comment": "商品列表",
   "GetProductList": "SELECT a.*,b.client_name as ClientName FROM table_product a INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",

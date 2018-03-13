@@ -90,6 +90,7 @@ namespace Fycn.SqlDataAccess
         UpdateTunnelConfig,
         GetPriceByWaresId,
         UpdateTunnelPrice,
+        GetWaresByTunnel,
 
         //商品列表
         GetProductList,
