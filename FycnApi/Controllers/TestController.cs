@@ -9,6 +9,7 @@ using FycnApi.Base;
 using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Model.Pay;
+using Fycn.PaymentLib.wx;
 
 namespace FycnApi.Controllers
 {
@@ -56,6 +57,17 @@ namespace FycnApi.Controllers
                   tn="20180123456789"
             });
             imachine.PostPayResultA(jsonModel, "20180123456789", "20180123456789");
+        }
+
+        public string TestCertifcate()
+        {
+
+            WxPayData jsApiParam = new WxPayData();
+            jsApiParam.SetValue("mch_id", "mch_id");
+            jsApiParam.SetValue("nonce_str", WxPayApi.GenerateNonceStr());
+            jsApiParam.SetValue("sign", jsApiParam.MakeSign());
+
+            return HttpService.Post(jsApiParam.ToXml(), "https://apitest.mch.weixin.qq.com/sandboxnew/pay/getsignkey", false, 5000);
         }
     }
 }

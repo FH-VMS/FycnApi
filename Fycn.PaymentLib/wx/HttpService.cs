@@ -67,7 +67,7 @@ namespace Fycn.PaymentLib.wx
 
                     string path = PathHelper.GetPhysicalApplicationPath();
                     //Log.Write("wwwww", path + WxPayConfig.SSLCERT_PATH);
-                    X509Certificate2 cert = new X509Certificate2(path + WxPayConfig.SSLCERT_PATH, WxPayConfig.SSLCERT_PASSWORD);
+                    X509Certificate2 cert = new X509Certificate2("/root/docker/PublishOutput/" + WxPayConfig.SSLCERT_PATH, WxPayConfig.SSLCERT_PASSWORD);
                     request.ClientCertificates.Add(cert);
                     //Log.Debug("WxPayApi", "PostXml used cert");
                 }
