@@ -131,6 +131,7 @@
   "UpdateCoinStatus": "UPDATE table_cash_equipment SET coin_status=?p_CoinStatus WHERE machine_id=?p_MachineId",
   "UpdateCoinStock": "UPDATE table_cash_equipment SET coin_stock=?p_CoinStock WHERE machine_id=?p_MachineId",
   "DeleteCashSale": "DELETE from table_cash_equipment WHERE id=?p_Id",
+  "IsExistEquipmentInfo": "SELECT COUNT(1) FROM table_cash_equipment",
 
   "_comment": "货道信息",
   "GetTunnelInfo": "SELECT a.wares_id as WaresId,c.wares_name as ProductName,a.machine_id,a.tunnel_id as TunnelId,a.cabinet_id,a.max_puts as MaxPuts, a.cash_prices as Price, b.* FROM table_goods_config a LEFT JOIN table_goods_status b ON a.machine_id=b.machine_id AND a.tunnel_id=b.goods_stu_id AND a.cabinet_id=b.cabinet_id LEFT JOIN table_product c ON a.wares_id=c.wares_id ",

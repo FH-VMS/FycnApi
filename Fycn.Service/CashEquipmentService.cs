@@ -86,6 +86,11 @@ namespace Fycn.Service
 
         public int UpdateData(CashEquipmentModel cashEquipmentInfo)
         {
+            if(!IsExistEquipmentInfo(cashEquipmentInfo.MachineId))
+            {
+               return PostData(cashEquipmentInfo);
+            }
+
             switch (cashEquipmentInfo.UpdateType)
             {
                 case "cash_status":
@@ -99,6 +104,25 @@ namespace Fycn.Service
 
             }
             return 0;
+        }
+
+        private bool IsExistEquipmentInfo(string machineId)
+        {
+            int result = 0;
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "machine_id",
+                ParamValue = machineId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            result = GenerateDal.CountByConditions(CommonSqlKey.IsExistEquipmentInfo, conditions);
+
+            return result>0;
         }
     }
 }

@@ -476,6 +476,210 @@ namespace Fycn.Sockets.AsyncSocketCore
                     //SendMsg(returnByteA5, myClientSocket);
                     ByteHelper.Encryption(size6B, finalResult6B.ToArray()).CopyTo(returnByte6B, 4);//加密
                     return returnByte6B;
+                case "6C": // 终端->服务器 纸币器状态
+                    int size6C = 14; //加密的长度
+                    string machineNum6C = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte6C = new byte[19]; //返回的长度
+                    returnByte6C[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size6C).CopyTo(returnByte6C, 1); //size
+                    returnByte6C[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte6C, 5);//机器编号
+
+                    string statusCode = ByteHelper.GenerateRealityData(data.Skip(13).Take(2).ToArray(), "stringval");
+                    //string price = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+
+
+                    try
+                    {
+                        CashEquipmentModel cashEquipment = new CashEquipmentModel();
+                        cashEquipment.MachineId = machineNum6C;
+                        cashEquipment.CashStatus = statusCode;
+                        cashEquipment.UpdateType = "cash_status";
+                       
+                        int result6C = new CashEquipmentService().UpdateData(cashEquipment);
+                        if (result6C == 1)
+                        {
+                            returnByte6C[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte6C[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte6C[17] = 49;
+                    }
+
+                    returnByte6C[18] = 238;
+                    byte resultChunk6C = new byte();
+                    byte[] finalResult6C = returnByte6C.Skip(4).Take(size6C).ToArray();
+                    for (int i = 0; i < finalResult6C.Length; i++)
+                    {
+                        resultChunk6C ^= finalResult6C[i];
+                    }
+                    returnByte6C[3] = resultChunk6C;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size6C, finalResult6C.ToArray()).CopyTo(returnByte6C, 4);//加密
+                    return returnByte6C;
+                case "6D": // 终端->服务器 纸币器当前存量
+                    int size6D = 14; //加密的长度
+                    string machineNum6D = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte6D = new byte[19]; //返回的长度
+                    returnByte6D[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size6D).CopyTo(returnByte6D, 1); //size
+                    returnByte6D[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte6D, 5);//机器编号
+
+                    string priceD = ByteHelper.GenerateRealityData(data.Skip(13).Take(10).ToArray(), "stringval");
+                    //string price = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+
+
+                    try
+                    {
+                        CashEquipmentModel cashEquipmentD = new CashEquipmentModel();
+                        cashEquipmentD.MachineId = machineNum6D;
+                        cashEquipmentD.CashStock = (Convert.ToInt32(priceD)/100).ToString();
+                        cashEquipmentD.UpdateType = "cash_stock";
+
+                        int result6D = new CashEquipmentService().UpdateData(cashEquipmentD);
+                        if (result6D == 1)
+                        {
+                            returnByte6D[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte6D[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte6D[17] = 49;
+                    }
+
+                    returnByte6D[18] = 238;
+                    byte resultChunk6D = new byte();
+                    byte[] finalResult6D = returnByte6D.Skip(4).Take(size6D).ToArray();
+                    for (int i = 0; i < finalResult6D.Length; i++)
+                    {
+                        resultChunk6D ^= finalResult6D[i];
+                    }
+                    returnByte6D[3] = resultChunk6D;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size6D, finalResult6D.ToArray()).CopyTo(returnByte6D, 4);//加密
+                    return returnByte6D;
+                case "6E": // 终端->服务器 硬币器状态
+                    int size6E = 14; //加密的长度
+                    string machineNum6E = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte6E = new byte[19]; //返回的长度
+                    returnByte6E[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size6E).CopyTo(returnByte6E, 1); //size
+                    returnByte6E[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte6E, 5);//机器编号
+
+                    string coinStatusE = ByteHelper.GenerateRealityData(data.Skip(13).Take(2).ToArray(), "stringval");
+                    //string price = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+
+
+                    try
+                    {
+                        CashEquipmentModel cashEquipmentE = new CashEquipmentModel();
+                        cashEquipmentE.MachineId = machineNum6E;
+                        cashEquipmentE.CoinStatus = coinStatusE;
+                        cashEquipmentE.UpdateType = "coin_status";
+
+                        int result6E = new CashEquipmentService().UpdateData(cashEquipmentE);
+                        if (result6E == 1)
+                        {
+                            returnByte6E[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte6E[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte6E[17] = 49;
+                    }
+
+                    returnByte6E[18] = 238;
+                    byte resultChunk6E = new byte();
+                    byte[] finalResult6E = returnByte6E.Skip(4).Take(size6E).ToArray();
+                    for (int i = 0; i < finalResult6E.Length; i++)
+                    {
+                        resultChunk6E ^= finalResult6E[i];
+                    }
+                    returnByte6E[3] = resultChunk6E;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size6E, finalResult6E.ToArray()).CopyTo(returnByte6E, 4);//加密
+                    return returnByte6E;
+                case "6F": // 终端->服务器 硬币器当前存量
+                    int size6F = 14; //加密的长度
+                    string machineNum6F = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte6F = new byte[19]; //返回的长度
+                    returnByte6F[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size6F).CopyTo(returnByte6F, 1); //size
+                    returnByte6F[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte6F, 5);//机器编号
+
+                    byte[] datasF = data.Skip(13).Take(data.Length - 13).ToArray();
+                    int loopTimesF = (datasF.Length / 10);
+
+                    List<CoinStockModel> lstCoin = new List<CoinStockModel>();
+
+                    for (int i = 0; i < loopTimesF; i++)
+                    {
+                        CoinStockModel coinStock = new CoinStockModel();
+                        coinStock.Money = ByteHelper.GenerateRealityData(data.Skip(13 + i * 10).Take(5).ToArray(), "stringval");
+                        coinStock.Number = ByteHelper.GenerateRealityData(data.Skip(18 + i * 10).Take(5).ToArray(), "stringval");
+                    }
+
+                    try
+                    {
+                        CashEquipmentModel cashEquipmentF = new CashEquipmentModel();
+                        cashEquipmentF.MachineId = machineNum6F;
+                        cashEquipmentF.CoinStock = JsonHandler.GetJsonStrFromObject(lstCoin, false);
+                        cashEquipmentF.UpdateType = "coin_stock";
+
+                        int result6F = new CashEquipmentService().UpdateData(cashEquipmentF);
+                        if (result6F == 1)
+                        {
+                            returnByte6F[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte6F[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte6F[17] = 49;
+                    }
+
+                    returnByte6F[18] = 238;
+                    byte resultChunk6F = new byte();
+                    byte[] finalResult6F = returnByte6F.Skip(4).Take(size6F).ToArray();
+                    for (int i = 0; i < finalResult6F.Length; i++)
+                    {
+                        resultChunk6F ^= finalResult6F[i];
+                    }
+                    returnByte6F[3] = resultChunk6F;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size6F, finalResult6F.ToArray()).CopyTo(returnByte6F, 4);//加密
+                    return returnByte6F;
             }
             return new byte[0];
         }

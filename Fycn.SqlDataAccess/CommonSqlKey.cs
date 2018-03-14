@@ -140,6 +140,7 @@ namespace Fycn.SqlDataAccess
         UpdateCoinStatus,
         UpdateCoinStock,
         DeleteCashSale,
+        IsExistEquipmentInfo,
 
         //货道信息
         GetTunnelInfoCount,
