@@ -49,7 +49,20 @@ namespace FycnApi
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder
-                    //.WithOrigins("http://localhost:9090")
+                    .WithOrigins("http://120.27.217.224")
+                    //.AllowAnyOrigin()
+                    .WithMethods("GET", "POST", "PUT", "DELETE")
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
+                    );
+            });
+           
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigin",
+                    builder => builder
+                    //.WithOrigins("http://120.27.217.224:9090")
                     .AllowAnyOrigin()
                     .WithMethods("GET", "POST", "PUT", "DELETE")
                     .AllowAnyHeader()
@@ -57,11 +70,13 @@ namespace FycnApi
                     .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
                     );
             });
+           
             services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
+                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAllOrigin"));
             });
-
+           
             services.AddMvc()
                 .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
                 .AddWebApiConventions();
@@ -91,6 +106,7 @@ namespace FycnApi
 
             //配置跨域
             app.UseCors("AllowSpecificOrigin");
+            app.UseCors("AllowAllOrigin");
             app.UseStaticHttpContext();
 
             //app.UseMvcWithDefaultRoute();

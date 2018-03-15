@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Controllers
 {
-    //[DisableCors]
     public class CommonController : ApiBaseController
     {
         public ResultObj<List<MenuModel>> GetMenus()

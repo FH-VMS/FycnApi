@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace FycnApi.Controllers
 {
-    public class AndroidController : ApiBaseController
+    public class AndroidController : ApiBaseWithAllOriginController
     {
         public string RequestPayUrl(string machineId,string waresId)
         {

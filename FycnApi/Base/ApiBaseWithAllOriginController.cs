@@ -1,20 +1,17 @@
-﻿using Fycn.Model.Sys;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using Fycn.Utility;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Fycn.Model.Sys;
+using Fycn.Utility;
 using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Base
 {
-    [EnableCors("AllowSpecificOrigin")]
-    public class ApiBaseController:Controller
+    [EnableCors("AllowAllOrigin")]
+    public class ApiBaseWithAllOriginController : Controller
     {
         protected string ContentWithJson<T>(T obj, ResultCode retCode, string retMsg)
         {
@@ -61,8 +58,5 @@ namespace FycnApi.Base
         {
             get { return LogFactory.GetInstance(); }
         }
-
-
-        
     }
 }

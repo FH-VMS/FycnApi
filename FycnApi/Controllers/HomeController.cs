@@ -98,5 +98,6 @@ namespace FycnApi.Controllers
             IStatistic istatistic = new StatisticService();
             return Content(istatistic.GetGroupMoneyByMachine(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize));
         }
+        
     }
 }

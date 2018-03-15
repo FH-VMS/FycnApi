@@ -13,7 +13,7 @@ using Fycn.PaymentLib.wx;
 
 namespace FycnApi.Controllers
 {
-    public class TestController : ApiBaseController
+    public class TestController : ApiBaseWithAllOriginController
     {
         public void TestInt()
         {
@@ -69,5 +69,6 @@ namespace FycnApi.Controllers
 
             return HttpService.Post(jsApiParam.ToXml(), "https://apitest.mch.weixin.qq.com/sandboxnew/pay/getsignkey", false, 5000);
         }
+        
     }
 }
