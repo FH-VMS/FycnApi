@@ -45,6 +45,7 @@ namespace FycnApi
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.Configure<WebConfig>(Configuration.GetSection("AppConfiguration"));
             services.AddCors();
+           
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
@@ -57,7 +58,7 @@ namespace FycnApi
                     .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
                     );
             });
-           
+         
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigin",
@@ -70,13 +71,13 @@ namespace FycnApi
                     .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
                     );
             });
-           
+           /*
             services.Configure<MvcOptions>(options =>
             {
-                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
+                //options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
                 options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAllOrigin"));
             });
-           
+           */
             services.AddMvc()
                 .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
                 .AddWebApiConventions();
@@ -105,8 +106,8 @@ namespace FycnApi
             //app.UseStaticFiles("Attachment");
 
             //配置跨域
-            app.UseCors("AllowSpecificOrigin");
-            app.UseCors("AllowAllOrigin");
+            //app.UseCors("AllowSpecificOrigin");
+            //app.UseCors("AllowAllOrigin");
             app.UseStaticHttpContext();
 
             //app.UseMvcWithDefaultRoute();
