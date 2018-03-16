@@ -59,7 +59,7 @@ namespace FycnApi.Controllers
             imachine.PostPayResultA(jsonModel, "20180123456789", "20180123456789");
         }
 
-        public Task<string> TestCertifcate()
+        public string TestCertifcate()
         {
 
             WxPayData jsApiParam = new WxPayData();
@@ -67,7 +67,7 @@ namespace FycnApi.Controllers
             jsApiParam.SetValue("nonce_str", WxPayApi.GenerateNonceStr());
             jsApiParam.SetValue("sign", jsApiParam.MakeSign());
 
-            return HttpService.PostNew(jsApiParam.ToXml(), "https://apitest.mch.weixin.qq.com/sandboxnew/pay/getsignkey", true, 5000);
+            return HttpService.Post(jsApiParam.ToXml(), "https://apitest.mch.weixin.qq.com/sandboxnew/pay/getsignkey", true, 10000);
         }
         
     }
