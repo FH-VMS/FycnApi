@@ -8,6 +8,9 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using Fycn.Utility;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Fycn.PaymentLib.wx.HttpExtension;
 
 namespace Fycn.PaymentLib.wx
 {
@@ -67,7 +70,13 @@ namespace Fycn.PaymentLib.wx
 
                     string path = PathHelper.GetPhysicalApplicationPath();
                     //Log.Write("wwwww", path + WxPayConfig.SSLCERT_PATH);
-                    X509Certificate2 cert = new X509Certificate2(path + WxPayConfig.SSLCERT_PATH, WxPayConfig.SSLCERT_PASSWORD);
+                    //X509Certificate2 cert = new X509Certificate2(path + WxPayConfig.SSLCERT_PATH, WxPayConfig.SSLCERT_PASSWORD);
+                    //string certificateText = File.ReadAllText(@"/root/docker/PublishOutput/cert/apiclient_cert.pem");
+                    //string privateKeyText = File.ReadAllText(@"/root/docker/PublishOutput/cert/apiclient_key.pem");
+
+                    //ICertificateProvider provider = new CertificateFromFileProvider(certificateText, privateKeyText);
+                    //X509Certificate2 cert = provider.Certificate;
+                    X509Certificate2 cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", WxPayConfig.SSLCERT_PASSWORD);
                     request.ClientCertificates.Add(cert);
                     //Log.Debug("WxPayApi", "PostXml used cert");
                 }
@@ -115,7 +124,7 @@ namespace Fycn.PaymentLib.wx
                 {
                     response.Close();
                 }
-                if(request != null)
+                if (request != null)
                 {
                     request.Abort();
                 }
@@ -171,7 +180,7 @@ namespace Fycn.PaymentLib.wx
             }
             catch (System.Threading.ThreadAbortException e)
             {
-                Log.Error("HttpService","Thread - caught ThreadAbortException - resetting.");
+                Log.Error("HttpService", "Thread - caught ThreadAbortException - resetting.");
                 Log.Error("Exception message: {0}", e.Message);
                 System.Threading.Thread.ResetAbort();
             }
@@ -203,6 +212,49 @@ namespace Fycn.PaymentLib.wx
                 }
             }
             return result;
+        }
+
+        public async static Task<string> PostNew(string xml, string url, bool isUseCert, int timeout)
+        {
+            //HttpMessageHandler
+            try
+            {
+               
+                var req = new FyHttpRequest
+                {
+                    HttpMethod = HttpMethod.Post,
+                    AddressUrl = url,
+                    CustomBody = xml
+                   
+                };
+
+             
+                var reqHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (msg, c, chain, sslErrors) => sslErrors == SslPolicyErrors.None
+                };
+                if (isUseCert)
+                {
+                    string path = PathHelper.GetPhysicalApplicationPath();
+                    var cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", WxPayConfig.SSLCERT_PASSWORD);
+                    reqHandler.ClientCertificates.Add(cert);
+                }
+                
+               
+                var resp = await req.RestSend(new HttpClient(reqHandler));
+                if (resp.IsSuccessStatusCode)
+                {
+                    string contentStr = await resp.Content.ReadAsStringAsync();
+                    return "456";
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return "123";
         }
     }
 }

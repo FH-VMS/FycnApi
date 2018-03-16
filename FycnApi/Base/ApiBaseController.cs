@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Base
 {
+    //[EnableCors("AllowAllOrigin")]
     [EnableCors("AllowSpecificOrigin")]
     public class ApiBaseController:Controller
     {
