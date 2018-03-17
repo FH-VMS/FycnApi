@@ -343,7 +343,7 @@ namespace FycnApi.Controllers
                         Content = tunnel.TunnelId,
                         Size = 5
                     });
-                    int price = Convert.ToInt32(Decimal.Parse(tunnel.Price.ToString()));
+                    int price = Convert.ToInt32(Decimal.Parse(tunnel.Price.ToString())*100);
                     string priceContent = price.ToString();
                     int fillZero = 5 - price.ToString().Length;
                     for(int i = 0; i < fillZero; i++)
