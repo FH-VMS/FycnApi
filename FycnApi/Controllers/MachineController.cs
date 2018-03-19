@@ -219,12 +219,14 @@ namespace FycnApi.Controllers
                 xmlDoc.LoadXml(postStr);
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
+                /*
                 RedisHelper helper = new RedisHelper(0);
                 
                 if (!helper.KeyExists(tradeNoNode.InnerText))
                 {
                     return Content(1);
                 }
+                */
                 /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
@@ -239,8 +241,8 @@ namespace FycnApi.Controllers
                     /*******************************放到微信支付通知参数里，因参数只支付最大128个字符长度，所以注释修改*****************************/
                     //XmlNode tunnelNode = xmlDoc.SelectSingleNode("xml/attach");
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(tunnelNode.InnerText);
-                   
-                    string jsonProduct = helper.StringGet(tradeNoNode.InnerText);
+                    XmlNode attachNode = xmlDoc.SelectSingleNode("xml/attach");
+                    string jsonProduct = attachNode.InnerText;//helper.StringGet(tradeNoNode.InnerText);
                     //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
@@ -274,7 +276,7 @@ namespace FycnApi.Controllers
                         //log.Info(tradeNoNode.InnerText);
                         SocketHelper.GenerateCommand(10, 41,66, lstCommand);
                         //删除文件
-                        helper.KeyDelete(tradeNoNode.InnerText);
+                        //helper.KeyDelete(tradeNoNode.InnerText);
                         //FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
                     }
                    

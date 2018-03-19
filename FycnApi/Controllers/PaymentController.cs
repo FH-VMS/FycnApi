@@ -152,9 +152,11 @@ namespace FycnApi.Controllers
                 JsApi.payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
 
                 //写入交易中转
+                /*
                 RedisHelper helper = new RedisHelper(0);
                 
                 helper.StringSet(JsApi.payInfo.trade_no.Trim(), JsApi.payInfo.jsonProduct, new TimeSpan(0, 10, 30));
+                */
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = JsApi.GetUnifiedOrderResult();
