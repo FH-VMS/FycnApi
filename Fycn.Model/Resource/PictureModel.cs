@@ -52,6 +52,13 @@ namespace Fycn.Model.Resource
             set;
         }
 
+        [Column(Name = "size")]
+        public long Size
+        {
+            get;
+            set;
+        }
+
         public string PicUrl
         {
             get;

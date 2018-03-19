@@ -77,9 +77,10 @@ namespace FycnApi.Controllers
         // 上传图片
         public ResultObj<List<CommonDic>> PostUpload()
         {
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var hfc = Request.Form.Files;
             const string localPath = "Attachment/";
-            var path = ConfigHandler.UploadUrl + "/" + localPath;
+            var path = ConfigHandler.UploadUrl + "/" + localPath+ userClientId+"/";
             List<CommonDic> lstCommonDic = new List<CommonDic>();
             if (hfc.Count == 0)
             {
@@ -98,7 +99,7 @@ namespace FycnApi.Controllers
                                 .Parse(file.ContentDisposition)
                                 .FileName
                                 .Trim('"');
-                var fileName = readFile.Split('.')[0] + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfffff") + "." + readFile.Split('.')[1];
+                var fileName = readFile;
                 //这个hostingEnv.WebRootPath就是要存的地址可以改下
                 string fileNamePath = path + $@"{fileName}";
                 size += file.Length;
@@ -111,10 +112,23 @@ namespace FycnApi.Controllers
                 string guild = Guid.NewGuid().ToString();
                 pictureInfo.PicId = guild;
                 pictureInfo.PicName = fileName;
-                pictureInfo.PicPath = "/Attachment/" + fileName;
+                pictureInfo.PicPath = "/Attachment/"+ userClientId+"/" + fileName;
                 pictureInfo.UploadTime = DateTime.Now;
                 pictureInfo.FileType = FileType(readFile.Split('.')[1]);
-                _ibase.PostData(pictureInfo);
+                pictureInfo.Size = size;
+                pictureInfo.PageIndex = 1;
+                pictureInfo.PageSize = 2;
+                List<PictureModel> lstPic= _ibase.GetAll(pictureInfo);
+                if (lstPic.Count > 0)
+                {
+                    pictureInfo.PicId = lstPic[0].PicId;
+                    _ibase.UpdateData(pictureInfo);
+                }
+                else
+                {
+                    _ibase.PostData(pictureInfo);
+                }
+               
                 lstCommonDic.Add(new CommonDic
                 {
                     Id = guild,

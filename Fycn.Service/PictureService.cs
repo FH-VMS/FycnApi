@@ -46,6 +46,20 @@ namespace Fycn.Service
                 });
             }
 
+            if (!string.IsNullOrEmpty(pictureInfo.PicName))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "PicName",
+                    DbColumnName = "a.pic_name",
+                    ParamValue = pictureInfo.PicName,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",
@@ -67,6 +81,8 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+
+           
 
             conditions.AddRange(CreatePaginConditions(pictureInfo.PageIndex, pictureInfo.PageSize));
 
