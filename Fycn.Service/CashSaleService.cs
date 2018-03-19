@@ -28,6 +28,63 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            if (!string.IsNullOrEmpty(cashSaleInfo.MachineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + cashSaleInfo.MachineId + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.SaleDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = cashSaleInfo.SaleDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.SaleDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(cashSaleInfo.SaleDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.TradeNo))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeNo",
+                    DbColumnName = "a.trade_no",
+                    ParamValue = "%" + cashSaleInfo.TradeNo.Trim() + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
             conditions.AddRange(CreatePaginConditions(cashSaleInfo.PageIndex, cashSaleInfo.PageSize));
 
             return GenerateDal.LoadByConditions<CashSaleModel>(CommonSqlKey.GetCashSaleList, conditions);
@@ -51,6 +108,63 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.MachineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + cashSaleInfo.MachineId + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.SaleDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = cashSaleInfo.SaleDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.SaleDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.sales_date",
+                    ParamValue = Convert.ToDateTime(cashSaleInfo.SaleDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(cashSaleInfo.TradeNo))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeNo",
+                    DbColumnName = "a.trade_no",
+                    ParamValue = "%" + cashSaleInfo.TradeNo.Trim() + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
 
 
 

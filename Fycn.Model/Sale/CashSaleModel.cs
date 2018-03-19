@@ -85,6 +85,24 @@ namespace Fycn.Model.Sale
             set;
         }
 
+        public string SaleDateStart
+        {
+            get;
+            set;
+        }
+
+        public string SaleDateEnd
+        {
+            get;
+            set;
+        }
+
+        public string MachineName
+        {
+            get;
+            set;
+        }
+
         public int PageIndex
         {
             get;
