@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Fycn.Model.Sale
 {
-    [Table("table_sales_cashless")]
+    [Table("table_sales_cash")]
     public class CashSaleModel
     {
         [Column(Name = "sales_no")]
