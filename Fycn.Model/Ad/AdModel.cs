@@ -6,9 +6,10 @@ using System.Text;
 
 namespace Fycn.Model.Ad
 {
+    [Table("table_ad")]
     public class AdModel
     {
-        [Column(Name = "id",IsPrimaryKey =true)]
+        [Column(Name = "id")]
         public string Id
         {
             get;

@@ -47,16 +47,23 @@ namespace Fycn.Service
         {
             try
             {
+                string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
                 GenerateDal.BeginTransaction();
-                GenerateDal.Create(adInfo);
-                if (adInfo.Reources != null && adInfo.Reources.Count > 0)
+                if(string.IsNullOrEmpty(adInfo.Id))
                 {
-                    foreach (var item in adInfo.Reources)
+                    adInfo.Id = Guid.NewGuid().ToString();
+                } else
+                {
+                    DeleteData(adInfo.Id);
+                }
+                adInfo.ClientId = userClientId;
+                GenerateDal.Create(adInfo);
+                if (adInfo.Relations != null && adInfo.Relations.Count > 0)
+                {
+                    foreach (var item in adInfo.Relations)
                     {
-                        var tmpInfo = new AdRelationModel();
-                        tmpInfo.AdId = adInfo.Id;
-                        tmpInfo.SourceId = item.PicId;
-                        new AdRelationService().PostAdRelationData(tmpInfo);
+                        item.AdId = adInfo.Id;
+                        new AdRelationService().PostAdRelationData(item);
                     }
                 }
                 GenerateDal.CommitTransaction();
@@ -84,7 +91,7 @@ namespace Fycn.Service
                 AdModel adInfo = new AdModel();
                 adInfo.Id = id;
                 GenerateDal.Delete<AdModel>(CommonSqlKey.DeleteAd, adInfo);
-                new CabinetService().DeleteData(adInfo.Id.ToString());
+                new AdRelationService().DeleteData(adInfo.Id.ToString());
                 GenerateDal.CommitTransaction();
 
                 return 1;

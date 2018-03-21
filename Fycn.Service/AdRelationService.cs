@@ -1,6 +1,7 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Ad;
 using Fycn.SqlDataAccess;
+using Fycn.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -64,7 +65,29 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "sequence",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
             return GenerateDal.LoadByConditions<AdRelationModel>(CommonSqlKey.GetRelationByIdAndType, conditions);
         }
     }

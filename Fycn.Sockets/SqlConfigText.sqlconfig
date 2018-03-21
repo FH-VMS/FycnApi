@@ -204,5 +204,5 @@
   "DeleteAdRelation": "DELETE from table_ad_relation where ad_id=?p_AdId",
   "DeleteAd": "DELETE from table_ad where id=?p_Id",
   "UpdateAd": "UPDATE table_ad SET  name =?p_Name,  client_id=?p_ClientId WHERE id =?p_Id",
-  "GetRelationByIdAndType": "SELECT *,b.pic_path as ResourcePath,b.pic_name as ResourceName FROM table_ad_relation a LEFT JOIN table_pic b ON a.source_id=b.pic_id "
+  "GetRelationByIdAndType": "SELECT *,a.source_id as PicId,CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl,b.pic_name as PicName FROM table_ad_relation a LEFT JOIN table_pic b ON a.source_id=b.pic_id "
 }

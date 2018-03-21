@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Fycn.Model.Ad
 {
+    [Table("table_ad_relation")]
     public class AdRelationModel
     {
+
         [Column(Name = "ad_id")]
         public string AdId
         {
@@ -35,13 +37,19 @@ namespace Fycn.Model.Ad
             set;
         }
 
-        public string ResourcePath
+        public string PicId
         {
             get;
             set;
         }
 
-        public string ResourceName
+        public string PicUrl
+        {
+            get;
+            set;
+        }
+
+        public string PicName
         {
             get;
             set;
