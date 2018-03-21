@@ -34,7 +34,7 @@ namespace Fycn.Service
         public int DeleteData(string id)
         {
             AdRelationModel adRelationInfo = new AdRelationModel();
-            adRelationInfo.AdId = int.Parse(id);
+            adRelationInfo.AdId = id;
             return GenerateDal.Delete<AdRelationModel>(CommonSqlKey.DeleteAdRelation, adRelationInfo);
         }
 

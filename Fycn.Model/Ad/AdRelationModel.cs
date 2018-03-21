@@ -8,7 +8,7 @@ namespace Fycn.Model.Ad
     public class AdRelationModel
     {
         [Column(Name = "ad_id")]
-        public int AdId
+        public string AdId
         {
             get;
             set;

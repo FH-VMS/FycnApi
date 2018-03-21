@@ -82,7 +82,7 @@ namespace Fycn.Service
             {
                 GenerateDal.BeginTransaction();
                 AdModel adInfo = new AdModel();
-                adInfo.Id = int.Parse(id);
+                adInfo.Id = id;
                 GenerateDal.Delete<AdModel>(CommonSqlKey.DeleteAd, adInfo);
                 new CabinetService().DeleteData(adInfo.Id.ToString());
                 GenerateDal.CommitTransaction();

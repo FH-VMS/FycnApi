@@ -9,7 +9,7 @@ namespace Fycn.Model.Ad
     public class AdModel
     {
         [Column(Name = "id",IsPrimaryKey =true)]
-        public int Id
+        public string Id
         {
             get;
             set;
@@ -30,6 +30,12 @@ namespace Fycn.Model.Ad
         }
 
         public List<PictureModel> Reources
+        {
+            get;
+            set;
+        }
+
+        public List<AdRelationModel> Relations
         {
             get;
             set;
