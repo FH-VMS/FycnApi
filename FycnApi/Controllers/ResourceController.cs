@@ -22,7 +22,7 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<PictureModel>> GetData(int fileType = 0, int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<PictureModel>> GetData(string fileType="", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();

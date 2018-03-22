@@ -168,20 +168,20 @@ namespace FycnApi.Controllers
         /// </summary>
         /// <param name="fileType"></param>
         /// <returns></returns>
-        private int FileType(string fileType)
+        private string FileType(string fileType)
         {
             string[] images = { "jpg", "jpeg", "png", "bmp", "gif" };
             if (images.Contains(fileType.ToLower()))
             {
-                return 1;
+                return "1";
             }
 
-            string[] videos = { "mp4","avi","mkv","flv","f4v","rmvb","rm","swf" };
+            string[] videos = { "mp4","avi","mkv","flv","f4v","rmvb","rm","swf", "wmv" };
             if (videos.Contains(fileType.ToLower()))
             {
-                return 2;
+                return "2";
             }
-            return 0;
+            return "";
         }
         
 

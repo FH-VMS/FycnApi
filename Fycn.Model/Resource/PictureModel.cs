@@ -39,7 +39,7 @@ namespace Fycn.Model.Resource
          }
 
         [Column(Name = "file_type")]
-        public int FileType
+        public string FileType
         {
             get;
             set;

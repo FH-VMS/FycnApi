@@ -32,7 +32,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            if (pictureInfo.FileType != 0)
+            if (!string.IsNullOrEmpty(pictureInfo.FileType))
             {
                 conditions.Add(new Condition
                 {
@@ -109,7 +109,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            if (pictureInfo.FileType != 0)
+            if (!string.IsNullOrEmpty(pictureInfo.FileType))
             {
                 conditions.Add(new Condition
                 {
