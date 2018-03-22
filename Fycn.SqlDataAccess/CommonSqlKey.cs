@@ -114,6 +114,7 @@ namespace Fycn.SqlDataAccess
         GetPictureListCount,
         UpdatePictureList,
         DeletePictureList,
+        GetAdSource,
 
         //销售
         UpdateSale,

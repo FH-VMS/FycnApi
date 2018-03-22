@@ -90,5 +90,47 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<AdRelationModel>(CommonSqlKey.GetRelationByIdAndType, conditions);
         }
+
+        public List<SourceToMachineModel> GetAdSource(string machineId)
+        {
+            if (string.IsNullOrEmpty(machineId))
+            {
+                return null;
+            }
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "c.machine_id",
+                ParamValue = machineId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "a.ad_type",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<SourceToMachineModel>(CommonSqlKey.GetAdSource, conditions);
+        }
     }
 }

@@ -15,6 +15,7 @@ using log4net;
 using System.Web;
 using Fycn.Model.Machine;
 using System.Linq;
+using Fycn.Model.Ad;
 
 namespace FycnApi.Controllers
 {
@@ -79,6 +80,12 @@ namespace FycnApi.Controllers
             
             return Content(users, pagination);
         }
-        
+
+        public ResultObj<List<SourceToMachineModel>> GetAd(string machineId)
+        {
+            IAdRelation _iad = new AdRelationService();
+            return Content(_iad.GetAdSource(machineId));
+        }
+
     }
 }

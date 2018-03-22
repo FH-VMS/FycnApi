@@ -105,6 +105,7 @@
   "DeletePictureList": "DELETE from table_pic where pic_id=?p_PicId",
   "UpdatePictureList": "UPDATE table_pic SET  pic_name =?p_PicName, client_id=?p_ClientId, size=?p_Size WHERE pic_id =?p_PicId",
   "GetResourceById": "SELECT * FROM table_pic ",
+  "GetAdSource": "SELECT d.pic_id as SourceId,CONCAT(?p_ResourceUrl,d.pic_path) AS SourceUrl, a.sequence as Sequence, a.ad_type AS AdType from table_ad_relation a LEFT JOIN table_ad b ON a.ad_id=b.id LEFT JOIN table_machine c ON b.id=c.ad_id LEFT JOIN table_pic d ON a.source_id=d.pic_id ",
 
   "_comment": "销售",
   "UpdateSale": "UPDATE table_sales_cashless SET  trade_status =?p_TradeStatus WHERE sales_ic_id =?p_SalesIcId",
