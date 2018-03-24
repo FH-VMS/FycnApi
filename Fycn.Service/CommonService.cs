@@ -322,6 +322,7 @@ namespace Fycn.Service
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             var conditions = new List<Condition>();
+            /*
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",
@@ -332,13 +333,15 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            */
+            string clientIds = GetChildAndParentIds(userClientId);
             conditions.Add(new Condition
             {
-                LeftBrace = "  AND ",
-                ParamName = "AClientId",
-                DbColumnName = "a.client_id",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.Equal,
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -463,7 +466,7 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetMachineNameById, conditions);
         }
 
-        // 取机型字典模板
+        // 取支付配置模板
         public List<CommonDic> GetPayConfigDic(string clientId)
         {
             string clientIds = GetChildAndParentIds(clientId);
