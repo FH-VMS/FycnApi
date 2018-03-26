@@ -13,5 +13,8 @@ namespace Fycn.Interface
 
         [Remark("取机器列表数量", ParmsNote = "", ReturnNote = "返回机器列表数量")]
         int GetMachinesCount(CommonDic commonDic, int pageIndex, int pageSize);
+
+        [Remark("复制机器", ParmsNote = "", ReturnNote = "")]
+        int CopyOneMachine(string oldMachineId, string newMachineId, List<string> copyItem);
     }
 }

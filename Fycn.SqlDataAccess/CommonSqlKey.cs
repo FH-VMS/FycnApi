@@ -216,6 +216,12 @@ namespace Fycn.SqlDataAccess
         DeleteAdRelation,
         DeleteAd,
         UpdateAd,
-        GetRelationByIdAndType
+        GetRelationByIdAndType,
+
+        //复制机器
+        GetTunnelConfigById,
+        GetTunnelStatusById,
+        GetCopyMachineById,
+        GetMachineConfigById
     }
 }

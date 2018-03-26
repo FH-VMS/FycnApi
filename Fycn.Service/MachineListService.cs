@@ -225,6 +225,8 @@ namespace Fycn.Service
                 mcService.DeleteData(id);
                 TunnelConfigService tcService = new TunnelConfigService();
                 tcService.DeleteData(id);
+                TunnelInfoService tiService = new TunnelInfoService();
+                tiService.DeleteData(id);
                 GenerateDal.CommitTransaction();
                 //操作日志
                 OperationLogService operationService = new OperationLogService();

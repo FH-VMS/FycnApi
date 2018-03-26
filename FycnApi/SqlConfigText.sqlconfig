@@ -205,5 +205,10 @@
   "DeleteAdRelation": "DELETE from table_ad_relation where ad_id=?p_AdId",
   "DeleteAd": "DELETE from table_ad where id=?p_Id",
   "UpdateAd": "UPDATE table_ad SET  name =?p_Name,  client_id=?p_ClientId WHERE id =?p_Id",
-  "GetRelationByIdAndType": "SELECT *,a.source_id as PicId,CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl,b.pic_name as PicName FROM table_ad_relation a LEFT JOIN table_pic b ON a.source_id=b.pic_id "
+  "GetRelationByIdAndType": "SELECT *,a.source_id as PicId,CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl,b.pic_name as PicName FROM table_ad_relation a LEFT JOIN table_pic b ON a.source_id=b.pic_id ",
+  "_comment": "复制机器",
+  "GetMachineConfigById": "SELECT * from table_machine_config ",
+  "GetTunnelConfigById": "SELECT * from table_goods_config ",
+  "GetTunnelStatusById": "SELECT * from table_goods_status ",
+  "GetCopyMachineById": "SELECT * from table_machine "
 }

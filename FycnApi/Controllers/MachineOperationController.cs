@@ -24,5 +24,18 @@ namespace FycnApi.Controllers
             var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
             return Content(imachine.GetMachines(dic, pageIndex, pageSize), pagination);
         }
+
+        // 复制机器
+        public ResultObj<int> CopyOneMachine(string oldMachineId, string newMachineId, [FromBody]List<string> copyItem)
+        {
+            ICommon icommon = new CommonService();
+            int result = icommon.CheckMachineId(newMachineId);
+            if (result > 0)
+            {
+                return Content(0, ResultCode.Fail, "该机器编号已存在");
+            }
+            IMachineOperation imachine = new MachineOperationService();
+            return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, copyItem));
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace Fycn.Model.Machine
          }
 
          [Column(Name = "latest_date")]
-         public DateTime LatestDate
+         public DateTime? LatestDate
          {
              get;
              set;
