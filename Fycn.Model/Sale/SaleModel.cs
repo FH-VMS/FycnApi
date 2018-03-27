@@ -144,6 +144,27 @@ namespace Fycn.Model.Sale
             set;
         }
 
+        [Column(Name = "merchant_id")]
+        public string MerchantId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "buyer_id")]
+        public string BuyerId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "is_weixin_concern")]
+        public string IsWeixinConcern
+        {
+            get;
+            set;
+        }
+
         public string SaleDateStart
          {
              get;

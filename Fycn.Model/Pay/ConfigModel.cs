@@ -122,6 +122,13 @@ namespace Fycn.Model.Pay
             set;
         }
 
+        [Column(Name = "config_type")]
+        public string ConfigType
+        {
+            get;
+            set;
+        }
+
         public int PageIndex
         {
             get;

@@ -183,7 +183,7 @@ namespace Fycn.Service
 
 
         //微信支付结果插入数据库
-        public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo)
+        public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo, string sellerId, string buyerId, string isConcern)
         {
             try
             {
@@ -202,6 +202,9 @@ namespace Fycn.Service
                     saleInfo.TradeNo = tradeNo;
                     saleInfo.GoodsId = keyTunnelInfo.tid;
                     saleInfo.TradeStatus = 1;
+                    saleInfo.MerchantId = sellerId;
+                    saleInfo.BuyerId = buyerId;
+                    saleInfo.IsWeixinConcern = isConcern;
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
                     saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
@@ -224,7 +227,7 @@ namespace Fycn.Service
         }
 
         //支付宝支付结果插入数据库
-        public int PostPayResultA(KeyJsonModel keyJsonModel, string outTradeNo, string tradeNo)
+        public int PostPayResultA(KeyJsonModel keyJsonModel, string outTradeNo, string tradeNo, string sellerId, string buyerId)
         {
             try
             {
@@ -253,6 +256,8 @@ namespace Fycn.Service
                     saleInfo.ComId = tradeNo;
                     saleInfo.GoodsId = keyTunnelInfo.tid;
                     saleInfo.TradeStatus = 1;
+                    saleInfo.MerchantId = sellerId;
+                    saleInfo.BuyerId = buyerId;
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
                     saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;

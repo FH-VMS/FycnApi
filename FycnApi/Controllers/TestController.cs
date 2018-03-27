@@ -56,7 +56,7 @@ namespace FycnApi.Controllers
                   wid= "f2408a65-3355-49dc-b0ad-0f98861943fa",
                   tn="20180123456789"
             });
-            imachine.PostPayResultA(jsonModel, "20180123456789", "20180123456789");
+           // imachine.PostPayResultA(jsonModel, "20180123456789", "20180123456789");
         }
 
         public string TestCertifcate()

@@ -360,8 +360,8 @@ namespace FycnApi.Controllers
             model.TimeoutExpress="1m";
             model.ProductCode = "";
             model.QuitUrl = "";
-            
-           
+
+
             AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
             // 设置支付完成同步回调地址
             request.SetReturnUrl(Config.return_url);

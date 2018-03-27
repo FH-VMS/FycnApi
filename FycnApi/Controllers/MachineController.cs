@@ -243,10 +243,13 @@ namespace FycnApi.Controllers
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(tunnelNode.InnerText);
                     XmlNode attachNode = xmlDoc.SelectSingleNode("xml/attach");
                     string jsonProduct = attachNode.InnerText;//helper.StringGet(tradeNoNode.InnerText);
+                    XmlNode mchIdNode = xmlDoc.SelectSingleNode("xml/mch_id"); // 商户号
+                    XmlNode openidNode = xmlDoc.SelectSingleNode("xml/openid"); //买家唯一标识
+                    XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText);
+                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText);
                     if(result == 1)
                     {
                         List<CommandModel> lstCommand = new List<CommandModel>();
@@ -331,6 +334,8 @@ namespace FycnApi.Controllers
                     //string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["body"];
                     //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     string tradeNo = Fycn.Utility.HttpContext.Current.Request.Form["trade_no"];
+                    string sellerId = Fycn.Utility.HttpContext.Current.Request.Form["seller_id"]; //买家合作者id
+                    string buyerId = Fycn.Utility.HttpContext.Current.Request.Form["buyer_logon_id"]; //买家账号
                     log.Info(Fycn.Utility.HttpContext.Current.Request.Form["passback_params"]);
                     //string jsonProduct = helper.StringGet(outTradeNo);
                     string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["passback_params"];
@@ -342,7 +347,7 @@ namespace FycnApi.Controllers
 
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo);
+                    int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo, sellerId, buyerId);
                     if (result == 1)
                     {
                         //Fycn.Utility.HttpContext.Current.Response.Write("success");
