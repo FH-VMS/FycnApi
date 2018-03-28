@@ -78,6 +78,10 @@ namespace FycnApi.Controllers
         public ResultObj<List<CommonDic>> PostUpload()
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return Content(new List<CommonDic>(), ResultCode.Fail, "上传失败");
+            }
             var hfc = Request.Form.Files;
             const string localPath = "Attachment/";
             var path = ConfigHandler.UploadUrl + "/" + localPath+ userClientId+"/";

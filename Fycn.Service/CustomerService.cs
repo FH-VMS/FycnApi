@@ -17,8 +17,15 @@ namespace Fycn.Service
         public List<CustomerModel> GetAll(CustomerModel customerInfo)
         {
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             var userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
 
             var conditions = new List<Condition>();
 
@@ -102,8 +109,15 @@ namespace Fycn.Service
         {
             var result = 0;
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return 0;
+            }
             var userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             var dics = new Dictionary<string, object>();
 
             dics.Add("ClientName", customerInfo.ClientName + "%");
@@ -132,8 +146,16 @@ namespace Fycn.Service
         {
             int result;
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-            if(!string.IsNullOrEmpty(userClientId))
+            if (string.IsNullOrEmpty(userAccount))
+            {
+                return 0;
+            }
+            if (!string.IsNullOrEmpty(userClientId))
             {
                 customerInfo.ClientFatherId = userClientId;
             }
@@ -162,6 +184,10 @@ namespace Fycn.Service
         public int DeleteData(string id)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             try
             {
                 

@@ -15,7 +15,10 @@ namespace Fycn.Service
         public List<ConfigModel> GetAll(ConfigModel configInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
 
             conditions.Add(new Condition
@@ -40,7 +43,10 @@ namespace Fycn.Service
             var result = 0;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -71,6 +77,10 @@ namespace Fycn.Service
             int result;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             configInfo.ClientId = userClientId;
             configInfo.WxSslcertPath = "cert/"+configInfo.WxMchId+"/apiclient_cert.p12";
             configInfo.WxSslcertPassword = configInfo.WxMchId;

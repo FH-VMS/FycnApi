@@ -1,5 +1,6 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Ad;
+using Fycn.Model.Sys;
 using Fycn.SqlDataAccess;
 using Fycn.Utility;
 using System;
@@ -14,6 +15,10 @@ namespace Fycn.Service
         public List<AdModel> GetAll(AdModel adInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -48,6 +53,10 @@ namespace Fycn.Service
             try
             {
                 string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+                if (string.IsNullOrEmpty(userClientId))
+                {
+                    return 0;
+                }
                 GenerateDal.BeginTransaction();
                 if(string.IsNullOrEmpty(adInfo.Id))
                 {
@@ -110,6 +119,10 @@ namespace Fycn.Service
             {
                 GenerateDal.BeginTransaction();
                 string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+                if (string.IsNullOrEmpty(userClientId))
+                {
+                    return 0;
+                }
                 adInfo.ClientId = userClientId;
                 GenerateDal.Update(CommonSqlKey.UpdateAd, adInfo);
                 new AdRelationService().DeleteData(adInfo.Id.ToString());

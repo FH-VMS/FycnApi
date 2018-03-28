@@ -14,8 +14,15 @@ namespace Fycn.Service
         public List<TotalMoneyModel> GetAll(TotalMoneyModel totalMoneyInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             var dics = new Dictionary<string, object>();
 
             if (userStatus == "100" || userStatus == "99")

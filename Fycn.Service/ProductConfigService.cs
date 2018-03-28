@@ -14,7 +14,15 @@ namespace Fycn.Service
         public List<ProductConfigModel> GetAll(ProductConfigModel productConfigInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             var result = new List<ProductConfigModel>();
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(productConfigInfo.WaresConfigName))
@@ -65,7 +73,15 @@ namespace Fycn.Service
             var result = 0;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(productConfigInfo.WaresConfigName))
             {

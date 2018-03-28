@@ -17,7 +17,10 @@ namespace Fycn.Service
         public List<PictureModel> GetAll(PictureModel pictureInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
           
 
@@ -95,7 +98,10 @@ namespace Fycn.Service
             var result = 0;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
           
             conditions.Add(new Condition
@@ -139,6 +145,10 @@ namespace Fycn.Service
         {
             int result;
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             pictureInfo.ClientId = userClientId;
             result = GenerateDal.Create(pictureInfo);
 
@@ -204,6 +214,10 @@ namespace Fycn.Service
         public int UpdateData(PictureModel pictureInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             pictureInfo.ClientId = userClientId;
             return GenerateDal.Update(CommonSqlKey.UpdatePictureList, pictureInfo);
         }

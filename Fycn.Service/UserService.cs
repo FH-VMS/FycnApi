@@ -16,7 +16,15 @@ namespace Fycn.Service
         public List<UserModel> GetAll(UserModel userInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");
@@ -138,7 +146,15 @@ namespace Fycn.Service
 
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return 0;
+            }
             /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");

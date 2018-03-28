@@ -21,7 +21,11 @@ namespace Fycn.Service
         /// <returns></returns>
         public DataTable GetSalesAmountByMachine(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (string.IsNullOrEmpty(clientId.ToString()))
             {
@@ -90,7 +94,11 @@ namespace Fycn.Service
         {
             var result = 0;
 
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -146,7 +154,15 @@ namespace Fycn.Service
         public DataTable GetStatisticSalesMoneyByDate(SaleModel saleInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             DataTable result = new DataTable();
             var conditions = new List<Condition>();
 
@@ -216,6 +232,10 @@ namespace Fycn.Service
         public List<ClassModel> GetPayNumbers()
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var result = new List<ClassModel>();
             var conditions = new List<Condition>();
             string clientIds = new SalesService().GetClientIds(userClientId);
@@ -264,6 +284,10 @@ namespace Fycn.Service
         public List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var result = new List<ClassModel>();
             var conditions = new List<Condition>();
             string clientIds = new SalesService().GetClientIds(userClientId);
@@ -368,7 +392,11 @@ namespace Fycn.Service
         /// <returns></returns>
         public List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
           
             string clientIds = new SalesService().GetClientIds(clientId.ToString());
@@ -499,7 +527,11 @@ namespace Fycn.Service
         /// <returns></returns>
         public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, bool needPage = false, int pageIndex = 1, int pageSize = 10)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
 
              string clientIds = new SalesService().GetClientIds(clientId.ToString());
@@ -603,7 +635,11 @@ namespace Fycn.Service
         /// <returns></returns>
         public List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, bool needPage=true, int pageIndex=1, int pageSize=10)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
 
             string clientIds = new SalesService().GetClientIds(clientId.ToString());

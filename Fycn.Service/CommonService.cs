@@ -18,6 +18,10 @@ namespace Fycn.Service
         public List<MenuModel> GetMenus(string userAccount)
         {
             string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(sts))
+            {
+                return null;
+            }
             List<MenuModel> menuList = null;
             if (sts == "100")
             {
@@ -78,6 +82,14 @@ namespace Fycn.Service
         public List<DicModel> GetRank(string id)
         {
             string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(sts))
+            {
+                return null;
+            }
+            if (string.IsNullOrEmpty(sts))
+            {
+                return null;
+            }
             if (sts == "100")
             {
                 var rankList = GetDic(id);
@@ -110,7 +122,15 @@ namespace Fycn.Service
         public List<CommonDic> GetClientDic()
         {
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (userStatus == "100" || userStatus == "99")
             {
@@ -175,7 +195,15 @@ namespace Fycn.Service
         public List<CommonDic> GetUserDic()
         {
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (userStatus == "100" || userStatus == "99")
             {
@@ -204,8 +232,20 @@ namespace Fycn.Service
         public List<CommonDic> GetAuthDic()
         {
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             string accessId = HttpContextHandler.GetHeaderObj("UserAccessId").ToString();
+            if (string.IsNullOrEmpty(accessId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (userStatus == "100" || userStatus == "99")
             {
@@ -260,6 +300,10 @@ namespace Fycn.Service
         public List<CommonDic> GetMachineDic(string name, int pageIndex, int pageSize)
         {
             string clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -321,6 +365,10 @@ namespace Fycn.Service
         public List<CommonDic> GetPictureDic()
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             /*
             conditions.Add(new Condition
@@ -362,7 +410,15 @@ namespace Fycn.Service
         public List<CommonDic> GetProductDic()
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(sts))
+            {
+                return null;
+            }
             var result = new List<CommonDic>();
             var conditions = new List<Condition>();
             if (sts == "100" || sts == "99")
@@ -409,7 +465,11 @@ namespace Fycn.Service
         /// <returns></returns>
         public DataTable GetTotalMachineCount()
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId");
+            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (string.IsNullOrEmpty(clientId.ToString()))
             {

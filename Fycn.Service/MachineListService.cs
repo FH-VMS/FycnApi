@@ -17,7 +17,10 @@ namespace Fycn.Service
         public List<MachineListModel> GetAll(MachineListModel machineListInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
             {
@@ -107,7 +110,10 @@ namespace Fycn.Service
             var result = 0;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
             {

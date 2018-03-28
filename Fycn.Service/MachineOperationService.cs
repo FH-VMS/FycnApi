@@ -14,6 +14,10 @@ namespace Fycn.Service
         public List<CommonDic> GetMachines(CommonDic commonDic,int pageIndex,int pageSize)
         {
             string clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -58,6 +62,10 @@ namespace Fycn.Service
         public int GetMachinesCount(CommonDic commonDic, int pageIndex, int pageSize)
         {
             string clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {

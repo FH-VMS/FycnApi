@@ -14,11 +14,11 @@ namespace Fycn.Utility
         {
             object wiiCookies = HttpContext.Current.Request.Headers["FH-COOKIES"];
             if(wiiCookies == null){
-                return null;
+                return string.Empty;
             }
-            if (string.IsNullOrEmpty(wiiCookies.ToString())) return null;
+            if (string.IsNullOrEmpty(wiiCookies.ToString())) return string.Empty;
             var cookies = JsonHandler.GetObjectFromJson<Dictionary<string, object>>(wiiCookies.ToString());
-            return cookies.ContainsKey(key) ? cookies[key] : null;
+            return cookies.ContainsKey(key) ? cookies[key] : string.Empty;
         }
 
 

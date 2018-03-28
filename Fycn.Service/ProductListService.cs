@@ -17,7 +17,15 @@ namespace Fycn.Service
         public List<ProductListModel> GetAll(ProductListModel productListInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return null;
+            }
             var result = new List<ProductListModel>();
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(productListInfo.WaresName))
@@ -82,7 +90,15 @@ namespace Fycn.Service
             var result = 0;
 
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(userStatus))
+            {
+                return 0;
+            }
             var conditions = new List<Condition>();
             if (!string.IsNullOrEmpty(productListInfo.WaresName))
             {
@@ -147,6 +163,10 @@ namespace Fycn.Service
         {
             int result;
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return 0;
+            }
             string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
             productListInfo.WaresId = Guid.NewGuid().ToString();
             productListInfo.Creator = userAccount;
