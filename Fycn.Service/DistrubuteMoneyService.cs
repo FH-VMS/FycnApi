@@ -12,5 +12,10 @@ namespace Fycn.Service
         {
             return 0;
         }
+
+        public int PostMoney(string tradeNo)
+        {
+            return 0;
+        }
     }
 }

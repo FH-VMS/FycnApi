@@ -63,6 +63,10 @@ namespace FycnApi.Controllers
 
         public ResultObj<List<CommonDic>> GetUserByClientId(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                return Content(new List<CommonDic>());
+            }
             ICommon menusService = new CommonService();
             return Content(menusService.GetUserByClientId(id));
         }
@@ -221,8 +225,23 @@ namespace FycnApi.Controllers
         //取支付配置字典
         public ResultObj<List<CommonDic>> GetPayConfigDic(string clientId)
         {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return Content(new List<CommonDic>());
+            }
             ICommon commonService = new CommonService();
             return Content(commonService.GetPayConfigDic(clientId));
+        }
+
+        //取广告模板字典
+        public ResultObj<List<CommonDic>> GetAdDic(string clientId)
+        {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return Content(new List<CommonDic>());
+            }
+            ICommon commonService = new CommonService();
+            return Content(commonService.GetAdDic(clientId));
         }
     }
 }

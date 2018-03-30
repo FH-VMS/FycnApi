@@ -121,7 +121,21 @@ namespace Fycn.Model.Machine
              set;
          }
 
-         public string LatestOnline
+        [Column(Name = "ad_id")]
+        public string AdId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "ad_push_date")]
+        public DateTime AdPushDate
+        {
+            get;
+            set;
+        }
+
+        public string LatestOnline
          {
              get;
              set;

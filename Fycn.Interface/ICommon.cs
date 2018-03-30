@@ -64,5 +64,8 @@ namespace Fycn.Interface
          [Remark("取支付配置字典", ParmsNote = "", ReturnNote = "字典实体列表")]
          List<CommonDic> GetPayConfigDic(string clientId);
 
+        [Remark("取广告模板字典", ParmsNote = "", ReturnNote = "字典实体列表")]
+        List<CommonDic> GetAdDic(string clientId);
+
     }
 }

@@ -8,5 +8,6 @@ namespace Fycn.Interface
     public interface IDistrubuteMoney
     {
         Task<int> PostMoneyAsync(string tradeNo);
+        int PostMoney(string tradeNo);
     }
 }

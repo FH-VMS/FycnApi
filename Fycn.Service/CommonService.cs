@@ -242,10 +242,6 @@ namespace Fycn.Service
                 return null;
             }
             string accessId = HttpContextHandler.GetHeaderObj("UserAccessId").ToString();
-            if (string.IsNullOrEmpty(accessId))
-            {
-                return null;
-            }
             var conditions = new List<Condition>();
             if (userStatus == "100" || userStatus == "99")
             {
@@ -570,6 +566,27 @@ namespace Fycn.Service
             {
                 return result.Rows[0][0].ToString();
             }
+        }
+
+        //取广告模板
+        public List<CommonDic> GetAdDic(string clientId)
+        {
+            string clientIds = GetChildAndParentIds(clientId);
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = " "
+            });
+
+
+            return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetAdDic, conditions);
+
         }
     }
 }
