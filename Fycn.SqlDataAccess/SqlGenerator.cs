@@ -149,6 +149,7 @@ namespace Fycn.SqlDataAccess
 
         private List<T> GetFromDictionary<T>(CommonSqlKey sqlKey, IDictionary<string, object> parmDic)
         {
+            DbConnection dbConn = null;
             DbDataReader dr = null;
             var tLst = new List<T>();
             var logStep = 0;
@@ -162,7 +163,7 @@ namespace Fycn.SqlDataAccess
                 logStep++;
                 sqlParameters = sqlKey == CommonSqlKey.Null ? null : SqlConstructor.FilterParmsWithList(sqlParameters, CommSqlText.SqlParms[sqlKey]);
                 logStep++;
-                DbConnection dbConn = null;
+                
                 dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters, ref dbConn);
                 logStep = 100;
                 if (dr == null)
@@ -180,7 +181,7 @@ namespace Fycn.SqlDataAccess
             }
             catch (MySqlException ee)
             {
-                Logger.LogInfo(String.Format("GetFromDictionary ERROR STEP:{0}, EXCEPTION:{1}", logStep, ee.Message), 0, LogType.ERROR);
+                //Logger.LogInfo(String.Format("GetFromDictionary ERROR STEP:{0}, EXCEPTION:{1}", logStep, ee.Message), 0, LogType.ERROR);
                 throw ee;
             }
             finally
@@ -191,6 +192,12 @@ namespace Fycn.SqlDataAccess
                     dr.Dispose();
 
                 }
+                if(dbConn!=null){
+                    dbConn.Close();
+                    dbConn.Dispose();
+                }
+            
+            
             }
             return tLst;
         }
@@ -274,13 +281,29 @@ namespace Fycn.SqlDataAccess
             var sqlTxt = SqlConstructor.GetSelectSqlByObj(parm);
             var tLst = new List<T>();
             DbConnection dbConn = null;
-            var dr = DbHelper.ExecuteReader(sqlTxt, ref dbConn);
-            while (dr.Read())
+            try
             {
-                var t = MakeMapToObject<T>(dr);
-                if (t != null)
-                    tLst.Add(t);
+               var dr = DbHelper.ExecuteReader(sqlTxt, ref dbConn);
+                while (dr.Read())
+                {
+                    var t = MakeMapToObject<T>(dr);
+                    if (t != null)
+                        tLst.Add(t);
+                }
             }
+            catch(Exception e)
+            {
+
+            }
+            finally
+            {
+                if(dbConn!=null)
+                {
+                    dbConn.Close();
+                    dbConn.Dispose();
+                }
+            }
+           
             return tLst;
         }
 
@@ -563,7 +586,12 @@ namespace Fycn.SqlDataAccess
                 {
                     dr.Close();
                     dr.Dispose();
-                    DbHelper.Close(dbConn, false);
+                    //DbHelper.Close(dbConn, false);
+                }
+                if(dbConn!=null)
+                {
+                      dbConn.Close();
+                      dbConn.Dispose();
                 }
             }
             return tLst;
@@ -572,6 +600,7 @@ namespace Fycn.SqlDataAccess
         private List<T> GetFromDictionaryByConditionsWithOrder<T>(CommonSqlKey sqlKey, IDictionary<string, object> parmDic, IList<Condition> conditions, string orderField = "", string orderType = "")
         {
             DbDataReader dr = null;
+            DbConnection dbConn = null;
             var tLst = new List<T>();
             var logStep = 0;
             try
@@ -589,7 +618,7 @@ namespace Fycn.SqlDataAccess
 
                 logStep++;
                 logStep++;
-                DbConnection dbConn = null;
+                
                 dr = DbHelper.ExecuteReader(sqlTxt, sqlParameters, ref dbConn);
                 logStep = 100;
                 if (dr == null)
@@ -617,6 +646,11 @@ namespace Fycn.SqlDataAccess
                     dr.Close();
                     dr.Dispose();
 
+                }
+                if(dbConn!=null)
+                {
+                    dbConn.Close();
+                    dbConn.Dispose();
                 }
             }
             return tLst;
