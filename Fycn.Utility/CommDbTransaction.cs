@@ -111,6 +111,7 @@ namespace Fycn.Utility
             if (CurTran == null) return;
             if (CurTran.Connection != null)
             {
+                CurTran.Connection.Close();
                 CurTran.Connection.Dispose();
             }
             CurTran.Dispose();
