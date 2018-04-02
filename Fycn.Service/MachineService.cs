@@ -183,7 +183,7 @@ namespace Fycn.Service
 
 
         //微信支付结果插入数据库
-        public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo, string sellerId, string buyerId, string isConcern)
+        public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo, string sellerId, string buyerId, string isConcern,string payDate)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace Fycn.Service
                     saleInfo.MachineId = keyJsonModel.m;
                     saleInfo.SalesDate = DateTime.Now;
                     saleInfo.SalesNumber = string.IsNullOrEmpty(keyTunnelInfo.n) ? 1 : Convert.ToInt32(keyTunnelInfo.n);
-                    saleInfo.PayDate = DateTime.Now;
+                    saleInfo.PayDate = TransStrToDateTime(payDate, "w");
                     saleInfo.PayInterface = "微信";
                     saleInfo.PayType = "微信";
                     saleInfo.TradeNo = tradeNo;
@@ -227,7 +227,7 @@ namespace Fycn.Service
         }
 
         //支付宝支付结果插入数据库
-        public int PostPayResultA(KeyJsonModel keyJsonModel, string outTradeNo, string tradeNo, string sellerId, string buyerId)
+        public int PostPayResultA(KeyJsonModel keyJsonModel, string outTradeNo, string tradeNo, string sellerId, string buyerId, string payDate)
         {
             try
             {
@@ -249,7 +249,7 @@ namespace Fycn.Service
                     saleInfo.MachineId = keyJsonModel.m;
                     saleInfo.SalesDate = DateTime.Now;
                     saleInfo.SalesNumber = string.IsNullOrEmpty(keyTunnelInfo.n) ? 1 : Convert.ToInt32(keyTunnelInfo.n);
-                    saleInfo.PayDate = DateTime.Now;
+                    saleInfo.PayDate = TransStrToDateTime(payDate,"a");
                     saleInfo.PayInterface = "支付宝";
                     saleInfo.PayType = "支付宝";
                     saleInfo.TradeNo = outTradeNo;
@@ -278,6 +278,41 @@ namespace Fycn.Service
             }
 
 
+        }
+
+        private DateTime TransStrToDateTime(string strDate, string wOrA)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(strDate))
+                {
+                    return DateTime.Now;
+                }
+                if (wOrA == "w")
+                {
+                    if (strDate.Length == 14)
+                    {
+                        string year = strDate.Substring(0, 4);
+                        string month = strDate.Substring(4, 2);
+                        string day = strDate.Substring(6, 2);
+                        string hour = strDate.Substring(8, 2);
+                        string minute = strDate.Substring(10, 2);
+                        string second = strDate.Substring(12, 2);
+                        return Convert.ToDateTime(string.Format("{0}-{1}-{2} {3}:{4}:{5}", year, month, day, hour, minute, second));
+                    }
+                }
+                else if (wOrA == "a")
+                {
+                    return Convert.ToDateTime(strDate);
+                }
+                return DateTime.Now;
+            }
+            catch(Exception e)
+            {
+                return DateTime.Now;
+            }
+
+            
         }
 
         //根据商品id取商品名称

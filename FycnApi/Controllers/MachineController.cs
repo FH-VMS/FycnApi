@@ -247,10 +247,11 @@ namespace FycnApi.Controllers
                     XmlNode mchIdNode = xmlDoc.SelectSingleNode("xml/mch_id"); // 商户号
                     XmlNode openidNode = xmlDoc.SelectSingleNode("xml/openid"); //买家唯一标识
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
+                    XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                     //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText);
+                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
                     if(result == 1)
                     {
                         List<CommandModel> lstCommand = new List<CommandModel>();
@@ -345,15 +346,15 @@ namespace FycnApi.Controllers
                     log.Info(Fycn.Utility.HttpContext.Current.Request.Form["passback_params"]);
                     //string jsonProduct = helper.StringGet(outTradeNo);
                     string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["passback_params"];
-                  
+
                     //log.Info("test");
-                    log.Info(jsonProduct);
+                    string gmtPayment = Fycn.Utility.HttpContext.Current.Request.Form["gmt_payment"]; //付款时间
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
                     //log.Info(jsonProduct);
 
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo, sellerId, buyerId);
+                    int result = _imachine.PostPayResultA(keyJsonModel, outTradeNo, tradeNo, sellerId, buyerId, gmtPayment);
                     if (result == 1)
                     {
                         //Fycn.Utility.HttpContext.Current.Response.Write("success");

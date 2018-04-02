@@ -48,7 +48,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -62,7 +62,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue =  Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -117,7 +117,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -131,7 +131,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -172,7 +172,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue = saleInfo.SaleDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -186,7 +186,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "sales_date",
+                    DbColumnName = "pay_date",
                     ParamValue = saleInfo.SaleDateEnd,
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -322,7 +322,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -336,7 +336,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -350,7 +350,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date)",
+                    ParamValue = "year(a.pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -363,7 +363,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date),month(a.sales_date)",
+                    ParamValue = "year(a.pay_date),month(a.pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -376,7 +376,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date),month(a.sales_date),day(sales_date)",
+                    ParamValue = "year(a.pay_date),month(a.pay_date),day(pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -442,7 +442,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -456,7 +456,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -470,7 +470,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date)",
+                    ParamValue = "year(a.pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -483,7 +483,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date),month(a.sales_date)",
+                    ParamValue = "year(a.pay_date),month(a.pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -496,7 +496,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "year(a.sales_date),month(a.sales_date),day(sales_date)",
+                    ParamValue = "year(a.pay_date),month(a.pay_date),day(pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -509,7 +509,7 @@ namespace Fycn.Service
                     LeftBrace = "",
                     ParamName = "",
                     DbColumnName = "",
-                    ParamValue = "week(a.sales_date)",
+                    ParamValue = "week(a.pay_date)",
                     Operation = ConditionOperate.GroupBy,
                     RightBrace = "",
                     Logic = ""
@@ -577,7 +577,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -591,7 +591,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -686,7 +686,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -700,7 +700,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "a.sales_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",

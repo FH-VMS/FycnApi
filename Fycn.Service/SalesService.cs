@@ -27,7 +27,7 @@ namespace Fycn.Service
 
         public int UpdateData(SaleModel saleInfo)
         {
-            saleInfo.PayDate = DateTime.Now;
+            //saleInfo.PayDate = DateTime.Now;
             return GenerateDal.Update(CommonSqlKey.UpdateSale, saleInfo);
 
         }
