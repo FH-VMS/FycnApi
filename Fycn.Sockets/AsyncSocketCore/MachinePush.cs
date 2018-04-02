@@ -163,9 +163,13 @@ namespace Fycn.Sockets.AsyncSocketCore
                     {
                         returnByte43[5] = 48;
                     }
-                    else
+                    else if (putResult==0)
                     {
                         returnByte43[5] = 49;
+                    }
+                    else
+                    {
+                        returnByte43[5] = 53;
                     }
                     returnByte43[6] = 238;//结尾
                                           //验证码生成

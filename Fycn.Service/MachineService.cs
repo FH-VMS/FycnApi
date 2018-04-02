@@ -365,7 +365,6 @@ namespace Fycn.Service
         {
             try
             {
-                GenerateDal.BeginTransaction();
                 var conditions = new List<Condition>();
 
                 conditions.Add(new Condition
@@ -378,7 +377,14 @@ namespace Fycn.Service
                     RightBrace = "",
                     Logic = ""
                 });
-                SaleModel saleModel = GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions)[0];
+                List<SaleModel> lstSaleModel = GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions);
+                if(lstSaleModel.Count == 0)
+                {
+                    return 2;
+                }
+                GenerateDal.BeginTransaction();
+
+                SaleModel saleModel = lstSaleModel[0];
                 if (saleModel != null && saleModel.TradeStatus == 1)
                 {
                     //SaleModel saleInfo = new SaleModel();
@@ -397,7 +403,7 @@ namespace Fycn.Service
                 }
                 GenerateDal.CommitTransaction();
             }
-            catch
+            catch(Exception e)
             {
                 return 0;
             }

@@ -30,7 +30,7 @@ namespace Fycn.Utility
         //   initializers are thread safe.
         // If this class had a   constructor then these initialized 
         // would need to be initialized there.
-        private readonly string _connectionString = ConfigHandler.ConnectionString;
+        private readonly string _connectionString = ConfigHandler.MySQLConnectionString;
 
         private readonly string _dbType = ConfigHandler.DataBaseType;
 

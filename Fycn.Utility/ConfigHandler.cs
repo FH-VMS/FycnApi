@@ -96,7 +96,7 @@ namespace Fycn.Utility
 
         private static string _connectionString;
 
-        public static string ConnectionString
+        public static string MySQLConnectionString
         {
             get
             {
