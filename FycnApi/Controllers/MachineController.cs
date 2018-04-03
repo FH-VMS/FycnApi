@@ -295,12 +295,11 @@ namespace FycnApi.Controllers
                     }
                    
                 }
-
-                return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml >";
+                return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";
             }
             catch (Exception ex)
             {
-                return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml >";
+                return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
             }
             
             //File.WriteAllText(@"c:\text.txt", postStr); 
