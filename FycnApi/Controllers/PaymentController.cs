@@ -438,8 +438,8 @@ namespace FycnApi.Controllers
                 payConfig.MCHID = cModel.WxMchId;
                 payConfig.KEY = cModel.WxKey;
                 payConfig.APPSECRET = cModel.WxAppSecret;
-                    //WxPayConfig.SSLCERT_PATH = cModel.WxSslcertPath;
-                    //WxPayConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
+                payConfig.SSLCERT_PATH = cModel.WxSslcertPath;
+                payConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
                 
             }
             return payConfig;
