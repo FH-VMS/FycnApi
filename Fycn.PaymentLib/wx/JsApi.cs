@@ -20,7 +20,7 @@ namespace Fycn.PaymentLib.wx
         * 第二步：利用code去获取openid和access_token
         * 
         */
-        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,ref PayModel payInfo)
+        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,PayModel payInfo)
         {
             if (code!="-1")
             {

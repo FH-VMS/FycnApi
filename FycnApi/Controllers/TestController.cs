@@ -10,6 +10,8 @@ using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Model.Pay;
 using Fycn.PaymentLib.wx;
+using System.IO;
+using System.Text;
 
 namespace FycnApi.Controllers
 {
@@ -76,6 +78,17 @@ namespace FycnApi.Controllers
                 DateTime time = Convert.ToDateTime(string.Format("{0}-{1}-{2} {3}:{4}:{5}",year,month,day,hour,minute,second));
             }
            
+        }
+
+
+        public void GetBody()
+        {
+            var request = Fycn.Utility.HttpContext.Current.Request;
+            int len = (int)request.ContentLength;
+            byte[] b = new byte[len];
+            Fycn.Utility.HttpContext.Current.Request.Body.Read(b,0,len);
+            string postStr = Encoding.UTF8.GetString(b);
+            
         }
         
     }

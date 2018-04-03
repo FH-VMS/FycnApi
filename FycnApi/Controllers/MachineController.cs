@@ -207,14 +207,16 @@ namespace FycnApi.Controllers
 
         #region 支付结果通知
         // 微信支付结果
-        public ResultObj<int> PostPayResultW()
+        public string PostPayResultW()
         {
             try
             {
-                Stream s = Stream.Null;
-                Fycn.Utility.HttpContext.Current.Request.Body.CopyTo(s);
-                byte[] b = new byte[s.Length];
-                s.Read(b, 0, (int)s.Length);
+
+
+                var request = Fycn.Utility.HttpContext.Current.Request;
+                int len = (int)request.ContentLength;
+                byte[] b = new byte[len];
+                Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
                 string postStr = Encoding.UTF8.GetString(b);
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(postStr);
@@ -235,6 +237,8 @@ namespace FycnApi.Controllers
                     return Content(1);
                 }
                 */
+               
+                
                 //支付结果
                 XmlNode payResultNode = xmlDoc.SelectSingleNode("xml/result_code");
                 if (payResultNode.InnerText.ToUpper() == "SUCCESS")
@@ -292,11 +296,11 @@ namespace FycnApi.Controllers
                    
                 }
 
-                return Content(1);
+                return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml >";
             }
             catch (Exception ex)
             {
-                return Content(0);
+                return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml >";
             }
             
             //File.WriteAllText(@"c:\text.txt", postStr); 

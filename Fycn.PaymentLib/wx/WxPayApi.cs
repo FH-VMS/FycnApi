@@ -409,7 +409,7 @@ namespace Fycn.PaymentLib.wx
             result.FromXml(response, payConfig);
 
             ReportCostTime(url, timeCost, result, payConfig);//测速上报
-            Log.Write("GetDataW", result.ToXml());
+            //Log.Write("GetDataW", result.ToXml());
             return result;
         }
 
