@@ -22,20 +22,20 @@ namespace Fycn.PaymentLib.ali
     {
         #region 字段
         //支付宝网关地址（新）
-        private static string GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
+        private string GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
         //商户的私钥
-        private static string _key = "";
+        private string _key = "";
         //编码格式
-        private static string _input_charset = "";
+        private string _input_charset = "";
         //签名方式
-        private static string _sign_type = "";
+        private string _sign_type = "";
         #endregion
 
-        static Submit()
+        public Submit(Config config)
         {
-            _key = Config.key.Trim();
-            _input_charset = Config.input_charset.Trim().ToLower();
-            _sign_type = Config.sign_type.Trim().ToUpper();
+            _key = config.key.Trim();
+            _input_charset = config.input_charset.Trim().ToLower();
+            _sign_type = config.sign_type.Trim().ToUpper();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Fycn.PaymentLib.ali
         /// </summary>
         /// <param name="sPara">请求给支付宝的参数数组</param>
         /// <returns>签名结果</returns>
-        private static string BuildRequestMysign(Dictionary<string, string> sPara)
+        private string BuildRequestMysign(Dictionary<string, string> sPara)
         {
             //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
             string prestr = Core.CreateLinkString(sPara);
@@ -68,7 +68,7 @@ namespace Fycn.PaymentLib.ali
         /// </summary>
         /// <param name="sParaTemp">请求前的参数数组</param>
         /// <returns>要请求的参数数组</returns>
-        private static Dictionary<string, string> BuildRequestPara(SortedDictionary<string, string> sParaTemp)
+        private Dictionary<string, string> BuildRequestPara(SortedDictionary<string, string> sParaTemp)
         {
             //待签名请求参数数组
             Dictionary<string, string> sPara = new Dictionary<string, string>();
@@ -94,7 +94,7 @@ namespace Fycn.PaymentLib.ali
         /// <param name="sParaTemp">请求前的参数数组</param>
         /// <param name="code">字符编码</param>
         /// <returns>要请求的参数数组字符串</returns>
-        public static string BuildRequestParaToString(SortedDictionary<string, string> sParaTemp, Encoding code)
+        public string BuildRequestParaToString(SortedDictionary<string, string> sParaTemp, Encoding code)
         {
             //待签名请求参数数组
             Dictionary<string, string> sPara = new Dictionary<string, string>();
@@ -113,7 +113,7 @@ namespace Fycn.PaymentLib.ali
         /// <param name="strMethod">提交方式。两个值可选：post、get</param>
         /// <param name="strButtonValue">确认按钮显示文字</param>
         /// <returns>提交表单HTML文本</returns>
-        public static string BuildRequest(SortedDictionary<string, string> sParaTemp, string strMethod, string strButtonValue)
+        public string BuildRequest(SortedDictionary<string, string> sParaTemp, string strMethod, string strButtonValue)
         {
             //待请求参数数组
             Dictionary<string, string> dicPara = new Dictionary<string, string>();
@@ -143,9 +143,9 @@ namespace Fycn.PaymentLib.ali
         /// 注意：远程解析XML出错，与IIS服务器配置有关
         /// </summary>
         /// <returns>时间戳字符串</returns>
-        public static string Query_timestamp()
+        public string Query_timestamp(Config config)
         {
-            string url = GATEWAY_NEW + "service=query_timestamp&partner=" + Config.partner + "&_input_charset=" + Config.input_charset;
+            string url = GATEWAY_NEW + "service=query_timestamp&partner=" + config.partner + "&_input_charset=" + config.input_charset;
             string encrypt_key = "";
 
             XmlTextReader Reader = new XmlTextReader(url);

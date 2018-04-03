@@ -433,6 +433,7 @@ namespace Fycn.Service
                     {
                         saleModel.TradeStatus = 5;
                         UpdateAddCurrStock(saleModel.MachineId, saleModel.GoodsId, 1);
+
                     }
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                 }

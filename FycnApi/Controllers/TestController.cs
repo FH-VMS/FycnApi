@@ -59,15 +59,23 @@ namespace FycnApi.Controllers
            // imachine.PostPayResultA(jsonModel, "20180123456789", "20180123456789");
         }
 
-        public string TestCertifcate()
+       
+
+
+        public void TestUpdateOnline()
         {
-
-            WxPayData jsApiParam = new WxPayData();
-            jsApiParam.SetValue("mch_id", "mch_id");
-            jsApiParam.SetValue("nonce_str", WxPayApi.GenerateNonceStr());
-            jsApiParam.SetValue("sign", jsApiParam.MakeSign());
-
-            return HttpService.Post(jsApiParam.ToXml(), "https://apitest.mch.weixin.qq.com/sandboxnew/pay/getsignkey", true, 10000);
+            string strdate = "20150427154557";
+            if (strdate.Length == 14)
+            {
+                string year = strdate.Substring(0, 4);
+                string month = strdate.Substring(4, 2);
+                string day = strdate.Substring(6, 2);
+                string hour = strdate.Substring(8, 2);
+                string minute = strdate.Substring(10, 2);
+                string second = strdate.Substring(12, 2);
+                DateTime time = Convert.ToDateTime(string.Format("{0}-{1}-{2} {3}:{4}:{5}",year,month,day,hour,minute,second));
+            }
+           
         }
         
     }

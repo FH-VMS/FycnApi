@@ -42,10 +42,10 @@ namespace Fycn.PaymentLib.ali
         public Notify()
         {
             //初始化基础配置信息
-            _partner = Config.partner.Trim();
-            _key = Config.key.Trim();
-            _input_charset = Config.input_charset.Trim().ToLower();
-            _sign_type = Config.sign_type.Trim().ToUpper();
+            _partner = new Config().partner.Trim();
+            _key = new Config().key.Trim();
+            _input_charset = new Config().input_charset.Trim().ToLower();
+            _sign_type = new Config().sign_type.Trim().ToUpper();
         }
 
         /// <summary>

@@ -63,7 +63,7 @@ namespace FycnApi.Controllers
                     return Content(1);
                 }
                 //移动支付配置赋值
-                GenerateConfigModel("a", lstSaleModel[0].MachineId);
+                Config config = new PaymentController().GenerateConfigModelA(lstSaleModel[0].MachineId);
                 /****************************旧支付宝退款接口*******************************/
              
                 string detail_data = string.Empty;
@@ -85,12 +85,12 @@ namespace FycnApi.Controllers
                     batch_num = detail_data.Split('#').Length;
                     //把请求参数打包成数组
                     SortedDictionary<string, string> sParaTemp = new SortedDictionary<string, string>();
-                    sParaTemp.Add("service", Config.refund_service);
-                    sParaTemp.Add("partner", Config.partner);
-                    sParaTemp.Add("_input_charset", Config.refund_input_charset.ToLower());
-                    sParaTemp.Add("notify_url", Config.refund_notify_url);
-                    sParaTemp.Add("seller_user_id", Config.seller_id);
-                    sParaTemp.Add("refund_date", Config.refund_date);
+                    sParaTemp.Add("service", config.refund_service);
+                    sParaTemp.Add("partner", config.partner);
+                    sParaTemp.Add("_input_charset", config.refund_input_charset.ToLower());
+                    sParaTemp.Add("notify_url", config.refund_notify_url);
+                    sParaTemp.Add("seller_user_id", config.seller_id);
+                    sParaTemp.Add("refund_date", config.refund_date);
                     sParaTemp.Add("batch_no", GeneraterRefundNo());
                     sParaTemp.Add("batch_num", batch_num.ToString());//退款笔数，必填，参数detail_data的值中，“#”字符出现的数量加1，最大支持1000笔（即“#”字符出现的数量999个）
                     sParaTemp.Add("detail_data", detail_data);  //退款详细数据，必填，格式（支付宝交易号^退款金额^备注），多笔请用#隔开
@@ -100,7 +100,7 @@ namespace FycnApi.Controllers
                     //建立请求
                     try
                     {
-                        string sHtmlText = Config.GateWay + Submit.BuildRequestParaToString(sParaTemp, Encoding.UTF8);
+                        string sHtmlText = config.GateWay + new Submit(config).BuildRequestParaToString(sParaTemp, Encoding.UTF8);
                         HttpHelper.CreateGetHttpResponse(sHtmlText, 2000, "", null);
                     }
                     catch (Exception ex)
@@ -111,8 +111,8 @@ namespace FycnApi.Controllers
                     //string sHtmlText = Submit.BuildRequest(sParaTemp, "get", "确认");
                     //HttpContext.Current.Response.Write(sHtmlText);
                 }
-                
-            
+
+
                 /************************新支付宝退款接口****************************/
                 /*
                 DefaultAopClient client = new DefaultAopClient(Config.new_gatewayUrl, Config.refund_appid, Config.private_key, "json", "1.0", Config.refund_sign_type, Config.rsa_sign, Config.new_charset, false);
@@ -170,11 +170,11 @@ namespace FycnApi.Controllers
         }
 
         //退款通知
+       
         public ResultObj<int> PostRefundResultA()
         {
             try
             {
-               
                 SortedDictionary<string, string> sPara = GetRequestPost();
                
                 if (sPara.Count > 0)//判断是否有带返回参数
@@ -250,6 +250,7 @@ namespace FycnApi.Controllers
             }
 
         }
+       
 
         private string GeneraterRefundNo()
         {
@@ -301,7 +302,7 @@ namespace FycnApi.Controllers
                     return Content(1);
                 }
                 //移动支付配置赋值
-                GenerateConfigModel("w", lstSaleModel[0].MachineId);
+                WxPayConfig payConfig = new PaymentController().GenerateConfigModelW(lstSaleModel[0].MachineId);
                 foreach (SaleModel saleModel in lstSaleModel)
                 {
                     WxPayData data = new WxPayData();
@@ -319,10 +320,10 @@ namespace FycnApi.Controllers
                         data.SetValue("refund_fee", int.Parse(((saleModel.TradeAmount * 100)*((saleModel.SalesNumber - saleModel.RealitySaleNumber) / saleModel.SalesNumber)).ToString()));//退款金额
                     }
                     
-                    data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo());//随机生成商户退款单号
-                    data.SetValue("op_user_id", WxPayConfig.MCHID);//操作员，默认为商户号
+                    data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo(payConfig));//随机生成商户退款单号
+                    data.SetValue("op_user_id", payConfig.MCHID);//操作员，默认为商户号
                     //Log.Write("wwwww", "开始退款");
-                    WxPayData result = WxPayApi.Refund(data);//提交退款申请给API，接收返回数据
+                    WxPayData result = WxPayApi.Refund(data, payConfig);//提交退款申请给API，接收返回数据
                     //更新销售状态
                     if (result.GetValue("result_code").ToString().ToUpper() == "SUCCESS")
                     {
@@ -361,38 +362,6 @@ namespace FycnApi.Controllers
                 return Content(0);
             }
 
-        }
-
-        public void GenerateConfigModel(string isAliOrWx, string machineId)
-        {
-            IPay ipay = new PayService();
-            List<ConfigModel> lstConfig = ipay.GetConfig(machineId);
-            if (lstConfig.Count > 0)
-            {
-                ConfigModel cModel = lstConfig[0];
-                if (isAliOrWx == "a")
-                {
-                    Config.partner = cModel.AliParter;
-                    Config.key = cModel.AliKey;
-                    Config.seller_id = cModel.AliParter;
-                    Config.refund_appid = cModel.AliRefundAppId;
-                    Config.rsa_sign = cModel.AliRefundRsaSign;
-
-                    //新支付宝接口
-                    Config.new_app_id = cModel.AliAppId;
-                    Config.private_key = cModel.AliPrivateKey;
-                    Config.alipay_public_key = cModel.AliPublicKey;
-                }
-                else if (isAliOrWx == "w")
-                {
-                    WxPayConfig.APPID = cModel.WxAppId;
-                    WxPayConfig.MCHID = cModel.WxMchId;
-                    WxPayConfig.KEY = cModel.WxKey;
-                    WxPayConfig.APPSECRET = cModel.WxAppSecret;
-                    WxPayConfig.SSLCERT_PATH = cModel.WxSslcertPath;
-                    WxPayConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
-                }
-            }
         }
 
     }

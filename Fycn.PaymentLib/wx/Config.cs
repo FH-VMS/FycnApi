@@ -17,41 +17,41 @@ namespace Fycn.PaymentLib.wx
         * APPSECRET：公众帐号secert（仅JSAPI支付的时候需要配置）
         */
        /*
-        public static string APPID = "wx926450e6541e90b7";
-        public static string MCHID = "1433899402";
-        public static string KEY = "52733bb6f7e024a55e30b214bb743add";
-        public static string APPSECRET = "52733bb6f7e024a55e30b214bb743add";
+        public string APPID = "wx926450e6541e90b7";
+        public string MCHID = "1433899402";
+        public string KEY = "52733bb6f7e024a55e30b214bb743add";
+        public string APPSECRET = "52733bb6f7e024a55e30b214bb743add";
         */
         //=======【证书路径设置】===================================== 
         /* 证书路径,注意应该填写绝对路径（仅退款、撤销订单时需要）
         */
         /*
-        public static string SSLCERT_PATH = "cert/apiclient_cert.p12";
-        public static string SSLCERT_PASSWORD = "1433899402";
+        public string SSLCERT_PATH = "cert/apiclient_cert.p12";
+        public string SSLCERT_PASSWORD = "1433899402";
        */
 
-        public static string APPID = "";
-        public static string MCHID = "";
-        public static string KEY = "";
-        public static string APPSECRET = "";
+        public string APPID = "";
+        public string MCHID = "";
+        public string KEY = "";
+        public string APPSECRET = "";
 
-        public static string SSLCERT_PATH = "cert/apiclient_cert.p12";
-        public static string SSLCERT_PASSWORD = "1433899402";
+        public string SSLCERT_PATH = "cert/apiclient_cert.p12";
+        public string SSLCERT_PASSWORD = "1433899402";
 
-        public static string FRONT_URL = PathConfig.DomainConfig+"/m.html";
+        public string FRONT_URL = PathConfig.DomainConfig+"/m.html";
 
 
 
         //=======【支付结果通知url】===================================== 
         /* 支付结果通知回调url，用于商户接收支付结果
         */
-        //public static string NOTIFY_URL = Path.PathConfig + "/m.html#/payresult";
-        public static string NOTIFY_URL = PathConfig.NotidyAddr + "/Machine/PostPayResultW";
+        //public string NOTIFY_URL = Path.PathConfig + "/m.html#/payresult";
+        public string NOTIFY_URL = PathConfig.NotidyAddr + "/Machine/PostPayResultW";
 
         //=======【商户系统后台机器IP】===================================== 
         /* 此参数可手动配置也可在程序中自动获取
         */
-        public static string IP = "8.8.8.8";
+        public string IP = "8.8.8.8";
 
 
         //=======【代理服务器设置】===================================

@@ -110,7 +110,7 @@ namespace Fycn.PaymentLib.wx
         * @return 经转换得到的Dictionary
         * @throws WxPayException
         */
-        public SortedDictionary<string, object> FromXml(string xml)
+        public SortedDictionary<string, object> FromXml(string xml,WxPayConfig payConfig)
         {
             if (string.IsNullOrEmpty(xml))
             {
@@ -135,7 +135,7 @@ namespace Fycn.PaymentLib.wx
 				{
 					return m_values;
 				}
-                CheckSign();//验证签名,不通过会抛异常
+                CheckSign(payConfig);//验证签名,不通过会抛异常
             }
             catch(WxPayException ex)
             {
@@ -204,12 +204,12 @@ namespace Fycn.PaymentLib.wx
         * @生成签名，详见签名生成算法
         * @return 签名, sign字段不参加签名
         */
-        public string MakeSign()
+        public string MakeSign(WxPayConfig payConfig)
         {
             //转url格式
             string str = ToUrl();
             //在string后加入API KEY
-            str += "&key=" + WxPayConfig.KEY;
+            str += "&key=" + payConfig.KEY;
             //MD5加密
             var md5 = MD5.Create();
             var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
@@ -227,7 +227,7 @@ namespace Fycn.PaymentLib.wx
         * 检测签名是否正确
         * 正确返回true，错误抛异常
         */
-        public bool CheckSign()
+        public bool CheckSign(WxPayConfig payConfig)
         {
             //如果没有设置签名，则跳过检测
             if (!IsSet("sign"))
@@ -246,7 +246,7 @@ namespace Fycn.PaymentLib.wx
             string return_sign = GetValue("sign").ToString();
 
             //在本地计算新的签名
-            string cal_sign = MakeSign();
+            string cal_sign = MakeSign(payConfig);
 
             if (cal_sign == return_sign)
             {

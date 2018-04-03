@@ -90,9 +90,9 @@ namespace Fycn.PaymentLib.ali
         /// 写日志，方便测试（看网站需求，也可以改成把记录存入数据库）
         /// </summary>
         /// <param name="sWord">要写入日志里的文本内容</param>
-        public static void LogResult(string sWord)
+        public static void LogResult(string sWord, Config config)
         {
-            string strPath = Config.log_path + "/" + "alipay_log_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
+            string strPath = config.log_path + "/" + "alipay_log_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
             StreamWriter fs = new StreamWriter(strPath, false, System.Text.Encoding.Default);
             fs.Write(sWord);
             fs.Close();

@@ -11,7 +11,7 @@ namespace Fycn.PaymentLib.wx
 {
     public class JsApi
     {
-        public static PayModel payInfo = new PayModel();
+        //public PayModel payInfo = new PayModel();
         /**
         * 
         * 网页授权获取用户基本信息的全部过程
@@ -20,19 +20,19 @@ namespace Fycn.PaymentLib.wx
         * 第二步：利用code去获取openid和access_token
         * 
         */
-        public static void GetOpenidAndAccessToken(string code)
+        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,ref PayModel payInfo)
         {
             if (code!="-1")
             {
                 //获取code码，以获取openid和access_token
-                GetOpenidAndAccessTokenFromCode(code);
+                GetOpenidAndAccessTokenFromCode(code,payConfig, payInfo);
             }
             else
             {
                 //构造网页授权获取code的URL
-                string redirect_uri = HttpUtility.UrlEncode(WxPayConfig.FRONT_URL + "?k="+payInfo.k);
+                string redirect_uri = HttpUtility.UrlEncode(payConfig.FRONT_URL + "?k="+payInfo.k);
                 WxPayData data = new WxPayData();
-                data.SetValue("appid", WxPayConfig.APPID);
+                data.SetValue("appid", payConfig.APPID);
                 data.SetValue("redirect_uri", redirect_uri);
                 data.SetValue("response_type", "code");
                 data.SetValue("scope", "snsapi_base");
@@ -67,14 +67,14 @@ namespace Fycn.PaymentLib.wx
       * 更详细的说明请参考网页授权获取用户基本信息：http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
       * @失败时抛异常WxPayException
       */
-        public static void GetOpenidAndAccessTokenFromCode(string code)
+        public void GetOpenidAndAccessTokenFromCode(string code, WxPayConfig payConfig, PayModel payInfo)
         {
             try
             {
                 //构造获取openid及access_token的url
                 WxPayData data = new WxPayData();
-                data.SetValue("appid", WxPayConfig.APPID);
-                data.SetValue("secret", WxPayConfig.APPSECRET);
+                data.SetValue("appid", payConfig.APPID);
+                data.SetValue("secret", payConfig.APPSECRET);
                 data.SetValue("code", code);
                 data.SetValue("grant_type", "authorization_code");
                 string url = "https://api.weixin.qq.com/sns/oauth2/access_token?" + data.ToUrl();
@@ -104,7 +104,7 @@ namespace Fycn.PaymentLib.wx
         * @return 统一下单结果
         * @失败时抛异常WxPayException
         */
-        public static WxPayData GetUnifiedOrderResult()
+        public WxPayData GetUnifiedOrderResult(PayModel payInfo,WxPayConfig payConfig)
         {
             //统一下单 字段最长保存为128
             WxPayData data = new WxPayData();
@@ -118,7 +118,7 @@ namespace Fycn.PaymentLib.wx
             data.SetValue("trade_type", "JSAPI");
             data.SetValue("openid", payInfo.openid);
             
-            WxPayData result = WxPayApi.UnifiedOrder(data);
+            WxPayData result = WxPayApi.UnifiedOrder(data, payConfig);
             // Log.Write("GetDataW", result.IsSet("appid").ToString() + "~" + result.IsSet("prepay_id").ToString() + "~" + result.GetValue("prepay_id").ToString());
             if (!result.IsSet("appid") || !result.IsSet("prepay_id") || result.GetValue("prepay_id").ToString() == "")
             {
@@ -146,7 +146,7 @@ namespace Fycn.PaymentLib.wx
        * 更详细的说明请参考网页端调起支付API：http://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7
        * 
        */
-        public static string GetJsApiParameters()
+        public string GetJsApiParameters(WxPayConfig payConfig, PayModel payInfo)
         {
 
             WxPayData jsApiParam = new WxPayData();
@@ -155,7 +155,7 @@ namespace Fycn.PaymentLib.wx
             jsApiParam.SetValue("nonceStr", WxPayApi.GenerateNonceStr());
             jsApiParam.SetValue("package", "prepay_id=" + payInfo.unifiedOrderResult.GetValue("prepay_id"));
             jsApiParam.SetValue("signType", "MD5");
-            jsApiParam.SetValue("paySign", jsApiParam.MakeSign());
+            jsApiParam.SetValue("paySign", jsApiParam.MakeSign(payConfig));
 
             string parameters = jsApiParam.ToJson();
 

@@ -350,7 +350,7 @@ namespace FycnApi.Controllers
                     //log.Info("test");
                     string gmtPayment = Fycn.Utility.HttpContext.Current.Request.Form["gmt_payment"]; //付款时间
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
-                    //log.Info(jsonProduct);
+                    log.Info(gmtPayment);
 
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();

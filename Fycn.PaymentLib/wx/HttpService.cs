@@ -25,7 +25,7 @@ namespace Fycn.PaymentLib.wx
             return true;
         }
 
-        public static string Post(string xml, string url, bool isUseCert, int timeout)
+        public static string Post(string xml, string url, bool isUseCert, int timeout, WxPayConfig payConfig)
         {
             System.GC.Collect();//垃圾回收，回收没有正常关闭的http连接
 
@@ -76,7 +76,7 @@ namespace Fycn.PaymentLib.wx
 
                     //ICertificateProvider provider = new CertificateFromFileProvider(certificateText, privateKeyText);
                     //X509Certificate2 cert = provider.Certificate;
-                    X509Certificate2 cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", WxPayConfig.SSLCERT_PASSWORD);
+                    X509Certificate2 cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", payConfig.SSLCERT_PASSWORD);
                     request.ClientCertificates.Add(cert);
                     //Log.Debug("WxPayApi", "PostXml used cert");
                 }
@@ -214,7 +214,7 @@ namespace Fycn.PaymentLib.wx
             return result;
         }
 
-        public async static Task<string> PostNew(string xml, string url, bool isUseCert, int timeout)
+        public async static Task<string> PostNew(string xml, string url, bool isUseCert, int timeout, WxPayConfig payConfig)
         {
             //HttpMessageHandler
             try
@@ -236,7 +236,7 @@ namespace Fycn.PaymentLib.wx
                 if (isUseCert)
                 {
                     string path = PathHelper.GetPhysicalApplicationPath();
-                    var cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", WxPayConfig.SSLCERT_PASSWORD);
+                    var cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", payConfig.SSLCERT_PASSWORD);
                     reqHandler.ClientCertificates.Add(cert);
                 }
                 

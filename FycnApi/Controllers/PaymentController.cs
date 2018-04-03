@@ -51,18 +51,20 @@ namespace FycnApi.Controllers
                 return Content(payStateNull,ResultCode.Success, "机器不在线", new Pagination { });
             }
             //移动支付赋值
-            GenerateConfigModel("w", keyJsonInfo.m);
-            JsApi.payInfo = new PayModel();
-            JsApi.payInfo.k = k;
-            //生成code 根据code取微信支付的openid和access_token
-            JsApi.GetOpenidAndAccessToken(code);
+            WxPayConfig payConfig =GenerateConfigModelW(keyJsonInfo.m);
+                JsApi jsApi = new JsApi();
+                PayModel payInfo = new PayModel();
+                //JsApi.payInfo = new PayModel();
+                payInfo.k = k;
+                //生成code 根据code取微信支付的openid和access_token
+                jsApi.GetOpenidAndAccessToken(code, payConfig,ref payInfo);
            
             PayStateModel payState = new PayStateModel();
-            if (string.IsNullOrEmpty(JsApi.payInfo.openid))
+            if (string.IsNullOrEmpty(payInfo.openid))
             {
                 payState.RequestState = "0";
                 payState.ProductJson = "";
-                payState.RequestData = JsApi.payInfo.redirect_url;
+                payState.RequestData = payInfo.redirect_url;
                 return Content(payState);
             }
 
@@ -77,7 +79,7 @@ namespace FycnApi.Controllers
                     return Content(payState);
                 }
                 //生成交易号
-                JsApi.payInfo.trade_no = GeneraterTradeNo();
+                payInfo.trade_no = GeneraterTradeNo();
                 //取商品信息
                 IPay _ipay = new PayService();
 
@@ -104,7 +106,7 @@ namespace FycnApi.Controllers
                             productInfo.Num = string.IsNullOrEmpty(tunnelInfo[0].n) ? "1" : tunnelInfo[0].n;
                             totalFee = totalFee + Convert.ToInt32(productInfo.Num) * Convert.ToDecimal(productInfo.UnitW);
                             productNames = productNames + productInfo.WaresName + ",";
-                            productInfo.TradeNo = JsApi.payInfo.trade_no;
+                            productInfo.TradeNo = payInfo.trade_no;
                             tunnelInfo[0].p = productInfo.UnitW;
                             tunnelInfo[0].wid = productInfo.WaresId;
 
@@ -125,7 +127,7 @@ namespace FycnApi.Controllers
                             productInfo.Num = string.IsNullOrEmpty(tunnelInfo[0].n) ? "1" : tunnelInfo[0].n;
                             totalFee = totalFee + Convert.ToInt32(productInfo.Num) * Convert.ToDecimal(productInfo.UnitW);
                             productNames = productNames + productInfo.WaresName + ",";
-                            productInfo.TradeNo = JsApi.payInfo.trade_no;
+                            productInfo.TradeNo = payInfo.trade_no;
                             tunnelInfo[0].p = productInfo.UnitW;
 
                             tunnelInfo[0].wid = productInfo.WaresId;
@@ -138,7 +140,7 @@ namespace FycnApi.Controllers
                 }
 
                 
-                JsApi.payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
+                payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
                 
                 //string total_fee = "1";
                 //检测是否给当前页面传递了相关参数
@@ -148,8 +150,8 @@ namespace FycnApi.Controllers
 
                 // jsApiPay.openid = openid;
 
-                JsApi.payInfo.total_fee = Convert.ToInt32((totalFee * 100));
-                JsApi.payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
+                payInfo.total_fee = Convert.ToInt32((totalFee * 100));
+                payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
 
                 //写入交易中转
                 /*
@@ -159,9 +161,9 @@ namespace FycnApi.Controllers
                 */
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
-                WxPayData unifiedOrderResult = JsApi.GetUnifiedOrderResult();
+                WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo,payConfig);
                 // Log.Write("GetDataW", "step step");
-                string wxJsApiParam = JsApi.GetJsApiParameters();//获取H5调起JS API参数       
+                string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
                 payState.RequestState = "1";
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProduct, false);
                 payState.RequestData = wxJsApiParam;
@@ -234,7 +236,7 @@ namespace FycnApi.Controllers
                 return Content(payStateModel,ResultCode.Success, "机器不在线", new Pagination { });
             }
             //移动支付赋值
-            GenerateConfigModel("a",keyJsonInfo.m);
+            Config config = GenerateConfigModelA(keyJsonInfo.m);
             //生成交易号
             string out_trade_no = GeneraterTradeNo();
             //取商品信息
@@ -349,7 +351,7 @@ namespace FycnApi.Controllers
 
 
             /**********************支付宝新接口添加**************************/
-            DefaultAopClient client = new DefaultAopClient(Config.new_gatewayUrl, Config.new_app_id, Config.private_key, "json", "1.0", Config.new_sign_type, Config.alipay_public_key, Config.new_charset, false);
+            DefaultAopClient client = new DefaultAopClient(config.new_gatewayUrl, config.new_app_id, config.private_key, "json", "1.0", config.new_sign_type, config.alipay_public_key, config.new_charset, false);
             AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
             model.Body = subject;
             model.Subject = subject;
@@ -364,9 +366,9 @@ namespace FycnApi.Controllers
 
             AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
             // 设置支付完成同步回调地址
-            request.SetReturnUrl(Config.return_url);
+            request.SetReturnUrl(config.return_url);
             // 设置支付完成异步通知接收地址
-            request.SetNotifyUrl(Config.notify_url);
+            request.SetNotifyUrl(config.notify_url);
             // 将业务model载入到request
             request.SetBizModel(model);
 
@@ -391,47 +393,57 @@ namespace FycnApi.Controllers
         }
 
         #endregion
-
-        public void GenerateConfigModel(string isAliOrWx, string machineId)
+     
+        public Config GenerateConfigModelA(string machineId)
         {
+            IPay ipay = new PayService();
+            Config aPayConfig = new Config();
+            List<ConfigModel> lstConfig = ipay.GetConfig(machineId);
+            if (lstConfig.Count > 0)
+            {
+                ConfigModel cModel = lstConfig[0];
+                aPayConfig.partner = cModel.AliParter;
+                aPayConfig.key = cModel.AliKey;
+                aPayConfig.seller_id = cModel.AliParter;
+                aPayConfig.refund_appid = cModel.AliRefundAppId;
+                aPayConfig.rsa_sign = cModel.AliRefundRsaSign;
+
+                //新支付宝接口
+                aPayConfig.new_app_id = cModel.AliAppId;
+                aPayConfig.private_key = cModel.AliPrivateKey;
+                aPayConfig.alipay_public_key = cModel.AliPublicKey;
+                if (aPayConfig.private_key.Length > 1000)
+                {
+                    aPayConfig.new_sign_type = "RSA2";
+                }
+                else
+                {
+                    aPayConfig.new_sign_type = "RSA";
+                }
+               
+            }
+            return aPayConfig;
+        }
+
+        public WxPayConfig GenerateConfigModelW(string machineId)
+        {
+            WxPayConfig payConfig = new WxPayConfig();
             IPay ipay = new PayService();
             List<ConfigModel> lstConfig = ipay.GetConfig(machineId);
             if (lstConfig.Count > 0)
             {
                 ConfigModel cModel = lstConfig[0];
-                if (isAliOrWx == "a")
-                {
-                    Config.partner = cModel.AliParter;
-                    Config.key = cModel.AliKey;
-                    Config.seller_id = cModel.AliParter;
-                    Config.refund_appid = cModel.AliRefundAppId;
-                    Config.rsa_sign = cModel.AliRefundRsaSign;
-
-                    //新支付宝接口
-                    Config.new_app_id = cModel.AliAppId;
-                    Config.private_key = cModel.AliPrivateKey;
-                    Config.alipay_public_key = cModel.AliPublicKey;
-                    if (Config.private_key.Length > 1000)
-                    {
-                        Config.new_sign_type = "RSA2";
-                    }
-                    else
-                    {
-                        Config.new_sign_type = "RSA";
-                    }
-                }
-                else if (isAliOrWx == "w")
-                {
-                    WxPayConfig.APPID = cModel.WxAppId;
-                    WxPayConfig.MCHID = cModel.WxMchId;
-                    WxPayConfig.KEY = cModel.WxKey;
-                    WxPayConfig.APPSECRET = cModel.WxAppSecret;
+               
+                payConfig.APPID = cModel.WxAppId;
+                payConfig.MCHID = cModel.WxMchId;
+                payConfig.KEY = cModel.WxKey;
+                payConfig.APPSECRET = cModel.WxAppSecret;
                     //WxPayConfig.SSLCERT_PATH = cModel.WxSslcertPath;
                     //WxPayConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
-                }
+                
             }
+            return payConfig;
         }
-
 
         public void AlipayNew()
         {
