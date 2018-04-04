@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Fycn.Utility;
+using Fycn.PaymentLib.ali;
+using Fycn.PaymentLib.wx;
 
 namespace Fycn.Service
 {
@@ -114,5 +116,7 @@ namespace Fycn.Service
             configInfo.WxSslcertPassword = configInfo.WxMchId;
             return GenerateDal.Update(CommonSqlKey.UpdatePayConfig, configInfo);
         }
+
+
     }
 }

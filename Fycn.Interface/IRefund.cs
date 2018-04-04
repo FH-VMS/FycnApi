@@ -24,5 +24,11 @@ namespace Fycn.Interface
 
          [Remark("判断阿里退款是否成功", ParmsNote = "", ReturnNote = "")]
          int IsRefundSucceed(string tradeNo);
+
+        [Remark("支付宝退款", ParmsNote = "", ReturnNote = "")]
+        int PostRefundA(List<SaleModel> lstSaleModel);
+
+        [Remark("微信退款", ParmsNote = "", ReturnNote = "")]
+        int PostRefundW(List<SaleModel> lstSaleModel);
     }
 }

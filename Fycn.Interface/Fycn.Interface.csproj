@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fycn.Model\Fycn.Model.csproj" />
+    <ProjectReference Include="..\Fycn.PaymentLib\Fycn.PaymentLib.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,12 +16,13 @@ using System.Text;
 using Fycn.Utility;
 using Microsoft.AspNetCore.Http;
 using log4net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FycnApi.Controllers
 {
     public class RefundController : ApiBaseController
     {
-        public ResultObj<int> PostRefund(List<string> lstTradeNo)
+        public ResultObj<int> PostRefund([FromBody]List<string> lstTradeNo)
         {
             if (lstTradeNo.Count == 0)
             {
@@ -39,7 +40,7 @@ namespace FycnApi.Controllers
                            select n;
             if (aPayData.ToList<SaleModel>().Count > 0)
             {
-                PostRefundA(aPayData.ToList<SaleModel>());
+                irefund.PostRefundA(aPayData.ToList<SaleModel>());
             }
             
 
@@ -48,130 +49,16 @@ namespace FycnApi.Controllers
                            select m;
             if (wPayData.ToList<SaleModel>().Count > 0)
             {
-               
-                PostRefundW(wPayData.ToList<SaleModel>());
+
+                irefund.PostRefundW(wPayData.ToList<SaleModel>());
             }
             return Content(1);
         }
-        public ResultObj<int> PostRefundA(List<SaleModel> lstSaleModel)
-        {
-
-            try
-            {
-                if (lstSaleModel.Count == 0)
-                {
-                    return Content(1);
-                }
-                //移动支付配置赋值
-                Config config = new PaymentController().GenerateConfigModelA(lstSaleModel[0].MachineId);
-                /****************************旧支付宝退款接口*******************************/
-             
-                string detail_data = string.Empty;
-                int batch_num = 1;
-                foreach (SaleModel saleModel in lstSaleModel)
-                {
-                    if (saleModel.RealitySaleNumber==0)
-                    {
-                        detail_data = detail_data + saleModel.ComId + "^" + saleModel.TradeAmount + "^出货失败退款" + "#";
-                    }
-                    else
-                    {
-                        detail_data = detail_data + saleModel.ComId + "^" + saleModel.TradeAmount * ((saleModel.SalesNumber - saleModel.RealitySaleNumber) / saleModel.SalesNumber) + "^出货失败退款" + "#";
-                    }
-                }
-                if(!string.IsNullOrEmpty(detail_data)) {
-              
-                    detail_data = detail_data.TrimEnd('#');
-                    batch_num = detail_data.Split('#').Length;
-                    //把请求参数打包成数组
-                    SortedDictionary<string, string> sParaTemp = new SortedDictionary<string, string>();
-                    sParaTemp.Add("service", config.refund_service);
-                    sParaTemp.Add("partner", config.partner);
-                    sParaTemp.Add("_input_charset", config.refund_input_charset.ToLower());
-                    sParaTemp.Add("notify_url", config.refund_notify_url);
-                    sParaTemp.Add("seller_user_id", config.seller_id);
-                    sParaTemp.Add("refund_date", config.refund_date);
-                    sParaTemp.Add("batch_no", GeneraterRefundNo());
-                    sParaTemp.Add("batch_num", batch_num.ToString());//退款笔数，必填，参数detail_data的值中，“#”字符出现的数量加1，最大支持1000笔（即“#”字符出现的数量999个）
-                    sParaTemp.Add("detail_data", detail_data);  //退款详细数据，必填，格式（支付宝交易号^退款金额^备注），多笔请用#隔开
-                    //sParaTemp.Add("sign_type", Config.refund_sign_type);
-                    //sParaTemp.Add("sign", Config.rsa_sign); 
-
-                    //建立请求
-                    try
-                    {
-                        string sHtmlText = config.GateWay + new Submit(config).BuildRequestParaToString(sParaTemp, Encoding.UTF8);
-                        HttpHelper.CreateGetHttpResponse(sHtmlText, 2000, "", null);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                   
-                    //string sHtmlText = Submit.BuildRequest(sParaTemp, "get", "确认");
-                    //HttpContext.Current.Response.Write(sHtmlText);
-                }
-
-
-                /************************新支付宝退款接口****************************/
-                /*
-                DefaultAopClient client = new DefaultAopClient(Config.new_gatewayUrl, Config.refund_appid, Config.private_key, "json", "1.0", Config.refund_sign_type, Config.rsa_sign, Config.new_charset, false);
-                foreach (SaleModel saleModel in lstSaleModel)
-                {
-                    AlipayTradeRefundModel model = new AlipayTradeRefundModel();
-                    model.OutTradeNo = "";
-                    model.TradeNo = saleModel.ComId;
-                    if (saleModel.RealitySaleNumber == 0)
-                    {
-                        model.RefundAmount = saleModel.TradeAmount.ToString();
-                    }
-                    else
-                    {
-                        model.RefundAmount = (saleModel.TradeAmount * ((saleModel.SalesNumber - saleModel.RealitySaleNumber) / saleModel.SalesNumber)).ToString();
-                    }
-                    if(saleModel.TradeStatus==1){
-                        model.RefundReason = "待出货";
-                    }
-                    else if (saleModel.TradeStatus == 3)
-                    {
-                        model.RefundReason = "全部出货失败";
-                    }
-                    else if (saleModel.TradeStatus == 5)
-                    {
-                        model.RefundReason = "部分出货失败";
-                    }
-
-                    model.OutRequestNo = GeneraterRefundNo();
-
-                    AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
-                    request.SetNotifyUrl(Config.refund_notify_url);
-                    request.SetBizModel(model);
-
-                    AlipayTradeRefundResponse response = null;
-                    try
-                    {
-                        response = client.Execute(request);
-                        //WIDresule.Text = response.Body;
-
-                    }
-                    catch (Exception exp)
-                    {
-                        throw exp;
-                    }
-                }
-                 * */
-                return Content(1);
-            }
-            catch (Exception ex)
-            {
-                return Content(0);
-            }
-
-        }
+       
 
         //退款通知
        
-        public ResultObj<int> PostRefundResultA()
+        public string PostRefundResultA()
         {
             try
             {
@@ -183,6 +70,10 @@ namespace FycnApi.Controllers
                     var log = LogManager.GetLogger(Startup.repository.Name, typeof(Startup));
                     //log.Info("test");
                     log.Info(Fycn.Utility.HttpContext.Current.Request.Form["notify_id"]);
+                    foreach(string key in Fycn.Utility.HttpContext.Current.Request.Form.Keys)
+                    {
+                        log.Info(key+":"+Fycn.Utility.HttpContext.Current.Request.Form[key]);
+                    }
                     bool verifyResult = aliNotify.Verify(sPara, Fycn.Utility.HttpContext.Current.Request.Form["notify_id"], Fycn.Utility.HttpContext.Current.Request.Form["sign"]);
                     log.Info(verifyResult);
                     if (verifyResult)//验证成功
@@ -208,7 +99,7 @@ namespace FycnApi.Controllers
                         //如果没有做过处理，那么执行商户的业务程序
                         //如果有做过处理，那么不执行商户的业务程序
 
-                        Response.WriteAsync("success");  //请不要修改或删除
+                        // Response.WriteAsync("success");  //请不要修改或删除
                         if (Convert.ToInt32(success_num) > 0)
                         {
                             string refundResult = result_details.Split('^')[result_details.Split('^').Length-1];
@@ -219,7 +110,7 @@ namespace FycnApi.Controllers
                                 IRefund irefund = new RefundService();
                                 if (irefund.IsRefundSucceed(tradeNo) == 1)
                                 {
-                                    return Content(1);
+                                    return "success";
                                 }
                                 irefund.UpdateOrderStatusForAli(tradeNo);
 
@@ -239,26 +130,19 @@ namespace FycnApi.Controllers
                     }
                     else//验证失败
                     {
-                        Response.WriteAsync("fail");
+                        return "fail";
                     }
                 }
-                return Content(1);
+                return "success";
             }
             catch (Exception ex)
             {
-                return Content(0);
+                return "fail";
             }
 
         }
        
 
-        private string GeneraterRefundNo()
-        {
-            Random ran = new Random();
-            int RandKey = ran.Next(1000, 9999);
-            string out_trade_no = DateTime.Now.ToString("yyyyMMddhhmmssffff") + RandKey.ToString();
-            return out_trade_no;
-        }
 
         /// <summary>
         /// 获取支付宝POST过来通知消息，并以“参数名=参数值”的形式组成数组
@@ -291,78 +175,7 @@ namespace FycnApi.Controllers
 
 
 
-        /**********************************微信退款*******************************/
-        public ResultObj<int> PostRefundW(List<SaleModel> lstSaleModel)
-        {
-            try
-            {
-                
-                if (lstSaleModel.Count == 0)
-                {
-                    return Content(1);
-                }
-                //移动支付配置赋值
-                WxPayConfig payConfig = new PaymentController().GenerateConfigModelW(lstSaleModel[0].MachineId);
-                foreach (SaleModel saleModel in lstSaleModel)
-                {
-                    WxPayData data = new WxPayData();
-
-                    data.SetValue("out_trade_no", saleModel.TradeNo);
-
-
-                    data.SetValue("total_fee", int.Parse((saleModel.TradeAmount*100).ToString()));//订单总金额
-                    if (saleModel.RealitySaleNumber == 0)
-                    {
-                        data.SetValue("refund_fee", int.Parse((saleModel.TradeAmount * 100).ToString()));//退款金额
-                    }
-                    else
-                    {
-                        data.SetValue("refund_fee", int.Parse(((saleModel.TradeAmount * 100)*((saleModel.SalesNumber - saleModel.RealitySaleNumber) / saleModel.SalesNumber)).ToString()));//退款金额
-                    }
-                    
-                    data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo(payConfig));//随机生成商户退款单号
-                    data.SetValue("op_user_id", payConfig.MCHID);//操作员，默认为商户号
-                    //Log.Write("wwwww", "开始退款");
-                    WxPayData result = WxPayApi.Refund(data, payConfig);//提交退款申请给API，接收返回数据
-                    //更新销售状态
-                    if (result.GetValue("result_code").ToString().ToUpper() == "SUCCESS")
-                    {
-                        
-                        IRefund irefund = new RefundService();
-                        SaleModel salInfo = new SaleModel();
-                        salInfo.MachineId = saleModel.MachineId;
-                        salInfo.GoodsId = saleModel.GoodsId;
-                        salInfo.TradeNo = saleModel.TradeNo;
-                        if (saleModel.RealitySaleNumber == 0)
-                        {
-                            salInfo.TradeStatus=6;
-                            
-                            //更新成6
-                        }
-                        else
-                        {
-                            //更新成3
-                            salInfo.TradeStatus = 3;
-                        }
-                        irefund.UpdateRefundResult(salInfo);
-                        RefundModel refundInfo = new RefundModel();
-                        refundInfo.OutTradeNo = salInfo.TradeNo;
-                        refundInfo.RefundDetail = result.ToJson();
-                        irefund.PostRefundDetail(refundInfo);
-                    }
-                    
-                }
-              
-
-
-                return Content(1);
-            }
-            catch (Exception ex)
-            {
-                return Content(0);
-            }
-
-        }
+       
 
     }
 }

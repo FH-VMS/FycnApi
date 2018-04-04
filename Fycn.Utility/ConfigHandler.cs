@@ -394,5 +394,33 @@ namespace Fycn.Utility
             }
         }
         #endregion
+
+        private static string _weixinCertAddress;
+
+        public static string WeixinCertAddress
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_weixinCertAddress))
+                {
+                    _resourceUrl = ConfigurationManager.AppSettings["WeixinCertAddress"] ?? "";
+                }
+                return _resourceUrl;
+            }
+        }
+
+        private static string _weixinTextAddress;
+
+        public static string WeixinTextAddress
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_weixinTextAddress))
+                {
+                    _resourceUrl = ConfigurationManager.AppSettings["WeixinTextAddress"] ?? "";
+                }
+                return _resourceUrl;
+            }
+        }
     }
 }

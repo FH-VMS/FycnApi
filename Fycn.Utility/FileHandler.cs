@@ -161,9 +161,9 @@ namespace Fycn.Utility
             return compressString;
         }
 
-        public static void LogMachineData(string[] data)
+        public static void LogMachineData(string data)
         {
-            File.AppendAllLines("c:/test.txt", data);
+            File.AppendAllText("/root/123.txt", data);
         }
     }
 }

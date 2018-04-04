@@ -76,7 +76,8 @@ namespace Fycn.PaymentLib.wx
 
                     //ICertificateProvider provider = new CertificateFromFileProvider(certificateText, privateKeyText);
                     //X509Certificate2 cert = provider.Certificate;
-                    X509Certificate2 cert = new X509Certificate2(@"/root/docker/PublishOutput/cert/apiclient_cert.p12", payConfig.SSLCERT_PASSWORD);
+                    
+                    X509Certificate2 cert = new X509Certificate2(ConfigHandler.WeixinCertAddress + "/" + payConfig.SSLCERT_PATH, payConfig.SSLCERT_PASSWORD);
                     request.ClientCertificates.Add(cert);
                     //Log.Debug("WxPayApi", "PostXml used cert");
                 }

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Alipay.AopSdk.Core" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fycn.Interface\Fycn.Interface.csproj" />
     <ProjectReference Include="..\Fycn.Model\Fycn.Model.csproj" />
     <ProjectReference Include="..\Fycn.PaymentLib\Fycn.PaymentLib.csproj" />

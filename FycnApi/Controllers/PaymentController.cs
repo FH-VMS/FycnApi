@@ -50,8 +50,9 @@ namespace FycnApi.Controllers
                 PayStateModel payStateNull = new PayStateModel();
                 return Content(payStateNull,ResultCode.Success, "机器不在线", new Pagination { });
             }
-            //移动支付赋值
-            WxPayConfig payConfig =GenerateConfigModelW(keyJsonInfo.m);
+                IPay _ipay = new PayService();
+                //移动支付赋值
+                WxPayConfig payConfig = _ipay.GenerateConfigModelW(keyJsonInfo.m);
                 JsApi jsApi = new JsApi();
                 PayModel payInfo = new PayModel();
                 //JsApi.payInfo = new PayModel();
@@ -79,9 +80,9 @@ namespace FycnApi.Controllers
                     return Content(payState);
                 }
                 //生成交易号
-                payInfo.trade_no = GeneraterTradeNo();
+                payInfo.trade_no = PayHelper.GeneraterTradeNo();
                 //取商品信息
-                IPay _ipay = new PayService();
+               
 
                 decimal totalFee = 0;
                 string productNames = string.Empty;
@@ -201,14 +202,7 @@ namespace FycnApi.Controllers
             return keyJsonInfo;
         }
 
-        private string GeneraterTradeNo()
-        {
-            Random ran = new Random();
-            int RandKey = ran.Next(1000, 9999);
-            string out_trade_no = DateTime.Now.ToString("yyyyMMddHHmmssffff") + RandKey.ToString();
-            return out_trade_no;
-        }
-
+       
    
 
 
@@ -235,12 +229,14 @@ namespace FycnApi.Controllers
             {
                 return Content(payStateModel,ResultCode.Success, "机器不在线", new Pagination { });
             }
-            //移动支付赋值
-            Config config = GenerateConfigModelA(keyJsonInfo.m);
-            //生成交易号
-            string out_trade_no = GeneraterTradeNo();
-            //取商品信息
+
             IPay _ipay = new PayService();
+            //移动支付赋值
+            Config config = _ipay.GenerateConfigModelA(keyJsonInfo.m);
+            //生成交易号
+            string out_trade_no = PayHelper.GeneraterTradeNo();
+            //取商品信息
+           
 
             decimal totalFee = 0;
             string productNames = string.Empty;
@@ -394,56 +390,7 @@ namespace FycnApi.Controllers
 
         #endregion
      
-        public Config GenerateConfigModelA(string machineId)
-        {
-            IPay ipay = new PayService();
-            Config aPayConfig = new Config();
-            List<ConfigModel> lstConfig = ipay.GetConfig(machineId);
-            if (lstConfig.Count > 0)
-            {
-                ConfigModel cModel = lstConfig[0];
-                aPayConfig.partner = cModel.AliParter;
-                aPayConfig.key = cModel.AliKey;
-                aPayConfig.seller_id = cModel.AliParter;
-                aPayConfig.refund_appid = cModel.AliRefundAppId;
-                aPayConfig.rsa_sign = cModel.AliRefundRsaSign;
-
-                //新支付宝接口
-                aPayConfig.new_app_id = cModel.AliAppId;
-                aPayConfig.private_key = cModel.AliPrivateKey;
-                aPayConfig.alipay_public_key = cModel.AliPublicKey;
-                if (aPayConfig.private_key.Length > 1000)
-                {
-                    aPayConfig.new_sign_type = "RSA2";
-                }
-                else
-                {
-                    aPayConfig.new_sign_type = "RSA";
-                }
-               
-            }
-            return aPayConfig;
-        }
-
-        public WxPayConfig GenerateConfigModelW(string machineId)
-        {
-            WxPayConfig payConfig = new WxPayConfig();
-            IPay ipay = new PayService();
-            List<ConfigModel> lstConfig = ipay.GetConfig(machineId);
-            if (lstConfig.Count > 0)
-            {
-                ConfigModel cModel = lstConfig[0];
-               
-                payConfig.APPID = cModel.WxAppId;
-                payConfig.MCHID = cModel.WxMchId;
-                payConfig.KEY = cModel.WxKey;
-                payConfig.APPSECRET = cModel.WxAppSecret;
-                payConfig.SSLCERT_PATH = cModel.WxSslcertPath;
-                payConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
-                
-            }
-            return payConfig;
-        }
+        
 
         public void AlipayNew()
         {

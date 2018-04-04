@@ -1,5 +1,7 @@
 ﻿using Fycn.Model.Pay;
 using Fycn.Model.Sys;
+using Fycn.PaymentLib.ali;
+using Fycn.PaymentLib.wx;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +19,11 @@ namespace Fycn.Interface
 
         [Remark("获取移动支付配置", ParmsNote = "机器编号", ReturnNote = "移动支付配置实体")]
         List<ConfigModel> GetConfig(string machindId);
+
+        [Remark("获取支付宝配置", ParmsNote = "机器编号", ReturnNote = "支付宝配置实体")]
+        Config GenerateConfigModelA(string machineId);
+
+        [Remark("获取微信配置", ParmsNote = "机器编号", ReturnNote = "微信配置实体")]
+        WxPayConfig GenerateConfigModelW(string machineId);
     }
 }

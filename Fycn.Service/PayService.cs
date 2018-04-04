@@ -1,5 +1,7 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Pay;
+using Fycn.PaymentLib.ali;
+using Fycn.PaymentLib.wx;
 using Fycn.SqlDataAccess;
 using System;
 using System.Collections.Generic;
@@ -213,6 +215,56 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<ConfigModel>(CommonSqlKey.GetPayConfig, conditions);
 
 
+        }
+
+
+        public Config GenerateConfigModelA(string machineId)
+        {
+            Config aPayConfig = new Config();
+            List<ConfigModel> lstConfig = GetConfig(machineId);
+            if (lstConfig.Count > 0)
+            {
+                ConfigModel cModel = lstConfig[0];
+                aPayConfig.partner = cModel.AliParter;
+                aPayConfig.key = cModel.AliKey;
+                aPayConfig.seller_id = cModel.AliParter;
+                aPayConfig.refund_appid = cModel.AliRefundAppId;
+                aPayConfig.rsa_sign = cModel.AliRefundRsaSign;
+
+                //新支付宝接口
+                aPayConfig.new_app_id = cModel.AliAppId;
+                aPayConfig.private_key = cModel.AliPrivateKey;
+                aPayConfig.alipay_public_key = cModel.AliPublicKey;
+                if (aPayConfig.private_key.Length > 1000)
+                {
+                    aPayConfig.new_sign_type = "RSA2";
+                }
+                else
+                {
+                    aPayConfig.new_sign_type = "RSA";
+                }
+
+            }
+            return aPayConfig;
+        }
+
+        public WxPayConfig GenerateConfigModelW(string machineId)
+        {
+            WxPayConfig payConfig = new WxPayConfig();
+            List<ConfigModel> lstConfig = GetConfig(machineId);
+            if (lstConfig.Count > 0)
+            {
+                ConfigModel cModel = lstConfig[0];
+
+                payConfig.APPID = cModel.WxAppId;
+                payConfig.MCHID = cModel.WxMchId;
+                payConfig.KEY = cModel.WxKey;
+                payConfig.APPSECRET = cModel.WxAppSecret;
+                payConfig.SSLCERT_PATH = cModel.WxSslcertPath;
+                payConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
+
+            }
+            return payConfig;
         }
     }
 }
