@@ -138,7 +138,7 @@ namespace Fycn.Service
 
         public int PostRefundA(List<SaleModel> lstSaleModel)
         {
-
+             Log.Write("zhifubao", "9999");
             try
             {
                 if (lstSaleModel.Count == 0)
@@ -201,11 +201,12 @@ namespace Fycn.Service
                 */
                 /************************新支付宝退款接口****************************/
 
-                DefaultAopClient client = new DefaultAopClient(config.new_gatewayUrl, config.refund_appid, config.private_key, "json", "1.0", config.new_sign_type, config.alipay_public_key, config.new_charset, false);
+                DefaultAopClient client = new DefaultAopClient(config.new_gatewayUrl, config.refund_appid, config.private_key, "json", "1.0", config.refund_sign_type, config.rsa_sign, config.new_charset, false);
+                
                 foreach (SaleModel saleModel in lstSaleModel)
                 {
                     Alipay.AopSdk.Core.Domain.AlipayTradeRefundModel model = new Alipay.AopSdk.Core.Domain.AlipayTradeRefundModel();
-                    model.OutTradeNo = "";
+                    model.OutTradeNo = saleModel.TradeNo;
                     model.TradeNo = saleModel.ComId;
                     if (saleModel.RealitySaleNumber == 0)
                     {
@@ -237,26 +238,26 @@ namespace Fycn.Service
                     try
                     {
                         response = client.Execute(request);
-                        /*
-                        RefundService irefund = new RefundService();
-                        if (irefund.IsRefundSucceed(tradeNo) == 1)
+                        if(string.IsNullOrEmpty(response.OutTradeNo))
                         {
-                            return "success";
+                            return 0;
                         }
-                        irefund.UpdateOrderStatusForAli(tradeNo);
+                    
+                        UpdateOrderStatusForAli(response.TradeNo);
 
                         //插入退款信息表
                         RefundModel refundInfo = new RefundModel();
-                        refundInfo.TradeNo = tradeNo;
+                        refundInfo.TradeNo = response.OutTradeNo;
 
-                        refundInfo.RefundDetail = JsonConvert.SerializeObject(sPara);
-                        irefund.PostRefundDetail(refundInfo);
-                        */
+                        refundInfo.RefundDetail = response.Body;
+                        PostRefundDetail(refundInfo);
+                        
                         //WIDresule.Text = response.Body;
 
                     }
                     catch (Exception exp)
                     {
+                        Log.Write("zhifubao1",exp.Message);
                         throw exp;
                     }
                 }
@@ -308,8 +309,6 @@ namespace Fycn.Service
                     //更新销售状态
                     if (result.GetValue("result_code").ToString().ToUpper() == "SUCCESS")
                     {
-
-                        RefundService irefund = new RefundService();
                         SaleModel salInfo = new SaleModel();
                         salInfo.MachineId = saleModel.MachineId;
                         salInfo.GoodsId = saleModel.GoodsId;
@@ -325,11 +324,11 @@ namespace Fycn.Service
                             //更新成3
                             salInfo.TradeStatus = 3;
                         }
-                        irefund.UpdateRefundResult(salInfo);
+                        UpdateRefundResult(salInfo);
                         RefundModel refundInfo = new RefundModel();
                         refundInfo.OutTradeNo = salInfo.TradeNo;
                         refundInfo.RefundDetail = result.ToJson();
-                        irefund.PostRefundDetail(refundInfo);
+                        PostRefundDetail(refundInfo);
                     }
 
                 }

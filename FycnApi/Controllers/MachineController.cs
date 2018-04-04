@@ -321,8 +321,8 @@ namespace FycnApi.Controllers
             {
                 string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"].ToString().Trim();
                 //RedisHelper helper = new RedisHelper(0);
-                var log = LogManager.GetLogger("FycnApi", "zhifubao");
-                log.Info(outTradeNo);
+                //var log = LogManager.GetLogger("FycnApi", "zhifubao");
+                //log.Info(outTradeNo);
                 //log.Info(helper.KeyExists(outTradeNo));
                 /* 
                 if (!helper.KeyExists(outTradeNo))
@@ -346,14 +346,14 @@ namespace FycnApi.Controllers
                     string tradeNo = Fycn.Utility.HttpContext.Current.Request.Form["trade_no"];
                     string sellerId = Fycn.Utility.HttpContext.Current.Request.Form["seller_id"]; //买家合作者id
                     string buyerId = Fycn.Utility.HttpContext.Current.Request.Form["buyer_logon_id"]; //买家账号
-                    log.Info(Fycn.Utility.HttpContext.Current.Request.Form["passback_params"]);
+                    //log.Info(Fycn.Utility.HttpContext.Current.Request.Form["passback_params"]);
                     //string jsonProduct = helper.StringGet(outTradeNo);
                     string jsonProduct = Fycn.Utility.HttpContext.Current.Request.Form["passback_params"];
 
                     //log.Info("test");
                     string gmtPayment = Fycn.Utility.HttpContext.Current.Request.Form["gmt_payment"]; //付款时间
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
-                    log.Info(gmtPayment);
+                    //log.Info(gmtPayment);
 
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();

@@ -9,7 +9,9 @@ namespace Fycn.PaymentLib.wx
     public class Log
     {
         //在网站根目录下创建日志目录
+        //public static string path = PathHelper.GetPhysicalApplicationPath() + "logs";
         public static string path = PathHelper.GetPhysicalApplicationPath() + "logs";
+        
 
         /**
          * 向日志文件写入调试信息

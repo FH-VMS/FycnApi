@@ -433,6 +433,15 @@ namespace Fycn.Service
                     {
                         saleModel.TradeStatus = 5;
                         UpdateAddCurrStock(saleModel.MachineId, saleModel.GoodsId, 1);
+                        RefundService refund = new RefundService();
+                        if(saleModel.PayInterface=="微信")
+                        {
+                             refund.PostRefundW(lstSaleModel);
+                        }
+                        else if(saleModel.PayInterface=="支付宝")
+                        {
+                            refund.PostRefundA(lstSaleModel);
+                        }
 
                     }
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);

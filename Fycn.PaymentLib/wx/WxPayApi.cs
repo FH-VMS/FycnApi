@@ -194,7 +194,7 @@ namespace Fycn.PaymentLib.wx
             //Log.Write("wwwww", "Refund request :");
             //Log.Debug("WxPayApi", "Refund request : " + xml);
             string response = HttpService.Post(xml, url, true, timeOut, payConfig);//调用HTTP通信接口提交数据到API
-            Log.Write("refund", response);
+            //Log.Write("refund", response);
             //Log.Debug("WxPayApi", "Refund response : " + response);
 
             var end = DateTime.Now;
