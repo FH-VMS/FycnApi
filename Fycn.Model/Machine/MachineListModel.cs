@@ -121,6 +121,13 @@ namespace Fycn.Model.Machine
              set;
          }
 
+        [Column(Name = "machine_signal")]
+        public int Signal
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "ad_id")]
         public string AdId
         {

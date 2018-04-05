@@ -742,11 +742,12 @@ namespace Fycn.Service
             return GenerateDal.Update(CommonSqlKey.UpdateMachineInlineTime, machineList);
         }
 
-        public int UpdateMachineInlineTimeAndIpv4(string machineId, string ipv4)
+        public int UpdateMachineInlineTimeAndIpv4(string machineId,int signal, string ipv4)
         {
             MachineListModel machineList = new MachineListModel();
             machineList.MachineId = machineId;
             machineList.IpV4 = ipv4;
+            machineList.Signal=signal;
             machineList.LatestDate = DateTime.Now;
 
             return GenerateDal.Update(CommonSqlKey.UpdateMachineInlineTimeAndIpv4, machineList);
