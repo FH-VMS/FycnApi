@@ -27,10 +27,11 @@ namespace Fycn.Sockets.AsyncSocketCore
                     returnByte40[4] = data[0];
 
                     string machineNum40 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
-                     Program.Logger.InfoFormat("mmmmmmmmmmm {0}", machineNum40);
+                
             
                     int signal40 = data[13];
-                    Program.Logger.InfoFormat("dddddddddddd {0}", signal40);
+                    int temp40 = (sbyte)data[14];
+                    int door40 =  data[15];
                     MachineHelper.Signature(machineNum40, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
 
                     returnByte40[5] = 0;
@@ -47,7 +48,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                     ByteHelper.Encryption(size40, finalResult40.ToArray()).CopyTo(returnByte40, 4);//加密
                     try
                     {
-                        imachine.UpdateMachineInlineTimeAndIpv4(machineNum40,signal40, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
+                        imachine.UpdateMachineInlineTimeAndIpv4(machineNum40,signal40,temp40,door40, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                     }
                     catch(Exception e)
                     {

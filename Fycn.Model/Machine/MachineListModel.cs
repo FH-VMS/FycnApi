@@ -128,6 +128,20 @@ namespace Fycn.Model.Machine
             set;
         }
 
+         [Column(Name = "machine_temp")]
+        public double MachineTemp
+        {
+            get;
+            set;
+        }
+
+         [Column(Name = "door")]
+        public int Door
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "ad_id")]
         public string AdId
         {

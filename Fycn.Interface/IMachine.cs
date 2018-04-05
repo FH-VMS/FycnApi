@@ -42,7 +42,7 @@ namespace Fycn.Interface
         int UpdateMachineInlineTime(string machineId);
 
         [Remark("更新机器在线时间和ip", ParmsNote = "机器编号,ip号", ReturnNote = "int")]
-        int UpdateMachineInlineTimeAndIpv4(string machineId,int signal,string ipv4);
+        int UpdateMachineInlineTimeAndIpv4(string machineId,int signal,int temp40,int door40,string ipv4);
 
         [Remark("机器上报下行处理结果", ParmsNote = "机器编号,标识类型", ReturnNote = "int")]
         int GetHandleResult(string machineId, string machineStatus);

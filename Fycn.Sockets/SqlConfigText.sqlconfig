@@ -171,7 +171,7 @@
   "UpdateMaxPuts": "UPDATE table_goods_config SET  max_puts=?p_MaxPuts WHERE machine_id=?p_MachineId AND  tunnel_id=?p_TunnelId",
   "GetMachineSetting": "SELECT mc_area1_temp as t1, mc_area2_temp as t2, mc_area3_temp as t3, mc_area4_temp as t4, mc_status as s  FROM table_machine_config ",
   "UpdateMachineInlineTime": "UPDATE table_machine SET latest_date=?p_LatestDate WHERE machine_id=?p_MachineId",
-  "UpdateMachineInlineTimeAndIpv4": "UPDATE table_machine SET latest_date=?p_LatestDate,ip_v4=?p_IpV4,machine_signal=?p_Signal WHERE machine_id=?p_MachineId",
+  "UpdateMachineInlineTimeAndIpv4": "UPDATE table_machine SET latest_date=?p_LatestDate,ip_v4=?p_IpV4,machine_signal=?p_Signal,machine_temp=?p_MachineTemp,door=?p_Door WHERE machine_id=?p_MachineId",
   "GetCabinetId": "SELECT a.cabinet_type_id FROM table_mt_goods a LEFT JOIN table_machine b ON a.machine_type_id=b.type_id ",
   "GetSalesByNo": "SELECT * FROM table_sales_cashless ",
   "GetIpByMachineId": "SELECT ip_v4 FROM table_machine ",
