@@ -230,7 +230,7 @@ namespace Fycn.Service
                     model.OutRequestNo = PayHelper.GeneraterTradeNo();
 
                     AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
-                    request.SetNotifyUrl(config.refund_notify_url);
+                    //request.SetNotifyUrl(config.refund_notify_url);
                     request.SetBizModel(model);
 
                     AlipayTradeRefundResponse response = null;
