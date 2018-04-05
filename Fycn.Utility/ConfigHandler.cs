@@ -411,7 +411,7 @@ namespace Fycn.Utility
 
         private static string _weixinTextAddress;
 
-        public static string WeixinTextAddress
+        public static decimal WeixinTextAddress
         {
             get
             {
@@ -419,7 +419,35 @@ namespace Fycn.Utility
                 {
                     _weixinTextAddress = ConfigurationManager.AppSettings["WeixinTextAddress"] ?? "";
                 }
-                return _weixinTextAddress;
+                return Convert.ToDecimal(_weixinTextAddress);
+            }
+        }
+
+         private static string _weixinRate;
+
+        public static double WeixinRate
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_weixinRate))
+                {
+                    _weixinRate = ConfigurationManager.AppSettings["WeixinRate"] ?? "0.006";
+                }
+                return Convert.ToDouble(_weixinRate);
+            }
+        }
+
+         private static string _zhifubaoRate;
+
+        public static double ZhifubaoRate
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_zhifubaoRate))
+                {
+                    _zhifubaoRate = ConfigurationManager.AppSettings["ZhifubaoRate"] ?? "0.006";
+                }
+                return Convert.ToDouble(_zhifubaoRate);
             }
         }
     }

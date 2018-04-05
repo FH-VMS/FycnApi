@@ -49,7 +49,6 @@ namespace FycnApi.Controllers
                            select m;
             if (wPayData.ToList<SaleModel>().Count > 0)
             {
-
                 irefund.PostRefundW(wPayData.ToList<SaleModel>());
             }
             return Content(1);

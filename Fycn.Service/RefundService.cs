@@ -138,7 +138,6 @@ namespace Fycn.Service
 
         public int PostRefundA(List<SaleModel> lstSaleModel)
         {
-             Log.Write("zhifubao", "9999");
             try
             {
                 if (lstSaleModel.Count == 0)
@@ -242,7 +241,7 @@ namespace Fycn.Service
                         {
                             return 0;
                         }
-                    
+                        MachineHelper.ClearCacheOrder(response.OutTradeNo);
                         UpdateOrderStatusForAli(response.TradeNo);
 
                         //插入退款信息表
@@ -324,6 +323,7 @@ namespace Fycn.Service
                             //更新成3
                             salInfo.TradeStatus = 3;
                         }
+                        MachineHelper.ClearCacheOrder(saleModel.TradeNo);
                         UpdateRefundResult(salInfo);
                         RefundModel refundInfo = new RefundModel();
                         refundInfo.OutTradeNo = salInfo.TradeNo;

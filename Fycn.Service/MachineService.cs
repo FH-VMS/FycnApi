@@ -206,7 +206,7 @@ namespace Fycn.Service
                     saleInfo.BuyerId = buyerId;
                     saleInfo.IsWeixinConcern = isConcern;
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
-                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
+                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * ConfigHandler.WeixinRate, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
                     saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid);
                     GenerateDal.Create(saleInfo);
@@ -259,7 +259,7 @@ namespace Fycn.Service
                     saleInfo.MerchantId = sellerId;
                     saleInfo.BuyerId = buyerId;
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
-                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * 0.006, 2, MidpointRounding.AwayFromZero);
+                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * ConfigHandler.ZhifubaoRate, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
                     saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid);
                     GenerateDal.Create(saleInfo);
@@ -431,22 +431,24 @@ namespace Fycn.Service
                     }
                     else
                     {
+                        saleModel.RealitySaleNumber = 0;
                         saleModel.TradeStatus = 5;
                         UpdateAddCurrStock(saleModel.MachineId, saleModel.GoodsId, 1);
-                        RefundService refund = new RefundService();
-                        if(saleModel.PayInterface=="微信")
-                        {
-                             refund.PostRefundW(lstSaleModel);
-                        }
-                        else if(saleModel.PayInterface=="支付宝")
-                        {
-                            refund.PostRefundA(lstSaleModel);
-                        }
+                        
 
                     }
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                 }
                 GenerateDal.CommitTransaction();
+                RefundService refund = new RefundService();
+                if(saleModel.PayInterface=="微信")
+                {
+                        refund.PostRefundW(lstSaleModel);
+                }
+                else if(saleModel.PayInterface=="支付宝")
+                {
+                    refund.PostRefundA(lstSaleModel);
+                }
             }
             catch(Exception e)
             {
@@ -478,10 +480,12 @@ namespace Fycn.Service
                         //出货失败后库存回滚
                         if (saleInfo.TradeStatus == 5)
                         {
+                            saleInfo.RealitySaleNumber=0;
                             UpdateAddCurrStock(saleInfo.MachineId, saleInfo.GoodsId, lstSaleModel[0].SalesNumber);
                         }
                         if (saleInfo.TradeStatus == 3)
                         {
+                            saleInfo.RealitySaleNumber=0;
                             UpdateAddCurrStock(saleInfo.MachineId, saleInfo.GoodsId, lstSaleModel[0].SalesNumber - saleInfo.RealitySaleNumber);
                         }
                         GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleInfo);

@@ -211,8 +211,6 @@ namespace FycnApi.Controllers
         {
             try
             {
-
-
                 var request = Fycn.Utility.HttpContext.Current.Request;
                 int len = (int)request.ContentLength;
                 byte[] b = new byte[len];
@@ -253,6 +251,7 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                     //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
+                    
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
                     IMachine _imachine = new MachineService();
                     int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
@@ -321,7 +320,6 @@ namespace FycnApi.Controllers
             {
                 string outTradeNo = Fycn.Utility.HttpContext.Current.Request.Form["out_trade_no"].ToString().Trim();
                 //RedisHelper helper = new RedisHelper(0);
-                //var log = LogManager.GetLogger("FycnApi", "zhifubao");
                 //log.Info(outTradeNo);
                 //log.Info(helper.KeyExists(outTradeNo));
                 /* 
@@ -352,6 +350,7 @@ namespace FycnApi.Controllers
 
                     //log.Info("test");
                     string gmtPayment = Fycn.Utility.HttpContext.Current.Request.Form["gmt_payment"]; //付款时间
+                   
                     //string jsonProduct = FileHandler.ReadFile("data/" + outTradeNo + ".wa");
                     //log.Info(gmtPayment);
 
