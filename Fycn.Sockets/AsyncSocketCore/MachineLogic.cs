@@ -29,7 +29,7 @@ namespace Fycn.Sockets
         //处理机器消息
         public byte[] HandleHexByte(byte[] byteInfo, AsyncSocketUserToken m_asyncSocketUserToken, AsyncSocketServer m_asyncSocketServer)
         {
-            Program.Logger.InfoFormat("receive message is {0}, machine id is {1}", ByteHelper.byteToHexStr(byteInfo), m_asyncSocketUserToken.MachineId);
+            //Program.Logger.InfoFormat("receive message is {0}, machine id is {1}", ByteHelper.byteToHexStr(byteInfo), m_asyncSocketUserToken.MachineId);
             //包头
             string infoHead = byteInfo[0].ToString();
             //保活

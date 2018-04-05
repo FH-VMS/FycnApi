@@ -40,6 +40,7 @@ namespace FycnApi.Controllers
 
         #region 机器需要接口
         // 返回支付结果，需要出货的东东
+        /*
         public string GetPayResult(string k)
         {
             KeyJsonModel keyJsonInfo = AnalizeKey(k);
@@ -52,7 +53,7 @@ namespace FycnApi.Controllers
             }
             return JsonHandler.GetJsonStrFromObject(lstSales,false);
         }
-
+        
         //出货后，告诉汇报出货情况并更新库存
         public string GetOutResult(string k)
         {
@@ -146,7 +147,7 @@ namespace FycnApi.Controllers
             return JsonHandler.DataTable2Json(dt);
         }
 
-
+ */
         #endregion
 
         //取销售的商品列表
