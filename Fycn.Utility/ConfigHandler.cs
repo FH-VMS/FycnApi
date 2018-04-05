@@ -403,9 +403,9 @@ namespace Fycn.Utility
             {
                 if (String.IsNullOrEmpty(_weixinCertAddress))
                 {
-                    _resourceUrl = ConfigurationManager.AppSettings["WeixinCertAddress"] ?? "";
+                    _weixinCertAddress = ConfigurationManager.AppSettings["WeixinCertAddress"] ?? "";
                 }
-                return _resourceUrl;
+                return _weixinCertAddress;
             }
         }
 
@@ -417,9 +417,9 @@ namespace Fycn.Utility
             {
                 if (String.IsNullOrEmpty(_weixinTextAddress))
                 {
-                    _resourceUrl = ConfigurationManager.AppSettings["WeixinTextAddress"] ?? "";
+                    _weixinTextAddress = ConfigurationManager.AppSettings["WeixinTextAddress"] ?? "";
                 }
-                return _resourceUrl;
+                return _weixinTextAddress;
             }
         }
     }
