@@ -58,14 +58,13 @@ namespace Fycn.Utility
             {
                 return "";
             }
-            if (redisHelper0.KeyExists(machineId))
-            {
-                return redisHelper0.StringGet(machineId);
-            }
-            else
+            var retVal = redisHelper0.StringGet(machineId);
+            if(retVal==null)
             {
                 return "";
             }
+
+            return retVal;
         }
 
         //签到
@@ -86,23 +85,18 @@ namespace Fycn.Utility
         //判断验证码是否合法
         public static bool IsLegal(string machineId, string signCode,string code)
         {
-            if (redisHelper1.KeyExists(machineId+"-"+code))
-            {
-                return redisHelper1.StringGet(machineId + "-"+code) == signCode;
-            }
-            else
+            var val = redisHelper1.StringGet(machineId + "-" + code);
+            if(val==null)
             {
                 return false;
             }
+            return val == signCode;
         }
 
         //清除验证码
         public static void ClearCode(string machineId, string code)
         {
-            if (redisHelper1.KeyExists(machineId + "-"+code))
-            {
-                redisHelper1.KeyDelete(machineId + "-"+code);
-            }
+            redisHelper1.KeyDelete(machineId + "-" + code);
         }
 
         //验证订单是否合法
@@ -127,10 +121,7 @@ namespace Fycn.Utility
         //清除缓存订单
         public static void ClearCacheOrder(string orderNum)
         {
-            if (redisHelper1.KeyExists(orderNum))
-            {
-                redisHelper1.KeyDelete(orderNum);
-            }
+            redisHelper1.KeyDelete(orderNum);
         }
 
         //缓存订单
@@ -155,10 +146,8 @@ namespace Fycn.Utility
         //清除下推缓存
         public static void ClearCachePush(string machineId, string key)
         {
-            if (redisHelper1.KeyExists(machineId + "-" + key))
-            {
-                redisHelper1.KeyDelete(machineId + "-" + key);
-            }
+           redisHelper1.KeyDelete(machineId + "-" + key);
+            
         }
 
         //缓存下推

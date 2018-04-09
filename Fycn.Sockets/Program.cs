@@ -92,7 +92,7 @@ namespace Fycn.Sockets
             {
                 //Program.Logger.InfoFormat("clear machine id is {0}", userTokenArray[i].MachineId);
                 
-                if (MachineHelper.IsOnline(userTokenArray[i].MachineId))
+                if (MachineHelper.IsOnline(userTokenArray[i].MachineId) && userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString() == MachineHelper.GetIp(userTokenArray[i].MachineId))
                 {
                     break;
                 }
@@ -102,15 +102,15 @@ namespace Fycn.Sockets
                     lock (userTokenArray[i])
                     {
                         //清除缓存字典
+                        Program.Logger.InfoFormat("clear ip is {0}", userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString());
                         SocketDictionary.Remove(userTokenArray[i].MachineId);
                         AsyncSocketSvr.CloseClientSocket(userTokenArray[i]);
-                        Program.Logger.InfoFormat("clear ip is {0}", userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString());
                     }
                 }
                 catch (Exception E)
                 {
-                    //Program.Logger.ErrorFormat("Daemon thread check timeout socket error, message: {0}", E.Message);
-                    //Program.Logger.Error(E.StackTrace);
+                    Program.Logger.ErrorFormat("Daemon thread check timeout socket error, message: {0}", E.Message);
+                    Program.Logger.Error(E.StackTrace);
                 }
             }
 

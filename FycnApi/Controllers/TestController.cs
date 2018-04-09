@@ -90,6 +90,11 @@ namespace FycnApi.Controllers
             string postStr = Encoding.UTF8.GetString(b);
             
         }
+
+        public void TestRedisValue()
+        {
+            MachineHelper.ClearCode("123","3434");
+        }
         
     }
 }
