@@ -94,7 +94,7 @@ namespace Fycn.Sockets
                 
                 if (MachineHelper.IsOnline(userTokenArray[i].MachineId) && userTokenArray[i].ConnectSocket.RemoteEndPoint.ToString() == MachineHelper.GetIp(userTokenArray[i].MachineId))
                 {
-                    break;
+                    continue;
                 }
                    
                 try
