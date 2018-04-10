@@ -53,50 +53,50 @@ namespace FycnApi.Controllers
 
         }
 
-        public ResultObj<List<ClassModel>> GetPayNumbers()
+        public ResultObj<List<ClassModel>> GetPayNumbers(string clientId="")
         {
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetPayNumbers());
+            return Content(istatistic.GetPayNumbers(clientId));
         }
 
-        public ResultObj<List<ClassModel>> GetGroupSalesMoney(string salesDateStart = "", string salesDateEnd = "", string type = "")
+        public ResultObj<List<ClassModel>> GetGroupSalesMoney(string salesDateStart = "", string salesDateEnd = "", string type = "", string clientId = "")
         {
             if (string.IsNullOrEmpty(salesDateStart)|| string.IsNullOrEmpty(salesDateEnd) || string.IsNullOrEmpty(type))
             {
                 return null;
             }
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetGroupSalesMoney( salesDateStart,  salesDateEnd,  type));
+            return Content(istatistic.GetGroupSalesMoney( salesDateStart,  salesDateEnd,  type, clientId));
         }
 
-        public ResultObj<List<ClassModel>> GetPayNumbersByDate(string salesDateStart = "", string salesDateEnd = "", string type = "year")
+        public ResultObj<List<ClassModel>> GetPayNumbersByDate(string salesDateStart = "", string salesDateEnd = "", string type = "year", string clientId = "")
         {
             if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd) || string.IsNullOrEmpty(type))
             {
                 return null;
             }
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetPayNumbersByDate(salesDateStart, salesDateEnd, type));
+            return Content(istatistic.GetPayNumbersByDate(salesDateStart, salesDateEnd, type, clientId));
         }
 
-        public ResultObj<List<ClassModel>> GetGroupProduct(string salesDateStart = "", string salesDateEnd = "", bool needPage=false, int pageIndex=1, int pageSize=10)
+        public ResultObj<List<ClassModel>> GetGroupProduct(string salesDateStart = "", string salesDateEnd = "", string clientId = "", bool needPage=false, int pageIndex=1, int pageSize=10)
         {
             if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
             {
                 return null;
             }
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetGroupProduct(salesDateStart, salesDateEnd, needPage, pageIndex,pageSize));
+            return Content(istatistic.GetGroupProduct(salesDateStart, salesDateEnd, clientId, needPage, pageIndex,pageSize));
         }
 
-        public ResultObj<List<ClassModel>> GetGroupMoneyByMachine(string salesDateStart = "", string salesDateEnd = "", bool needPage = true, int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<ClassModel>> GetGroupMoneyByMachine(string salesDateStart = "", string salesDateEnd = "", string clientId = "", bool needPage = true, int pageIndex = 1, int pageSize = 10)
         {
             if (string.IsNullOrEmpty(salesDateStart) || string.IsNullOrEmpty(salesDateEnd))
             {
                 return null;
             }
             IStatistic istatistic = new StatisticService();
-            return Content(istatistic.GetGroupMoneyByMachine(salesDateStart, salesDateEnd, needPage, pageIndex, pageSize));
+            return Content(istatistic.GetGroupMoneyByMachine(salesDateStart, salesDateEnd, clientId, needPage, pageIndex, pageSize));
         }
         
     }

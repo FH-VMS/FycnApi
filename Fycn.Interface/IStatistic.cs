@@ -22,18 +22,18 @@ namespace Fycn.Interface
         DataTable GetStatisticSalesMoneyByDate(SaleModel saleInfo);
 
         [Remark("统计支付笔数", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetPayNumbers();
+        List<ClassModel> GetPayNumbers(string clientId);
 
         [Remark("根据时间统计支付笔数", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type);
+        List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type, string clientId);
 
         [Remark("根据时间分类取销售额", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type);
+        List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type, string clientId);
 
         [Remark("根据时间分类商品", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize);
+        List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, string clientId, bool needPage, int pageIndex, int pageSize);
 
         [Remark("根据机器分类销售额", ParmsNote = "", ReturnNote = "列表实体")]
-        List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, bool needPage = true, int pageIndex = 1, int pageSize = 10);
+        List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, string clientId, bool needPage = true, int pageIndex = 1, int pageSize = 10);
     }
 }

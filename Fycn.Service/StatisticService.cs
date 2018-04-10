@@ -288,9 +288,14 @@ namespace Fycn.Service
         /// 取支付笔数
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetPayNumbers()
+        public List<ClassModel> GetPayNumbers(string clientId)
         {
-            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string userClientId = clientId;
+            if(string.IsNullOrEmpty(userClientId))
+            {
+                userClientId=HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            
             if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
@@ -299,7 +304,7 @@ namespace Fycn.Service
             var conditions = new List<Condition>();
             string clientIds = new SalesService().GetClientIds(userClientId);
             if(clientIds.Contains("self")){
-                clientIds = clientIds.Replace("self,","");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
                 conditions.Add(new Condition
                 {
@@ -340,9 +345,13 @@ namespace Fycn.Service
         /// 根据日期取支付笔数
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type)
+        public List<ClassModel> GetPayNumbersByDate(string salesDateStart, string salesDateEnd, string type, string clientId)
         {
-            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
             if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
@@ -352,7 +361,7 @@ namespace Fycn.Service
             string clientIds = new SalesService().GetClientIds(userClientId);
             if (clientIds.Contains("self"))
             {
-                clientIds = clientIds.Replace("self,", "");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
             conditions.Add(new Condition
             {
@@ -449,25 +458,30 @@ namespace Fycn.Service
         /// 取销售额
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type)
+        public List<ClassModel> GetGroupSalesMoney(string salesDateStart, string salesDateEnd, string type,string clientId)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-            if (string.IsNullOrEmpty(clientId))
+            //var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
             var conditions = new List<Condition>();
           
-            string clientIds = new SalesService().GetClientIds(clientId.ToString());
+            string clientIds = new SalesService().GetClientIds(userClientId.ToString());
             if(clientIds.Contains("self")){
-                clientIds = clientIds.Replace("self,","");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND (",
                     ParamName = "ClientIdA",
                     DbColumnName = "b.client_id",
-                    ParamValue = clientId,
+                    ParamValue = userClientId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
@@ -584,25 +598,29 @@ namespace Fycn.Service
         /// 根据时间取商品销售数量
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, bool needPage = false, int pageIndex = 1, int pageSize = 10)
+        public List<ClassModel> GetGroupProduct(string salesDateStart, string salesDateEnd, string clientId, bool needPage = false, int pageIndex = 1, int pageSize = 10)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-            if (string.IsNullOrEmpty(clientId))
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
             var conditions = new List<Condition>();
 
-             string clientIds = new SalesService().GetClientIds(clientId.ToString());
+             string clientIds = new SalesService().GetClientIds(userClientId.ToString());
             if(clientIds.Contains("self")){
-                clientIds = clientIds.Replace("self,","");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND (",
                     ParamName = "ClientIdA",
                     DbColumnName = "b.client_id",
-                    ParamValue = clientId,
+                    ParamValue = userClientId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
@@ -692,26 +710,31 @@ namespace Fycn.Service
         /// 取销售额根据机器进行分类
         /// </summary>
         /// <returns></returns>
-        public List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, bool needPage=true, int pageIndex=1, int pageSize=10)
+        public List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, string clientId, bool needPage=true, int pageIndex=1, int pageSize=10)
         {
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-            if (string.IsNullOrEmpty(clientId))
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+           
+            if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
             var conditions = new List<Condition>();
 
-            string clientIds = new SalesService().GetClientIds(clientId.ToString());
+            string clientIds = new SalesService().GetClientIds(userClientId.ToString());
             if (clientIds.Contains("self"))
             {
-                clientIds = clientIds.Replace("self,", "");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
             conditions.Add(new Condition
             {
                 LeftBrace = " AND (",
                 ParamName = "ClientIdA",
                 DbColumnName = "b.client_id",
-                ParamValue = clientId,
+                ParamValue = userClientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
                 Logic = ""
