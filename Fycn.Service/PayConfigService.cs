@@ -83,7 +83,11 @@ namespace Fycn.Service
             {
                 return 0;
             }
-            configInfo.ClientId = userClientId;
+            if (string.IsNullOrEmpty(configInfo.ClientId))
+            {
+                configInfo.ClientId = userClientId;
+            }
+            
             configInfo.WxSslcertPath = "cert/"+configInfo.WxMchId+"/apiclient_cert.p12";
             configInfo.WxSslcertPassword = configInfo.WxMchId;
             result = GenerateDal.Create(configInfo);

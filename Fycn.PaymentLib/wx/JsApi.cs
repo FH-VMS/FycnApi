@@ -20,7 +20,7 @@ namespace Fycn.PaymentLib.wx
         * 第二步：利用code去获取openid和access_token
         * 
         */
-        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,PayModel payInfo)
+        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,PayModel payInfo,string scopeTyp)
         {
             if (code!="-1")
             {
@@ -29,13 +29,14 @@ namespace Fycn.PaymentLib.wx
             }
             else
             {
+
                 //构造网页授权获取code的URL
                 string redirect_uri = HttpUtility.UrlEncode(payConfig.FRONT_URL + "?k="+payInfo.k);
                 WxPayData data = new WxPayData();
                 data.SetValue("appid", payConfig.APPID);
                 data.SetValue("redirect_uri", redirect_uri);
                 data.SetValue("response_type", "code");
-                data.SetValue("scope", "snsapi_base");
+                data.SetValue("scope", string.IsNullOrEmpty(scopeTyp) ? "snsapi_base": scopeTyp); // snsapi_userinfo
                 data.SetValue("state", "STATE" + "#wechat_redirect");
                 string url = "https://open.weixin.qq.com/connect/oauth2/authorize?" + data.ToUrl();
                 try
