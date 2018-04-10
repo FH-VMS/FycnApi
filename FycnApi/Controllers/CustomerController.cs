@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
+using Fycn.Model.Machine;
 
 namespace FycnApi.Controllers
 {
@@ -50,6 +51,14 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> DeleteData(string idList)
         {
+            IBase<MachineListModel> mBase = new MachineListService();
+            MachineListModel machineList = new MachineListModel();
+            machineList.ClientId = idList;
+            int machineCount = mBase.GetCount(machineList);
+            if(machineCount>0)
+            {
+                return Content(0, ResultCode.Fail, "当前客户名下有机器,无法删除!", new Pagination { });
+            }
             return Content(_IBase.DeleteData(idList));
         }
 
