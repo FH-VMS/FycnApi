@@ -19,7 +19,7 @@ namespace Fycn.Service
         /// 取机器的销售额
         /// </summary>
         /// <returns></returns>
-        public DataTable GetSalesAmountByMachine(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize)
+        public DataTable GetSalesAmountByMachine(string salesDateStart, string salesDateEnd, string machineId, bool needPage, int pageIndex, int pageSize)
         {
             var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(clientId))
@@ -70,6 +70,31 @@ namespace Fycn.Service
                 });
             }
 
+            if (!string.IsNullOrEmpty(machineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND (",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%"+machineId+"%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "Remark",
+                    DbColumnName = "b.remark",
+                    ParamValue = "%" + machineId + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = ")",
+                    Logic = ""
+                });
+            }
+
             conditions.Add(new Condition
             {
                 LeftBrace = "",
@@ -77,6 +102,17 @@ namespace Fycn.Service
                 DbColumnName = "",
                 ParamValue = "a.machine_id",
                 Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Total",
+                DbColumnName = "total",
+                ParamValue = "desc",
+                Operation = ConditionOperate.OrderBy,
                 RightBrace = "",
                 Logic = ""
             });
@@ -90,7 +126,7 @@ namespace Fycn.Service
             return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetSalesAmountByMachine, conditions);
         }
 
-        public int GetSalesAmountByMachineCount(string salesDateStart, string salesDateEnd, bool needPage, int pageIndex, int pageSize)
+        public int GetSalesAmountByMachineCount(string salesDateStart, string salesDateEnd, string machineId, bool needPage, int pageIndex, int pageSize)
         {
             var result = 0;
 
@@ -138,7 +174,30 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
+            if (!string.IsNullOrEmpty(machineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND (",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + machineId + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
 
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " OR ",
+                    ParamName = "Remark",
+                    DbColumnName = "b.remark",
+                    ParamValue = "%" + machineId + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = ")",
+                    Logic = ""
+                });
+            }
 
 
             result = GenerateDal.CountByConditions(CommonSqlKey.GetSalesAmountByMachineCount, conditions);
