@@ -113,6 +113,11 @@ namespace Fycn.Service
 
         public int UpdateData(ConfigModel configInfo)
         {
+            if (string.IsNullOrEmpty(configInfo.ClientId))
+            {
+                string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+                configInfo.ClientId = userClientId;
+            }
             //操作日志
             OperationLogService operationService = new OperationLogService();
             operationService.PostData(new OperationLogModel() { Remark = configInfo.ClientId, OptContent = "更新支付配置" });
