@@ -43,7 +43,7 @@ namespace FycnApi.Controllers
               
             //解码机器传过来的key值
             //解析k值
-            KeyJsonModel keyJsonInfo = AnalizeKey(k);
+            KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             RedisHelper redisHelper=new RedisHelper(0);
             if(!redisHelper.KeyExists(keyJsonInfo.m))
             {
@@ -58,7 +58,7 @@ namespace FycnApi.Controllers
                 //JsApi.payInfo = new PayModel();
                 payInfo.k = k;
                 //生成code 根据code取微信支付的openid和access_token
-                jsApi.GetOpenidAndAccessToken(code, payConfig,payInfo, "");
+                jsApi.GetOpenidAndAccessToken(code, payConfig,payInfo, "?k=" + payInfo.k, "");
            
             PayStateModel payState = new PayStateModel();
             if (string.IsNullOrEmpty(payInfo.openid))
@@ -187,20 +187,7 @@ namespace FycnApi.Controllers
       
 
         //对k进行解码 k格式：{"m":"ABC123456789","t":[{"tid":"1-2","n":3},{"tid":"1-3","n":2}]}
-        private KeyJsonModel AnalizeKey(string key)
-        {
-            KeyJsonModel keyJsonInfo = null;
-            try
-            {
-              keyJsonInfo = JsonHandler.GetObjectFromJson<KeyJsonModel>(key);
-            }
-            catch(Exception e) {
-              keyJsonInfo = JsonHandler.GetObjectFromJson<KeyJsonModel>(System.Text.Encoding.Default.GetString(ByteHelper.strToToHexByte(key)));
-            }
-            
-
-            return keyJsonInfo;
-        }
+      
 
        
    
@@ -215,7 +202,7 @@ namespace FycnApi.Controllers
             ////////////////////////////////////////////请求参数////////////////////////////////////////////
            
             //解析k值
-            KeyJsonModel keyJsonInfo = AnalizeKey(k);
+            KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
 
             if (string.IsNullOrEmpty(keyJsonInfo.m) || keyJsonInfo.t.Count == 0)
             {

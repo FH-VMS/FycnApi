@@ -20,7 +20,7 @@ namespace Fycn.PaymentLib.wx
         * 第二步：利用code去获取openid和access_token
         * 
         */
-        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,PayModel payInfo,string scopeTyp)
+        public void GetOpenidAndAccessToken(string code, WxPayConfig payConfig,PayModel payInfo,string urlParam,string scopeTyp)
         {
             if (code!="-1")
             {
@@ -31,7 +31,7 @@ namespace Fycn.PaymentLib.wx
             {
 
                 //构造网页授权获取code的URL
-                string redirect_uri = HttpUtility.UrlEncode(payConfig.FRONT_URL + "?k="+payInfo.k);
+                string redirect_uri = HttpUtility.UrlEncode(payConfig.FRONT_URL + urlParam);
                 WxPayData data = new WxPayData();
                 data.SetValue("appid", payConfig.APPID);
                 data.SetValue("redirect_uri", redirect_uri);
