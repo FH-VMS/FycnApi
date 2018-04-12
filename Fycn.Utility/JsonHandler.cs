@@ -59,6 +59,10 @@ namespace Fycn.Utility
 
         public static string DataTable2Json(DataTable dt)
         {
+            if(dt==null||dt.Rows.Count==0)
+            {
+                return string.Empty;
+            }
             StringBuilder jsonBuilder = new StringBuilder();
             jsonBuilder.Append("[");
             for (int i = 0; i < dt.Rows.Count; i++)

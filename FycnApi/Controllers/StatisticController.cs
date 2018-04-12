@@ -8,6 +8,7 @@ using FycnApi.Base;
 using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Utility;
+using Fycn.Model.Sys;
 
 namespace FycnApi.Controllers
 {
@@ -21,14 +22,16 @@ namespace FycnApi.Controllers
             }
         }
 
-        public string GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId="", string machineId="", string tradeStatus="2")
+        public ResultObj<string> GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId="", string machineId="", string tradeStatus="2")
         {
-            return JsonHandler.DataTable2Json(_istatistic.GetMobilePayStatistic(salesDateStart, salesDateEnd, clientId, machineId, tradeStatus));
+            return Content(JsonHandler.DataTable2Json(_istatistic.GetMobilePayStatistic(salesDateStart, salesDateEnd, clientId, machineId, tradeStatus)));
         }
 
-        public string GetProductStatistic(string salesDateStart, string salesDateEnd, string productName="", string clientId="", string machineId="", string tradeStatus="2")
+        public ResultObj<string> GetProductStatistic(string salesDateStart, string salesDateEnd, string productName="", string clientId="", string machineId="", string tradeStatus="2",int pageIndex=1, int pageSize=10)
         {
-            return JsonHandler.DataTable2Json(_istatistic.GetProductStatistic(salesDateStart, salesDateEnd, productName, clientId, machineId, tradeStatus));
+            int count =_istatistic.GetProductStatisticCount(salesDateStart, salesDateEnd, productName, clientId, machineId, tradeStatus);
+            var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = count, TotalPage = 0 };
+            return Content(JsonHandler.DataTable2Json(_istatistic.GetProductStatistic(salesDateStart, salesDateEnd, productName, clientId, machineId, tradeStatus,pageIndex,pageSize)),pagination);
         }
     }
 }

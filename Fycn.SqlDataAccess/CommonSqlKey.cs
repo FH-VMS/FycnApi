@@ -212,6 +212,7 @@ namespace Fycn.SqlDataAccess
         GetGroupMoneyByMachine,
         GetMobilePayStatistic,
         GetProductStatistic,
+        GetProductStatisticCount,
 
         //支付配置
         GetPayConfigList,

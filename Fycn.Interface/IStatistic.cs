@@ -40,6 +40,9 @@ namespace Fycn.Interface
         DataTable GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId, string machineId, string tradeStatus);
 
         [Remark("统计商品金额及笔数", ParmsNote = "", ReturnNote = "")]
-        DataTable GetProductStatistic(string salesDateStart, string salesDateEnd, string productName, string clientId, string machineId, string tradeStatus);
+        DataTable GetProductStatistic(string salesDateStart, string salesDateEnd, string productName, string clientId, string machineId, string tradeStatus,int pageIndex,int pageSize);
+        
+        [Remark("统计商品金额及笔数总行数", ParmsNote = "", ReturnNote = "")]
+        int GetProductStatisticCount(string salesDateStart, string salesDateEnd,string productName, string clientId, string machineId, string tradeStatus);
     }
 }
