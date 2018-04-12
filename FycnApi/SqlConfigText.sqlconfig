@@ -96,9 +96,15 @@
   "GetProductConfig": "SELECT a.wares_name as WaresName,a.client_id as ClientId, b.* FROM table_product a LEFT JOIN table_product_config b ON a.wares_id = b.wares_id INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) c ON a.client_id = c.client_id ",
   "GetProductConfigCount": "SELECT Count(1) FROM table_product a LEFT JOIN table_product_config b ON a.wares_id = b.wares_id INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) c ON a.client_id = c.client_id ",
   "DeleteProductConfig": "DELETE from table_product_config where wares_config_id=?p_WaresConfigId",
-  "UpdateProductConfig": "UPDATE table_product_config SET low_missing=?p_LowMissing, low_missing_alarm=?LowMissingAlarm, purchase_price=?p_PurchasePrice, price_unit=?p_Unit, wares_status=?p_WaresStatus, update_date=?p_UpdateDate, wares_config_remark=?p_WaresConfigRemark WHERE wares_config_id = ?p_WaresConfigId",
+  "UpdateProductConfig": "UPDATE table_product_config SET low_missing=?p_LowMissing, low_missing_alarm=?p_LowMissingAlarm, purchase_price=?p_PurchasePrice, price_unit=?p_Unit, wares_status=?p_WaresStatus, update_date=?p_UpdateDate, wares_config_remark=?p_WaresConfigRemark WHERE wares_config_id = ?p_WaresConfigId",
   "GetProductConfigAll": "SELECT a.wares_name as WaresName, b.* FROM table_product a LEFT JOIN table_product_config b ON a.wares_id = b.wares_id ",
   "GetProductConfigAllCount": "SELECT count(1) FROM table_product ",
+
+  "_comment": "商品类型",
+  "GetProductType": "SELECT a.*,b.client_name as ClientName FROM table_product_type a LEFT JOIN table_client b ON a.client_id=b.client_id ",
+  "GetProductTypeCount": "SELECT COUNT(1) FROM table_product_type a LEFT JOIN table_client b ON a.client_id=b.client_id ",
+  "DeleteProductType": "DELETE from table_product_type where wares_type_id=?p_WaresTypeId",
+  "UpdateProductType": "UPDATE table_product_type SET wares_type_name=?p_WaresTypeName, wares_type_remark=?p_WaresTypeRemark, sequence=?p_Sequence WHERE wares_type_id = ?p_WaresTypeId",
 
   "_comment": "图片资源",
   "GetPictureList": "SELECT a.*,CONCAT(?p_ResourceUrl,a.pic_path) as PicUrl,b.client_name as ClientName FROM table_pic a Left JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",

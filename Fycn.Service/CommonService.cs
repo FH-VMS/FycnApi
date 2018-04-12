@@ -543,7 +543,8 @@ namespace Fycn.Service
 
         }
 
-        private string GetChildAndParentIds(string clientId)
+        //可考虑放入redis缓存
+        public string GetChildAndParentIds(string clientId)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
@@ -558,6 +559,32 @@ namespace Fycn.Service
             });
 
             DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetChildAndParentIds, conditions);
+            if (result.Rows.Count == 0)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return result.Rows[0][0].ToString();
+            }
+        }
+
+        //可考虑放入redis缓存
+        public string GetClientIds(string clientId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "ClientId",
+                DbColumnName = "",
+                ParamValue = clientId,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            DataTable result = GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetClientIds, conditions);
             if (result.Rows.Count == 0)
             {
                 return string.Empty;

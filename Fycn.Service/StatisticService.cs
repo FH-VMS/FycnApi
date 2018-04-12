@@ -302,7 +302,7 @@ namespace Fycn.Service
             }
             var result = new List<ClassModel>();
             var conditions = new List<Condition>();
-            string clientIds = new SalesService().GetClientIds(userClientId);
+            string clientIds = new CommonService().GetClientIds(userClientId);
             if(clientIds.Contains("self")){
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
@@ -358,7 +358,7 @@ namespace Fycn.Service
             }
             var result = new List<ClassModel>();
             var conditions = new List<Condition>();
-            string clientIds = new SalesService().GetClientIds(userClientId);
+            string clientIds = new CommonService().GetClientIds(userClientId);
             if (clientIds.Contains("self"))
             {
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
@@ -472,7 +472,7 @@ namespace Fycn.Service
             }
             var conditions = new List<Condition>();
           
-            string clientIds = new SalesService().GetClientIds(userClientId.ToString());
+            string clientIds = new CommonService().GetClientIds(userClientId.ToString());
             if(clientIds.Contains("self")){
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
@@ -611,7 +611,7 @@ namespace Fycn.Service
             }
             var conditions = new List<Condition>();
 
-             string clientIds = new SalesService().GetClientIds(userClientId.ToString());
+             string clientIds = new CommonService().GetClientIds(userClientId.ToString());
             if(clientIds.Contains("self")){
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
@@ -724,7 +724,7 @@ namespace Fycn.Service
             }
             var conditions = new List<Condition>();
 
-            string clientIds = new SalesService().GetClientIds(userClientId.ToString());
+            string clientIds = new CommonService().GetClientIds(userClientId.ToString());
             if (clientIds.Contains("self"))
             {
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";

@@ -102,6 +102,12 @@ namespace Fycn.SqlDataAccess
         GetProductListAllCount,
         GetProductNameByWaresId,
 
+        //商品类型
+        GetProductType,
+        GetProductTypeCount,
+        DeleteProductType,
+        UpdateProductType,
+
         //商品配置
         GetProductConfigAll,
         GetProductConfig,
