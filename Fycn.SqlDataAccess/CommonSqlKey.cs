@@ -210,6 +210,8 @@ namespace Fycn.SqlDataAccess
         GetGroupSalesMoney,
         GetGroupProduct,
         GetGroupMoneyByMachine,
+        GetMobilePayStatistic,
+        GetProductStatistic,
 
         //支付配置
         GetPayConfigList,

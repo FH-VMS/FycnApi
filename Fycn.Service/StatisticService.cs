@@ -818,5 +818,217 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<ClassModel>(CommonSqlKey.GetGroupMoneyByMachine, conditions);
         }
+
+
+        // 移动支付统计
+        public DataTable GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId, string machineId,string tradeStatus)
+        {
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
+            var conditions = new List<Condition>();
+
+            string clientIds = new CommonService().GetClientIds(userClientId.ToString());
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "a.trade_status",
+                ParamValue = tradeStatus,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.pay_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.pay_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(machineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = machineId.Trim(),
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "",
+                DbColumnName = "",
+                ParamValue = "a.pay_interface",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+           
+
+            return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetMobilePayStatistic, conditions);
+        }
+
+        public DataTable GetProductStatistic(string salesDateStart, string salesDateEnd,string productName, string clientId, string machineId, string tradeStatus)
+        {
+            string userClientId = clientId;
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
+            var conditions = new List<Condition>();
+
+            string clientIds = new CommonService().GetClientIds(userClientId.ToString());
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "a.trade_status",
+                ParamValue = tradeStatus,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(salesDateStart))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateStart",
+                    DbColumnName = "a.pay_date",
+                    ParamValue = salesDateStart,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(salesDateEnd))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SaleDateEnd",
+                    DbColumnName = "a.pay_date",
+                    ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(machineId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = machineId.Trim(),
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(productName))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ProductName",
+                    DbColumnName = "a.wares_name",
+                    ParamValue = "%"+productName.Trim()+"%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "",
+                DbColumnName = "",
+                ParamValue = "a.wares_name",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+
+            return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetProductStatistic, conditions);
+        }
     }
 }

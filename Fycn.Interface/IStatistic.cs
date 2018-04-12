@@ -35,5 +35,11 @@ namespace Fycn.Interface
 
         [Remark("根据机器分类销售额", ParmsNote = "", ReturnNote = "列表实体")]
         List<ClassModel> GetGroupMoneyByMachine(string salesDateStart, string salesDateEnd, string clientId, bool needPage = true, int pageIndex = 1, int pageSize = 10);
+
+        [Remark("统计移动支付金额及笔数", ParmsNote = "", ReturnNote = "")]
+        DataTable GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId, string machineId, string tradeStatus);
+
+        [Remark("统计商品金额及笔数", ParmsNote = "", ReturnNote = "")]
+        DataTable GetProductStatistic(string salesDateStart, string salesDateEnd, string productName, string clientId, string machineId, string tradeStatus);
     }
 }
