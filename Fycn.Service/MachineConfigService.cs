@@ -21,73 +21,36 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
-          
+
+            string clientIds = new CommonService().GetClientIds(userClientId.ToString());
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(machineConfigInfo.DeviceId))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "DeviceId",
-                    DbColumnName = "b.device_id",
+                    DbColumnName = "a.device_id",
                     ParamValue = "%" + machineConfigInfo.DeviceId + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
             }
-            /*
-          if (!string.IsNullOrEmpty(machineConfigInfo.ClientText))
-          {
-              conditions.Add(new Condition
-              {
-                  LeftBrace = " AND ",
-                  ParamName = "ClientName",
-                  DbColumnName = "b.client_name",
-                  ParamValue = "%" + machineConfigInfo.ClientText + "%",
-                  Operation = ConditionOperate.Like,
-                  RightBrace = "",
-                  Logic = ""
-              });
-          }
-
-          if (!string.IsNullOrEmpty(machineConfigInfo.UserAccount))
-          {
-              conditions.Add(new Condition
-              {
-                  LeftBrace = " AND ",
-                  ParamName = "UserAccount",
-                  DbColumnName = "a.usr_account",
-                  ParamValue = "%" + machineConfigInfo.UserAccount + "%",
-                  Operation = ConditionOperate.Like,
-                  RightBrace = "",
-                  Logic = ""
-              });
-          }
-
-          if (!string.IsNullOrEmpty(machineConfigInfo.TypeId))
-          {
-              conditions.Add(new Condition
-              {
-                  LeftBrace = " AND ",
-                  ParamName = "TypeId",
-                  DbColumnName = "a.type_id",
-                  ParamValue = machineConfigInfo.TypeId,
-                  Operation = ConditionOperate.Equal,
-                  RightBrace = "",
-                  Logic = ""
-              });
-          }
-              */
-            conditions.Add(new Condition
-          {
-              LeftBrace = "",
-              ParamName = "ClientId",
-              DbColumnName = "",
-              ParamValue = userClientId,
-              Operation = ConditionOperate.None,
-              RightBrace = "",
-              Logic = ""
-          });
+           
         
             conditions.AddRange(CreatePaginConditions(machineConfigInfo.PageIndex, machineConfigInfo.PageSize));
 
@@ -105,75 +68,37 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
-           
+
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(machineConfigInfo.DeviceId))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "DeviceId",
-                    DbColumnName = "b.device_id",
+                    DbColumnName = "a.device_id",
                     ParamValue = "%" + machineConfigInfo.DeviceId + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
             }
-            /*
-           if (!string.IsNullOrEmpty(machineConfigInfo.ClientText))
-           {
-               conditions.Add(new Condition
-               {
-                   LeftBrace = " AND ",
-                   ParamName = "ClientName",
-                   DbColumnName = "b.client_name",
-                   ParamValue = "%" + machineConfigInfo.ClientText + "%",
-                   Operation = ConditionOperate.Like,
-                   RightBrace = "",
-                   Logic = ""
-               });
-           }
 
-           if (!string.IsNullOrEmpty(machineConfigInfo.UserAccount))
-           {
-               conditions.Add(new Condition
-               {
-                   LeftBrace = " AND ",
-                   ParamName = "UserAccount",
-                   DbColumnName = "a.usr_account",
-                   ParamValue = "%" + machineConfigInfo.UserAccount + "%",
-                   Operation = ConditionOperate.Like,
-                   RightBrace = "",
-                   Logic = ""
-               });
-           }
 
-           if (!string.IsNullOrEmpty(machineConfigInfo.TypeId))
-           {
-               conditions.Add(new Condition
-               {
-                   LeftBrace = " AND ",
-                   ParamName = "TypeId",
-                   DbColumnName = "a.type_id",
-                   ParamValue = machineConfigInfo.TypeId,
-                   Operation = ConditionOperate.Equal,
-                   RightBrace = "",
-                   Logic = ""
-               });
-           }
-             */
-            conditions.Add(new Condition
-           {
-               LeftBrace = "",
-               ParamName = "ClientId",
-               DbColumnName = "",
-               ParamValue = userClientId,
-               Operation = ConditionOperate.None,
-               RightBrace = "",
-               Logic = ""
-           });
-
-          
 
             result = GenerateDal.CountByConditions(CommonSqlKey.GetMachineConfigCount, conditions);
 

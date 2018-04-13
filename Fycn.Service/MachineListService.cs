@@ -22,6 +22,21 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
             {
                 conditions.Add(new Condition{
@@ -55,7 +70,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "UserAccount",
-                    DbColumnName = "a.usr_account",
+                    DbColumnName = "c.usr_account",
                     ParamValue = "%" + machineListInfo.UserAccount + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -76,17 +91,6 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-
-            conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
 
             conditions.Add(new Condition
             {
@@ -115,6 +119,21 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
             {
                 conditions.Add(new Condition
@@ -149,7 +168,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "UserAccount",
-                    DbColumnName = "a.usr_account",
+                    DbColumnName = "c.usr_account",
                     ParamValue = "%" + machineListInfo.UserAccount+"%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -170,18 +189,6 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-
-            conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
-
 
 
             result = GenerateDal.CountByConditions(CommonSqlKey.GetMachineListCount, conditions);
