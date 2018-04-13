@@ -55,6 +55,7 @@ namespace Fycn.SqlDataAccess
         GetMachineNameById,
         GetPayConfigDic,
         GetAdDic,
+        GetProductTypeDic,
 
         //机型
         GetMachineType,

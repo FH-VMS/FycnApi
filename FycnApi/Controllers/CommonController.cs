@@ -243,5 +243,12 @@ namespace FycnApi.Controllers
             ICommon commonService = new CommonService();
             return Content(commonService.GetAdDic(clientId));
         }
+
+        //取商品类型做字典
+        public ResultObj<List<CommonDic>> GetProductTypeDic(string clientId="")
+        {
+            ICommon commonService = new CommonService();
+            return Content(commonService.GetProductTypeDic(clientId));
+        }
     }
 }

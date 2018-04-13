@@ -44,6 +44,7 @@
   "GetMachineNameById": "SELECT machine_id as Id, remark as Name FROM table_machine ",
   "GetPayConfigDic": "SELECT id,name FROM table_mobile_pay_config ",
   "GetAdDic": "SELECT id,name FROM table_ad ",
+  "GetProductTypeDic": "SELECT wares_type_id as Id,wares_type_name as Name FROM table_product_type ",
 
   "_comment": "机型",
   "GetMachineType": "SELECT a.*,b.book_chinese as TypeTypeText FROM table_machine_type as a  LEFT JOIN table_book as b ON a.type_type=b.value WHERE b.id='typetype' ",

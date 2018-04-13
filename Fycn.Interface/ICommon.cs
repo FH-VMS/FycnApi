@@ -67,5 +67,8 @@ namespace Fycn.Interface
         [Remark("取广告模板字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetAdDic(string clientId);
 
+        [Remark("取商品类型字典", ParmsNote = "", ReturnNote = "字典实体列表")]
+        List<CommonDic> GetProductTypeDic(string clientId);
+
     }
 }

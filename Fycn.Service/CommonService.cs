@@ -615,5 +615,30 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetAdDic, conditions);
 
         }
+
+        //取商品类型字典
+        public List<CommonDic> GetProductTypeDic(string clientId)
+        {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            string clientIds = GetChildAndParentIds(clientId);
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = " "
+            });
+
+
+            return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductTypeDic, conditions);
+
+        }
     }
 }
