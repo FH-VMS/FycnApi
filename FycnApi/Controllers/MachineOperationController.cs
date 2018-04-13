@@ -35,7 +35,7 @@ namespace FycnApi.Controllers
                 return Content(0, ResultCode.Fail, "该机器编号已存在");
             }
             IMachineOperation imachine = new MachineOperationService();
-            return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, copyItem));
+            return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, copyItem,""));
         }
     }
 }
