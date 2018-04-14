@@ -113,7 +113,7 @@ namespace Fycn.Service
                 LeftBrace = "  ",
                 ParamName = "ResourceUrl",
                 DbColumnName = "",
-                ParamValue = ConfigHandler.ResourceUrl,
+                ParamValue = ConfigHandler.ResourceUrl.TrimEnd('/'),
                 Operation = ConditionOperate.None,
                 RightBrace = "",
                 Logic = ""

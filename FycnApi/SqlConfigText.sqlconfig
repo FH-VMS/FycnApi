@@ -113,7 +113,7 @@
   "DeletePictureList": "DELETE from table_pic where pic_id=?p_PicId",
   "UpdatePictureList": "UPDATE table_pic SET  pic_name =?p_PicName, client_id=?p_ClientId, size=?p_Size WHERE pic_id =?p_PicId",
   "GetResourceById": "SELECT * FROM table_pic ",
-  "GetAdSource": "SELECT d.pic_id as SourceId,CONCAT(?p_ResourceUrl,d.pic_path) AS SourceUrl, a.sequence as Sequence, a.ad_type AS AdType from table_ad_relation a LEFT JOIN table_ad b ON a.ad_id=b.id LEFT JOIN table_machine c ON b.id=c.ad_id LEFT JOIN table_pic d ON a.source_id=d.pic_id ",
+  "GetAdSource": "SELECT d.pic_id as SourceId,CONCAT(?p_ResourceUrl,d.pic_path) AS SourceUrl, a.sequence as Sequence, a.ad_type AS AdType, a.play_time as PlayTime,b.is_push as IsPush from table_ad_relation a LEFT JOIN table_ad b ON a.ad_id=b.id LEFT JOIN table_machine c ON b.id=c.ad_id LEFT JOIN table_pic d ON a.source_id=d.pic_id ",
 
   "_comment": "销售",
   "UpdateSale": "UPDATE table_sales_cashless SET  trade_status =?p_TradeStatus WHERE sales_ic_id =?p_SalesIcId",
@@ -159,6 +159,7 @@
   "GetProductByMachineCount": "SELECT count(1) FROM table_goods_config a LEFT JOIN table_product b ON a.wares_id=b.wares_id LEFT JOIN table_goods_status c ON a.tunnel_id=c.goods_stu_id AND a.machine_id=c.machine_id AND a.cabinet_id=c.cabinet_id LEFT JOIN table_pic d ON b.pic_id=d.pic_id WHERE c.curr_status=1 AND c.curr_stock>0 ",
   "GetProductAndroid": "SELECT a.machine_id, a.wares_id, a.alipay_prices, a.wpay_prices, b.wares_name as WaresName, sum(c.curr_stock) as CurrStock, CONCAT(?p_ResourceUrl,d.pic_path) as PicUrl FROM table_goods_config a LEFT JOIN table_product b ON a.wares_id=b.wares_id LEFT JOIN table_goods_status c ON a.tunnel_id=c.goods_stu_id AND a.machine_id=c.machine_id AND a.cabinet_id=c.cabinet_id LEFT JOIN table_pic d ON b.pic_id=d.pic_id ",
   "GetProductAndroidCount": "SELECT count(1) FROM table_goods_config a LEFT JOIN table_product b ON a.wares_id=b.wares_id LEFT JOIN table_goods_status c ON a.tunnel_id=c.goods_stu_id AND a.machine_id=c.machine_id AND a.cabinet_id=c.cabinet_id LEFT JOIN table_pic d ON b.pic_id=d.pic_id ",
+  "GetProdcutTypeByMachine": "SELECT c.wares_type_id as WaresTypeId,c.wares_type_name as WaresTypeName,c.sequence as Sequence FROM table_goods_config a LEFT JOIN table_product b ON a.wares_id=b.wares_id LEFT JOIN table_product_type c ON b.wares_type_id=c.wares_type_id",
   "GetCountByTradeNo": "SELECT count(1) FROM table_sales_cashless ",
   "UpdatePayResult": "UPDATE table_sales_cashless SET  trade_status=?p_TradeStatus, reality_sale_number=?p_RealitySaleNumber, sales_date=?p_SalesDate WHERE machine_id=?p_MachineId AND trade_no=?p_TradeNo AND goods_id=?p_GoodsId ",
   "UpdateCurrStock": "UPDATE table_goods_status SET curr_stock=curr_stock-?p_CurrStock WHERE machine_id=?p_MachineId AND goods_stu_id=?p_GoodsStuId ",

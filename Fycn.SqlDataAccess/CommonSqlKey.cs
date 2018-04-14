@@ -108,6 +108,7 @@ namespace Fycn.SqlDataAccess
         GetProductTypeCount,
         DeleteProductType,
         UpdateProductType,
+        GetProdcutTypeByMachine,
 
         //商品配置
         GetProductConfigAll,

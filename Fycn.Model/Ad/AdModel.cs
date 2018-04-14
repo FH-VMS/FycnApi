@@ -30,6 +30,14 @@ namespace Fycn.Model.Ad
             set;
         }
 
+
+        [Column(Name = "is_push")]
+        public int IsPush
+        {
+            get;
+            set;
+        }
+
         public List<PictureModel> Reources
         {
             get;

@@ -29,5 +29,16 @@ namespace Fycn.Model.Ad
             get;
             set;
         }
+
+        public int PlayTime
+        {
+            get;
+            set;
+        }
+        public int IsPush
+        {
+            get;
+            set;
+        }
     }
 }

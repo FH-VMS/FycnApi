@@ -37,6 +37,13 @@ namespace Fycn.Model.Ad
             set;
         }
 
+        [Column(Name = "play_time")]
+        public int PlayTime
+        {
+            get;
+            set;
+        }
+
         public string PicId
         {
             get;
