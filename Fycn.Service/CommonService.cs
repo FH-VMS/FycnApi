@@ -546,6 +546,11 @@ namespace Fycn.Service
         //可考虑放入redis缓存
         public string GetChildAndParentIds(string clientId)
         {
+            string retValues=WebCacheHelper.GetParentAndChildIds(clientId);
+            if(!string.IsNullOrEmpty(retValues))
+            {
+                return retValues;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -565,6 +570,7 @@ namespace Fycn.Service
             }
             else
             {
+                WebCacheHelper.CacheParentAndChildIds(clientId,result.Rows[0][0].ToString());
                 return result.Rows[0][0].ToString();
             }
         }
@@ -572,6 +578,11 @@ namespace Fycn.Service
         //可考虑放入redis缓存
         public string GetClientIds(string clientId)
         {
+            string retValues = WebCacheHelper.GetChildIds(clientId);
+            if (!string.IsNullOrEmpty(retValues))
+            {
+                return retValues;
+            }
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
@@ -591,6 +602,7 @@ namespace Fycn.Service
             }
             else
             {
+                WebCacheHelper.CacheChildIds(clientId, result.Rows[0][0].ToString());
                 return result.Rows[0][0].ToString();
             }
         }
@@ -639,6 +651,36 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductTypeDic, conditions);
 
+        }
+
+        //根据client id取名下机器数量
+        public int GetMachineCountByClientId(string clientId)
+        {
+            var result = 0;
+            
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return 0;
+            }
+            var conditions = new List<Condition>();
+            string clientIds = GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+            result = GenerateDal.CountByConditions(CommonSqlKey.GetMachineListCount, conditions);
+
+            return result;
         }
     }
 }

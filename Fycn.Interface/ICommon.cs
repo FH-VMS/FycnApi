@@ -70,5 +70,8 @@ namespace Fycn.Interface
         [Remark("取商品类型字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetProductTypeDic(string clientId);
 
+        [Remark("取名下机器数量", ParmsNote = "", ReturnNote = "int")]
+        int GetMachineCountByClientId(string clientId);
+
     }
 }

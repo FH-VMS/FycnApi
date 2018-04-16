@@ -172,7 +172,7 @@ namespace Fycn.Service
             //操作日志
             OperationLogService operationService = new OperationLogService();
             operationService.PostData(new OperationLogModel() { Remark = customerInfo.Id, OptContent = "新增或修改会员信息" });
-
+            WebCacheHelper.ClearIds(userClientId);
 
             return result;
         }
@@ -220,6 +220,7 @@ namespace Fycn.Service
                 operationService.PostData(new OperationLogModel() { Remark = customerInfo.Id, OptContent = "删除客户" });
 
                 GenerateDal.CommitTransaction();
+                WebCacheHelper.ClearIds(userClientId);
                 return 1;
             }
             catch (Exception ee)
@@ -240,6 +241,8 @@ namespace Fycn.Service
             //操作日志
             OperationLogService operationService = new OperationLogService();
             operationService.PostData(new OperationLogModel() { Remark = customerInfo.Id, OptContent = "更新客户" });
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            WebCacheHelper.ClearIds(userClientId);
             return GenerateDal.Update(CommonSqlKey.UpdateCustomer, customerInfo);
         }
     }
