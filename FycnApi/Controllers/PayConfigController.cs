@@ -52,6 +52,16 @@ namespace FycnApi.Controllers
             return Content(_IBase.DeleteData(idList));
         }
 
+        public ResultObj<int> UpdateWxCert(string mchId,string id)
+        {
+            ConfigModel configInfo = new ConfigModel();
+            configInfo.WxSslcertPassword = mchId;
+            configInfo.WxSslcertPath = "cert/" + mchId + "/apiclient_cert.p12";
+            configInfo.Id = id;
+            IPayConfig payConfig = new PayConfigService();
+            return Content(payConfig.UpdateWxCert(configInfo));
+        }
+
 
     }
 }

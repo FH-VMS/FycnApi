@@ -221,6 +221,7 @@ namespace Fycn.SqlDataAccess
         GetPayConfigListCount,
         DeletePayConfig,
         UpdatePayConfig,
+        UpdateWxCert,
 
         //资源
         GetResourceById,

@@ -115,6 +115,13 @@ namespace Fycn.Model.Pay
             set;
         }
 
+        [Column(Name = "wx_txtkey")]
+        public string WxTxtKey
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "client_id")]
         public string ClientId
         {
