@@ -213,6 +213,7 @@
   "DeletePayConfig": "DELETE from table_mobile_pay_config WHERE id=?p_Id",
   "UpdatePayConfig": "UPDATE table_mobile_pay_config SET name=?p_Name,ali_parter=?p_AliParter,ali_key=?p_AliKey,ali_refund_appid=?p_AliRefundAppId,ali_refund_rsa_sign=?p_AliRefundRsaSign,wx_appid=?p_WxAppId,wx_mchid=?p_WxMchId,wx_key=?p_WxKey,wx_appsecret=?p_WxAppSecret,ali_public_key=?p_AliPublicKey,ali_appid=?p_AliAppId, ali_private_key=?p_AliPrivateKey,client_id=?p_ClientId,wx_txtkey=?p_WxTxtKey WHERE id=?p_Id",
   "UpdateWxCert": "UPDATE table_mobile_pay_config SET wx_sslcert_path=?p_WxSslcertPath,wx_sslcert_password=?p_WxSslcertPassword WHERE id=?p_Id",
+  "GetWxConfigByMchId": "SELECT * FROM table_mobile_pay_config ",
   "_comment": "资源管理",
   "GetAd": "SELECT a.*, b.client_name as UserClientName FROM table_ad a LEFT JOIN (select * from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id ",
   "DeleteAdRelation": "DELETE from table_ad_relation where ad_id=?p_AdId",

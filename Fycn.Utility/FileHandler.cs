@@ -17,16 +17,16 @@ namespace Fycn.Utility
         /// <param name="Name">文件名(包括后缀名)</param>  
         /// <param name="content">内容</param>  
         /// <returns></returns>  
-        public static bool WriteFile(string Path, string Name, string content)
+        public static bool WriteFile(string path, string Name, string content)
         {
             try
             {
-                string pathVal = Directory.GetCurrentDirectory() +"/" + Path;
-                if (!Directory.Exists(pathVal))
+                // string pathVal = Directory.GetCurrentDirectory() +"/" + Path;
+                if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(pathVal);
+                    Directory.CreateDirectory(path);
                 }
-                string fname = pathVal + Name; ;
+                string fname = path+ "/" + Name; ;
                 if (!File.Exists(fname))
                 {
                     FileStream fs = File.Create(fname);
@@ -69,8 +69,7 @@ namespace Fycn.Utility
         {
             try
             {
-                string finalPath = Directory.GetCurrentDirectory() + "/" + path;
-                File.Delete(finalPath);
+                File.Delete(path);
             }
             catch
             {

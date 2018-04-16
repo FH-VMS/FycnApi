@@ -87,9 +87,10 @@ namespace Fycn.Service
             {
                 configInfo.ClientId = userClientId;
             }
-            
+
             //configInfo.WxSslcertPath = "cert/"+configInfo.WxMchId+"/apiclient_cert.p12";
             //configInfo.WxSslcertPassword = configInfo.WxMchId;
+            configInfo.WxMchId = configInfo.WxMchId.Trim();
             result = GenerateDal.Create(configInfo);
 
             //操作日志
@@ -118,6 +119,7 @@ namespace Fycn.Service
                 string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
                 configInfo.ClientId = userClientId;
             }
+            configInfo.WxMchId = configInfo.WxMchId.Trim();
             //操作日志
             OperationLogService operationService = new OperationLogService();
             operationService.PostData(new OperationLogModel() { Remark = configInfo.ClientId, OptContent = "更新支付配置" });
@@ -130,6 +132,26 @@ namespace Fycn.Service
         {
             return GenerateDal.Update(CommonSqlKey.UpdateWxCert, configInfo);
         }
+
+        public List<ConfigModel> GetWxConfigByMchId(string mchId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WxMchId",
+                DbColumnName = "wx_mchid",
+                ParamValue = mchId.Trim(),
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+
+            return GenerateDal.LoadByConditions<ConfigModel>(CommonSqlKey.GetWxConfigByMchId, conditions);
+        }
+        
 
     }
 }

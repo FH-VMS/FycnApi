@@ -411,15 +411,15 @@ namespace Fycn.Utility
 
         private static string _weixinTextAddress;
 
-        public static decimal WeixinTextAddress
+        public static string WeixinTextAddress
         {
             get
             {
-                if (String.IsNullOrEmpty(_weixinTextAddress))
+                if (string.IsNullOrEmpty(_weixinTextAddress))
                 {
                     _weixinTextAddress = ConfigurationManager.AppSettings["WeixinTextAddress"] ?? "";
                 }
-                return Convert.ToDecimal(_weixinTextAddress);
+                return _weixinTextAddress;
             }
         }
 

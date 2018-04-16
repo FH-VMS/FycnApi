@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
+using Fycn.Utility;
 
 namespace FycnApi.Controllers
 {
@@ -39,16 +40,49 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> PostData([FromBody]ConfigModel configInfo)
         {
-                return Content(_IBase.PostData(configInfo));
+            IPayConfig payConfig = new PayConfigService();
+            List<ConfigModel> lstConfigs = payConfig.GetWxConfigByMchId(configInfo.WxMchId);
+            if (lstConfigs.Count > 0)
+            {
+               return Content(0, ResultCode.Fail, "保存失败,已存在微信商户号", new Pagination { });
+            }
+            //写入微信txt文本
+            int result = _IBase.PostData(configInfo);
+            if(result>0)
+            {
+                if (!string.IsNullOrEmpty(configInfo.WxTxtKey.Trim()))
+                {
+                    FileHandler.DeleteFile(ConfigHandler.WeixinTextAddress + "/MP_verify_" + configInfo.WxTxtKey+".txt");
+                    FileHandler.WriteFile(ConfigHandler.WeixinTextAddress, "MP_verify_" + configInfo.WxTxtKey + ".txt", configInfo.WxTxtKey);
+                }
+            }
+            return Content(result);
         }
 
         public ResultObj<int> PutData([FromBody]ConfigModel configInfo)
         {
-            return Content(_IBase.UpdateData(configInfo));
+            IPayConfig payConfig = new PayConfigService();
+            List<ConfigModel> lstConfigs = payConfig.GetWxConfigByMchId(configInfo.WxMchId);
+            if(lstConfigs.Count > 0 && lstConfigs[0].Id!= configInfo.Id)
+            {
+                return Content(0, ResultCode.Fail, "更新失败,已存在微信商户号", new Pagination { });
+            }
+            int result = _IBase.UpdateData(configInfo);
+            if (result > 0)
+            {
+                if(!string.IsNullOrEmpty(configInfo.WxTxtKey.Trim()))
+                {
+                    FileHandler.DeleteFile(ConfigHandler.WeixinTextAddress + "/MP_verify_" + configInfo.WxTxtKey + ".txt");
+                    FileHandler.WriteFile(ConfigHandler.WeixinTextAddress, "MP_verify_" + configInfo.WxTxtKey + ".txt", configInfo.WxTxtKey);
+                }
+               
+            }
+            return Content(result);
         }
 
         public ResultObj<int> DeleteData(string idList)
         {
+
             return Content(_IBase.DeleteData(idList));
         }
 

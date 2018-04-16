@@ -8,5 +8,7 @@ namespace Fycn.Interface
     public interface IPayConfig
     {
         int UpdateWxCert(ConfigModel configInfo);
+
+        List<ConfigModel> GetWxConfigByMchId(string mchId);
     }
 }
