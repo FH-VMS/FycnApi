@@ -17,6 +17,7 @@ using Fycn.Model.Machine;
 using System.Linq;
 using Fycn.Model.Ad;
 using Fycn.Model.Android;
+using Fycn.PaymentLib;
 
 namespace FycnApi.Controllers
 {
@@ -32,7 +33,7 @@ namespace FycnApi.Controllers
             //byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
             //string hex = ByteHelper.byteToHexStr(byteSend);
             Dictionary<string, string> dicRet = new Dictionary<string, string>();
-            dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + json;
+            dicRet["url"] = PathConfig.DomainConfig+"/m.html#/paybyproduct?k=" + json;
             dicRet["waresId"] = waresId;
             string retJson = JsonHandler.GetJsonStrFromObject(dicRet);
             return HttpUtility.UrlDecode(retJson); 
