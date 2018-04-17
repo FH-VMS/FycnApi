@@ -10,6 +10,8 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Fycn.Utility;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace FycnApi.Controllers
 {
@@ -88,11 +90,43 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> UpdateWxCert(string mchId,string id)
         {
+            IPayConfig payConfig = new PayConfigService();
+            List<ConfigModel> lstConfigs = payConfig.GetWxConfigByMchId(mchId);
+            if(lstConfigs.Count==0|| lstConfigs[0].Id!=id)
+            {
+                return Content(0, ResultCode.Fail, "上传失败,错误的微信支付配置", new Pagination { });
+            }
+            string path = ConfigHandler.WeixinCertAddress+"/cert/"+ mchId;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            var hfc = Request.Form.Files;
+            long size = 0;
+            if (hfc.Count==1)
+            { 
+                var readFile = ContentDispositionHeaderValue
+                                .Parse(hfc[0].ContentDisposition)
+                                .FileName
+                                .Trim('"');
+                var fileName = readFile;
+                if(fileName.Split('.')[1].ToLower()!="p12")
+                {
+                    return Content(0, ResultCode.Fail, "不是正确的证书格式", new Pagination { });
+                }
+                //这个hostingEnv.WebRootPath就是要存的地址可以改下
+                string fileNamePath = path+"/" + $@"{fileName}";
+                size += hfc[0].Length;
+                using (FileStream fs = System.IO.File.Create(fileNamePath))
+                {
+                    hfc[0].CopyTo(fs);
+                    fs.Flush();
+                }
+            }
             ConfigModel configInfo = new ConfigModel();
             configInfo.WxSslcertPassword = mchId;
             configInfo.WxSslcertPath = "cert/" + mchId + "/apiclient_cert.p12";
             configInfo.Id = id;
-            IPayConfig payConfig = new PayConfigService();
             return Content(payConfig.UpdateWxCert(configInfo));
         }
 
