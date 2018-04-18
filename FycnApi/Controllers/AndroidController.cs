@@ -29,7 +29,7 @@ namespace FycnApi.Controllers
             jsonModel.m = machineId;
             jsonModel.t = new List<KeyTunnelModel>();
             jsonModel.t.Add(new KeyTunnelModel() { tid = waresId, n = "1" });
-            string json = JsonHandler.GetJsonStrFromObject(jsonModel,false);
+            string json = JsonHandler.GetJsonStrFromObject(jsonModel);
             //byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
             //string hex = ByteHelper.byteToHexStr(byteSend);
             Dictionary<string, string> dicRet = new Dictionary<string, string>();
