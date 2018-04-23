@@ -58,7 +58,7 @@ namespace FycnApi.Controllers
                 //JsApi.payInfo = new PayModel();
                 payInfo.k = k;
                 //生成code 根据code取微信支付的openid和access_token
-                jsApi.GetOpenidAndAccessToken(code, payConfig,payInfo, "?k=" + payInfo.k, "");
+                jsApi.GetOpenidAndAccessToken(code, payConfig,payInfo, "/m.html?k=" + payInfo.k, "");
            
             PayStateModel payState = new PayStateModel();
             if (string.IsNullOrEmpty(payInfo.openid))

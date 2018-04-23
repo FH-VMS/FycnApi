@@ -38,7 +38,7 @@ namespace Fycn.PaymentLib.wx
         public string SSLCERT_PATH = "cert/apiclient_cert.p12";
         public string SSLCERT_PASSWORD = "1433899402";
 
-        public string FRONT_URL = PathConfig.DomainConfig+"/m.html";
+        public string FRONT_URL = PathConfig.DomainConfig;
 
 
 
