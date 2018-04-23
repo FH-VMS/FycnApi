@@ -237,6 +237,9 @@ namespace Fycn.SqlDataAccess
         GetTunnelConfigById,
         GetTunnelStatusById,
         GetCopyMachineById,
-        GetMachineConfigById
+        GetMachineConfigById,
+
+        //公众号
+        IsExistMember
     }
 }

@@ -225,5 +225,8 @@
   "GetMachineConfigById": "SELECT * from table_machine_config ",
   "GetTunnelConfigById": "SELECT * from table_goods_config ",
   "GetTunnelStatusById": "SELECT * from table_goods_status ",
-  "GetCopyMachineById": "SELECT * from table_machine "
+  "GetCopyMachineById": "SELECT * from table_machine ",
+
+  "_comment": "公众号",
+  "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id "
 }
