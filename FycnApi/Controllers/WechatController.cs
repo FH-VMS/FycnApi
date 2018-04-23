@@ -29,7 +29,7 @@ namespace FycnApi.Controllers
             string url = string.Empty;
             //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             IPay _ipay = new PayService();
-            WxPayConfig payConfig = _ipay.GenerateConfigModelW(m);
+            WxPayConfig payConfig = _ipay.GenerateConfigModelWByClientId(m);
             PayModel payInfo = new PayModel();
             //JsApi.payInfo = new PayModel();
             payInfo.k = m;

@@ -25,5 +25,8 @@ namespace Fycn.Interface
 
         [Remark("获取微信配置", ParmsNote = "机器编号", ReturnNote = "微信配置实体")]
         WxPayConfig GenerateConfigModelW(string machineId);
+
+        [Remark("获取微信配置", ParmsNote = "客户ID", ReturnNote = "微信配置实体")]
+        WxPayConfig GenerateConfigModelWByClientId(string clientId);
     }
 }

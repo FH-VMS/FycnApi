@@ -201,6 +201,7 @@ namespace Fycn.SqlDataAccess
         GetMachineByMachineId,
         GetIpByMachineId,
         GetPayConfig,
+        GetPayConfigByClientId,
 
         //总额及提现记录
         GetTotalMoneyByClient,

@@ -266,5 +266,43 @@ namespace Fycn.Service
             }
             return payConfig;
         }
+
+        public WxPayConfig GenerateConfigModelWByClientId(string clientId)
+        {
+            var conditions = new List<Condition>();
+            WxPayConfig payConfig = new WxPayConfig();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return payConfig;
+            }
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            List<ConfigModel> lstConfig = GenerateDal.LoadByConditions<ConfigModel>(CommonSqlKey.GetPayConfigByClientId, conditions);
+            
+           
+            if (lstConfig.Count > 0)
+            {
+                ConfigModel cModel = lstConfig[0];
+
+                payConfig.APPID = cModel.WxAppId;
+                payConfig.MCHID = cModel.WxMchId;
+                payConfig.KEY = cModel.WxKey;
+                payConfig.APPSECRET = cModel.WxAppSecret;
+                payConfig.SSLCERT_PATH = cModel.WxSslcertPath;
+                payConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
+
+            }
+            return payConfig;
+        }
     }
 }
