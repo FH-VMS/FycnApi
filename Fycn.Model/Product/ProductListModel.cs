@@ -31,7 +31,21 @@ namespace Fycn.Model.Product
              set;
          }
 
-         [Column(Name = "wares_weight")]
+        [Column(Name = "wares_discount_unitprice")]
+        public decimal WaresDiscountUnitPrice
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "wares_status")]
+        public int WaresStatus
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "wares_weight")]
          public decimal WaresWeight
          {
              get;
@@ -119,8 +133,15 @@ namespace Fycn.Model.Product
              set;
          }
 
+        [Column(Name = "is_group")]
+        public int IsGroup
+        {
+            get;
+            set;
+        }
 
-          [Column(Name = "creator")]
+
+        [Column(Name = "creator")]
          public string Creator
          {
              get;
