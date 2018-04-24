@@ -15,6 +15,7 @@ namespace Fycn.Service
             {
                 GenerateDal.BeginTransaction();
                 memberInfo.CreateDate = DateTime.Now;
+                memberInfo.Privilege = null;
                 GenerateDal.Create(memberInfo);
                 clientMemberInfo.CreateTime= DateTime.Now;
                 GenerateDal.Create(clientMemberInfo);

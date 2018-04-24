@@ -44,7 +44,7 @@ namespace FycnApi.Controllers
             //JsApi.payInfo = new PayModel();
             payInfo.k = m;
             JsApi jsApi = new JsApi();
-            jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo,"/wechat.html#/?clientId="+m, "snsapi_userinfo");
+            jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo,"/wechat.html?clientId="+m, "snsapi_userinfo");
             
             if (string.IsNullOrEmpty(payInfo.openid))
             {

@@ -58,7 +58,7 @@ namespace Fycn.Model.Wechat
         }
 
         [Column(Name = "privilege")]
-        public string Privilege
+        public List<string> Privilege
         {
             get;
             set;

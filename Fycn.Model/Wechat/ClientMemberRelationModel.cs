@@ -22,7 +22,7 @@ namespace Fycn.Model.Wechat
             set;
         }
 
-        [Column(Name = "create_time")]
+        [Column(Name = "create_date")]
         public DateTime CreateTime
         {
             get;
