@@ -32,7 +32,8 @@ namespace Fycn.Utility
                     FileStream fs = File.Create(fname);
                     fs.Close();
                 }
-                StreamWriter sw = new StreamWriter(fname, false, System.Text.Encoding.GetEncoding("utf-8"));
+                var utf8WithoutBom = new System.Text.UTF8Encoding(false);
+                StreamWriter sw = new StreamWriter(fname, false, utf8WithoutBom);
                 sw.WriteLine(content);
                 sw.Close();
                 sw.Dispose();
