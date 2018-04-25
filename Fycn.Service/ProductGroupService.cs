@@ -1,33 +1,29 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Product;
-using Fycn.Model.Sale;
 using Fycn.SqlDataAccess;
+using Fycn.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Fycn.Utility;
 
 namespace Fycn.Service
 {
-    public class ProductListService : AbstractService, IBase<ProductListModel>
+    public class ProductGroupService : AbstractService, IBase<ProductGroupModel>
     {
-
-        public List<ProductListModel> GetAll(ProductListModel productListInfo)
+        public List<ProductGroupModel> GetAll(ProductGroupModel productListInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
+            var conditions = new List<Condition>();
             string clientIds = new CommonService().GetClientIds(userClientId);
             if (clientIds.Contains("self"))
             {
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
-            var result = new List<ProductListModel>();
-            var conditions = new List<Condition>();
+            var result = new List<ProductGroupModel>();
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
@@ -59,18 +55,15 @@ namespace Fycn.Service
                     LeftBrace = " AND ",
                     ParamName = "WaresTypeId",
                     DbColumnName = "a.wares_type_id",
-                    ParamValue =  productListInfo.WaresTypeId ,
+                    ParamValue = productListInfo.WaresTypeId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
             }
-
             conditions.AddRange(CreatePaginConditions(productListInfo.PageIndex, productListInfo.PageSize));
-
-           
-           result = GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductAllList, conditions);
-           
+            result = GenerateDal.LoadByConditions<ProductGroupModel>(CommonSqlKey.GetProductGroupList, conditions);
+            
 
 
 
@@ -80,7 +73,7 @@ namespace Fycn.Service
         }
 
 
-        public int GetCount(ProductListModel productListInfo)
+        public int GetCount(ProductGroupModel productListInfo)
         {
             var result = 0;
 
@@ -89,17 +82,17 @@ namespace Fycn.Service
             {
                 return 0;
             }
+            var conditions = new List<Condition>();
             string clientIds = new CommonService().GetClientIds(userClientId);
             if (clientIds.Contains("self"))
             {
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
-            var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "client_id",
+                DbColumnName = "a.client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = " ",
@@ -111,7 +104,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "WaresName",
-                    DbColumnName = "wares_name",
+                    DbColumnName = "a.wares_name",
                     ParamValue = "%" + productListInfo.WaresName + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -125,16 +118,15 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "WaresTypeId",
-                    DbColumnName = "wares_type_id",
+                    DbColumnName = "a.wares_type_id",
                     ParamValue = productListInfo.WaresTypeId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
             }
+            result = GenerateDal.CountByConditions(CommonSqlKey.GetProductGroupListCount, conditions);
             
-            result = GenerateDal.CountByConditions(CommonSqlKey.GetProductListAllCount, conditions);
-
             return result;
         }
 
@@ -144,7 +136,7 @@ namespace Fycn.Service
         /// </summary>
         /// <param name="memberInfo"></param>
         /// <returns></returns>
-        public int PostData(ProductListModel productListInfo)
+        public int PostData(ProductGroupModel productListInfo)
         {
             int result;
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
@@ -171,16 +163,27 @@ namespace Fycn.Service
         /// <returns></returns>
         public int DeleteData(string id)
         {
-
-           
-                ProductListModel productListInfo = new ProductListModel();
+            try
+            {
+                GenerateDal.BeginTransaction();
+                ProductGroupModel productListInfo = new ProductGroupModel();
                 productListInfo.WaresId = id;
-                return GenerateDal.Delete<ProductListModel>(CommonSqlKey.DeleteProductList, productListInfo);
+                GenerateDal.Delete<ProductGroupModel>(CommonSqlKey.DeleteProductList, productListInfo);
+                new ProductGroupRelationService().DeleteData(id);
+                GenerateDal.CommitTransaction();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                GenerateDal.RollBack();
+                return 0;
+            }
+           
 
-            
+
         }
 
-        public int UpdateData(ProductListModel productListInfo)
+        public int UpdateData(ProductGroupModel productListInfo)
         {
             productListInfo.UpdateDate = DateTime.Now;
             string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
@@ -188,7 +191,5 @@ namespace Fycn.Service
             productListInfo.UpdateDate = DateTime.Now;
             return GenerateDal.Update(CommonSqlKey.UpdateProductList, productListInfo);
         }
-
-       
     }
 }
