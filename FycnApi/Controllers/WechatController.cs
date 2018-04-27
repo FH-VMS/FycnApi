@@ -14,6 +14,7 @@ using Fycn.Interface;
 using Fycn.Service;
 using log4net;
 using Fycn.Model.Wechat;
+using Fycn.Model.Product;
 
 namespace FycnApi.Controllers
 {
@@ -24,9 +25,8 @@ namespace FycnApi.Controllers
         public ResultObj<PayStateModel> GetUrl(string m, string code)
         {
 
-            var log = LogManager.GetLogger("FycnApi", "wechat");
-            log.Info("mmmmmmmmmmmmmmmm:"+m);
-            log.Info("code:" + code);
+            //var log = LogManager.GetLogger("FycnApi", "wechat");
+            //log.Info("mmmmmmmmmmmmmmmm:"+m);
             string url = string.Empty;
             //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             IPay _ipay = new PayService();
@@ -53,7 +53,6 @@ namespace FycnApi.Controllers
                 payState.RequestData = payInfo.redirect_url;
                 return Content(payState);
             }
-            log.Info("openID:"+ payInfo.openid);
             //根据code 返回access_token
             //string urlAcess = string.Format("https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code", payConfig.APPID,payConfig.APPSECRET,code);
             //string jsonResult = HttpService.Get(urlAcess);
@@ -61,7 +60,6 @@ namespace FycnApi.Controllers
 
             //Dictionary<string,string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string,string>>(jsonResult);
             string accessToken = payInfo.access_token;//dicAcess["access_token"];
-            log.Info("accessToken:" + payInfo.openid);
             //取授权用户信息
             string urlUserInfo = string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN",accessToken,payInfo.openid);
             string jsonUserInfo = HttpService.Get(urlUserInfo);
@@ -69,7 +67,6 @@ namespace FycnApi.Controllers
             payState.RequestState = "1";
             payState.ProductJson = jsonUserInfo;
             payState.RequestData = "";
-            log.Info("jsonUserInfo:" + jsonUserInfo);
             IWechat iwechat = new WechatService();
             WechatMemberModel memberInfo = new WechatMemberModel();
             memberInfo.OpenId = payInfo.openid;
@@ -93,6 +90,19 @@ namespace FycnApi.Controllers
             //log.Info("test");
 
             return Content(payState);
+        }
+
+
+        public ResultObj<List<ProductTypeModel>> GetProdcutTypeByClientId(string clientId)
+        {
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetProdcutTypeByClientId(clientId));
+        }
+
+        public ResultObj<List<ProductModel>> GetProdcutByTypeAndClient(string typeId,string clientId="")
+        {
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetProdcutByTypeAndClient(typeId,clientId));
         }
     }
 }

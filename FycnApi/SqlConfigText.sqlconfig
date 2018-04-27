@@ -236,5 +236,7 @@
   "GetCopyMachineById": "SELECT * from table_machine ",
 
   "_comment": "公众号",
-  "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id "
+  "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id ",
+  "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
+  "GetProductByTypeAndClientId": "SELECT * FROM table_product "
 }

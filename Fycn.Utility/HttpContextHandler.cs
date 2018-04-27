@@ -18,6 +18,10 @@ namespace Fycn.Utility
             }
             if (string.IsNullOrEmpty(wiiCookies.ToString())) return string.Empty;
             var cookies = JsonHandler.GetObjectFromJson<Dictionary<string, object>>(wiiCookies.ToString());
+            if(cookies == null)
+            {
+                return string.Empty;
+            }
             return cookies.ContainsKey(key) ? cookies[key] : string.Empty;
         }
 

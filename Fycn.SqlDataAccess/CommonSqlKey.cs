@@ -246,6 +246,8 @@ namespace Fycn.SqlDataAccess
         GetMachineConfigById,
 
         //公众号
-        IsExistMember
+        IsExistMember,
+        GetProductTypeByClientId,
+        GetProductByTypeAndClientId
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Fycn.Interface;
+using Fycn.Model.Pay;
+using Fycn.Model.Product;
 using Fycn.Model.Wechat;
 using Fycn.SqlDataAccess;
 using System;
@@ -53,6 +55,67 @@ namespace Fycn.Service
                 Logic = ""
             });
             return GenerateDal.LoadByConditions<WechatMemberModel>(CommonSqlKey.IsExistMember,conditions);
+        }
+
+        //根据客户取商品类型
+        public List<ProductTypeModel> GetProdcutTypeByClientId(string clientId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "Client",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = " ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "sequence",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ProductTypeModel>(CommonSqlKey.GetProductTypeByClientId, conditions);
+        }
+
+        //根据商品类型取商品
+        public List<ProductModel> GetProdcutByTypeAndClient(string typeId,string clientId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WaresTypeId",
+                DbColumnName = "wares_type_id",
+                ParamValue = typeId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = " ",
+                Logic = ""
+            });
+            if(!string.IsNullOrEmpty(clientId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = " ",
+                    Logic = ""
+                });
+            }
+           
+
+            return GenerateDal.LoadByConditions<ProductModel>(CommonSqlKey.GetProductByTypeAndClientId, conditions);
         }
     }
 }
