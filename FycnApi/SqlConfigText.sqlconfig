@@ -238,5 +238,5 @@
   "_comment": "公众号",
   "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id ",
   "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
-  "GetProductByTypeAndClientId": "SELECT * FROM table_product "
+  "GetProductByTypeAndClientId": "SELECT a.*, CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id "
 }

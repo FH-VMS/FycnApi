@@ -3,6 +3,7 @@ using Fycn.Model.Pay;
 using Fycn.Model.Product;
 using Fycn.Model.Wechat;
 using Fycn.SqlDataAccess;
+using Fycn.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -87,14 +88,14 @@ namespace Fycn.Service
         }
 
         //根据商品类型取商品
-        public List<ProductModel> GetProdcutByTypeAndClient(string typeId,string clientId)
+        public List<ProductListModel> GetProdcutByTypeAndClient(string typeId,string clientId)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
                 ParamName = "WaresTypeId",
-                DbColumnName = "wares_type_id",
+                DbColumnName = "a.wares_type_id",
                 ParamValue = typeId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = " ",
@@ -106,16 +107,26 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "ClientId",
-                    DbColumnName = "client_id",
+                    DbColumnName = "a.client_id",
                     ParamValue = clientId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = " ",
                     Logic = ""
                 });
             }
-           
 
-            return GenerateDal.LoadByConditions<ProductModel>(CommonSqlKey.GetProductByTypeAndClientId, conditions);
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductByTypeAndClientId, conditions);
         }
     }
 }

@@ -23,6 +23,6 @@ namespace Fycn.Interface
         List<ProductTypeModel> GetProdcutTypeByClientId(string clientId);
 
         [Remark("根据商品类型取商品", ParmsNote = "类型id,商户id", ReturnNote = "实体列表")]
-        List<ProductModel> GetProdcutByTypeAndClient(string typeId, string clientId);
+        List<ProductListModel> GetProdcutByTypeAndClient(string typeId, string clientId);
     }
 }
