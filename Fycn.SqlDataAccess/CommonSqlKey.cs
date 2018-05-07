@@ -254,6 +254,10 @@ namespace Fycn.SqlDataAccess
         GetPrivilegeList,
         GetPrivilegeListCount,
         DeletePrivilege,
-        UpdatePrivilege
+        UpdatePrivilege,
+
+        //微信会员
+        GetWechatMemberList,
+        GetWechatMemberCount
     }
 }
