@@ -36,6 +36,12 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public string ClientName
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "principle_type")]
         public string PrincipleType
         {

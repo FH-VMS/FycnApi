@@ -248,6 +248,12 @@ namespace Fycn.SqlDataAccess
         //公众号
         IsExistMember,
         GetProductTypeByClientId,
-        GetProductByTypeAndClientId
+        GetProductByTypeAndClientId,
+
+        //优惠券信息
+        GetPrivilegeList,
+        GetPrivilegeListCount,
+        DeletePrivilege,
+        UpdatePrivilege
     }
 }

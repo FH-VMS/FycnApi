@@ -238,5 +238,11 @@
   "_comment": "公众号",
   "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id ",
   "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
-  "GetProductByTypeAndClientId": "SELECT a.*, CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id "
+  "GetProductByTypeAndClientId": "SELECT a.*, CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id ",
+
+  "_comment": "优惠券",
+  "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id ",
+  "GetPrivilegeListCount": "SELECT COUNT(1) FROM table_privilege_info ",
+  "DeletePrivilege": "DELETE FROM table_privilege_info where privilege_id=?p_PrivilegeId",
+  "UpdatePrivilege": "UPDATE table_privilege_Info SET privilege_name=?p_PrivilegeName,client_id=?p_ClientId,principle_type=?p_PrincipleType,use_money_limit=?p_UseMoneyLimit,expire_time=?p_ExpireTime,time_rule=?p_TimeRule,is_bind=?p_IsBind,is_overlay=?p_IsOverlay,numbers=?p_Numbers,privilege_instru=?p_PrivilegeInstru,source_id=?p_SourceId,money=?p_Money,discount=?p_Discount,bind_product_ids=?p_BindProductIds WHERE privilege_id=?p_PrivilegeId "
 }
