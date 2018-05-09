@@ -239,6 +239,7 @@
   "IsExistMember": "SELECT a.*,b.client_id as ClientId FROM table_wechat_member a LEFT JOIN table_client_member_relation b ON a.openid=b.member_id ",
   "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
   "GetProductByTypeAndClientId": "SELECT a.*, CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id ",
+  "GetWechatProductInfo": "SELECT a.* FROM table_product a LEFT JOIN table_product_group_relation b ON a.wares_id=b.wares_id LEFT JOIN table_product_group c ON b.wares_group_id=c.wares_id ",
 
   "_comment": "优惠券",
   "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id ",
