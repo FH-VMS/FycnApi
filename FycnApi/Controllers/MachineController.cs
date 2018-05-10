@@ -45,7 +45,7 @@ namespace FycnApi.Controllers
         {
             KeyJsonModel keyJsonInfo = AnalizeKey(k);
             ISale _isale = new SalesService();
-            //trade_status: (0:待支付，1:支付成功待出货,2：支付成功且已全部出货,3：支付成功部分出货成功未退款，4:支付成功部分出货成功已退款，5：支付成功此货道出货全部出货失败未退款，5：支付成功此货道出货全部出货失败已退款)
+            //trade_status: (0:待支付，1:支付成功待出货,2：支付成功且已全部出货,3：支付成功部分出货成功未退款，4:支付成功部分出货成功已退款，5：支付成功此货道出货全部出货失败未退款，6：支付成功此货道出货全部出货失败已退款)
             List<KeyTunnelModel> lstSales = _isale.GetPayResult("", "1", keyJsonInfo.m);
             if (lstSales.Count == 0)
             {

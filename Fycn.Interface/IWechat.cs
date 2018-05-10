@@ -1,5 +1,6 @@
 ﻿using Fycn.Model.Pay;
 using Fycn.Model.Product;
+using Fycn.Model.Sale;
 using Fycn.Model.Sys;
 using Fycn.Model.Wechat;
 using System;
@@ -30,5 +31,11 @@ namespace Fycn.Interface
 
         [Remark("根据商品ids取商品和商品组列表", ParmsNote = "商户ids", ReturnNote = "实体列表")]
         List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds);
+
+        [Remark("根据opnid取历史订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
+        List<SaleModel> GetHistorySalesList(string openId);
+
+        [Remark("根据opnid取待取货订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
+        List<SaleModel> GetWaitingSalesList(string openId);
     }
 }

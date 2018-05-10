@@ -1,6 +1,7 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Pay;
 using Fycn.Model.Product;
+using Fycn.Model.Sale;
 using Fycn.Model.Wechat;
 using Fycn.SqlDataAccess;
 using Fycn.Utility;
@@ -177,6 +178,69 @@ namespace Fycn.Service
             }
            
             return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
+        }
+
+        /// <summary>
+        /// 7:待取货 8：已取货
+        /// </summary>
+        public List<SaleModel> GetHistorySalesList(string openId)
+        {
+            var conditions = new List<Condition>();
+            
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "OpenId",
+                DbColumnName = "buyer_id",
+                ParamValue = openId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "trade_status",
+                ParamValue = 7,
+                Operation = ConditionOperate.NotEqual,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+            return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
+        }
+
+        public List<SaleModel> GetWaitingSalesList(string openId)
+        {
+            var conditions = new List<Condition>();
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "OpenId",
+                DbColumnName = "buyer_id",
+                ParamValue = openId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "trade_status",
+                ParamValue = 7,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+            return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
         }
     }
 }
