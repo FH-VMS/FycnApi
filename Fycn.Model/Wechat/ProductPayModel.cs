@@ -35,5 +35,11 @@ namespace Fycn.Model.Wechat
             get;
             set;
         }
+
+        public int IsGroup
+        {
+            get;
+            set;
+        }
     }
 }

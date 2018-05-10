@@ -249,6 +249,8 @@ namespace Fycn.SqlDataAccess
         IsExistMember,
         GetProductTypeByClientId,
         GetProductByTypeAndClientId,
+        GetWechatProductInfo,
+        GetProdcutAndGroupList,
 
         //优惠券信息
         GetPrivilegeList,

@@ -24,5 +24,11 @@ namespace Fycn.Interface
 
         [Remark("根据商品类型取商品", ParmsNote = "类型id,商户id", ReturnNote = "实体列表")]
         List<ProductListModel> GetProdcutByTypeAndClient(string typeId, string clientId);
+
+        [Remark("根据商品ids取列表", ParmsNote = "商户ids", ReturnNote = "实体列表")]
+        List<ProductListModel> GetWechatProductInfo(string waresIds);
+
+        [Remark("根据商品ids取商品和商品组列表", ParmsNote = "商户ids", ReturnNote = "实体列表")]
+        List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds);
     }
 }

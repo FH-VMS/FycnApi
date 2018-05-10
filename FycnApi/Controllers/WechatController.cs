@@ -109,7 +109,7 @@ namespace FycnApi.Controllers
         }
 
         //微信支付
-        public ResultObj<PayStateModel> PostDataW(string clientId, [FromBody]List<string> lstWaresId)
+        public ResultObj<PayStateModel> PostDataW(string clientId, [FromBody]List<ProductPayModel> lstProductPay)
         {
             try
             {
@@ -139,8 +139,38 @@ namespace FycnApi.Controllers
 
                 decimal totalFee = 0;
                 string productNames = string.Empty;
-                List<ProductModel> lstProduct = new List<ProductModel>();
-               
+                List<ProductListModel> lstProduct = new List<ProductListModel>();
+                IWechat _iwechat = new WechatService();
+                string waresId = string.Empty;
+                string waresGroupId = string.Empty;
+                foreach(ProductPayModel productInfo in lstProductPay)
+                {
+                    if (productInfo.IsGroup == 1)
+                    {
+                        waresGroupId = waresGroupId + "'" + productInfo.WaresId + "',";
+                    } 
+                    else
+                    {
+                        waresId = waresId + "'" + productInfo.WaresId + "',";
+                    }
+                }
+                
+                lstProduct = _iwechat.GetProdcutAndGroupList(waresId,waresGroupId);
+                //遍历商品
+                foreach (ProductListModel productInfo in lstProduct)
+                {
+                    var productPay = (from m in lstProductPay
+                                      where m.WaresId == productInfo.WaresId
+                                      select m).ToList<ProductPayModel>();
+                    if (productPay.Count > 0)
+                    {
+                        totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresUnitPrice);
+                        productNames = productNames + productInfo.WaresName + ",";
+                        productPay[0].TradeNo = payInfo.trade_no;
+                    }
+
+
+                }
 
 
                 payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
@@ -168,7 +198,7 @@ namespace FycnApi.Controllers
                 // Log.Write("GetDataW", "step step");
                 string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
                 payState.RequestState = "1";
-                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProduct, false);
+                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
                 payState.RequestData = wxJsApiParam;
 
 

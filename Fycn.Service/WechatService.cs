@@ -128,5 +128,55 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductByTypeAndClientId, conditions);
         }
+
+        public List<ProductListModel> GetWechatProductInfo(string waresIds)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WaresId",
+                DbColumnName = "a.wares_id",
+                ParamValue = waresIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetWechatProductInfo, conditions);
+        }
+
+        public List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds)
+        {
+            var conditions = new List<Condition>();
+            if(!string.IsNullOrEmpty(waresIds))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "  ",
+                    ParamName = "WaresId",
+                    DbColumnName = "",
+                    ParamValue = waresIds,
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            
+            if(!string.IsNullOrEmpty(waresGroupIds))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "  ",
+                    ParamName = "WaresGroupId",
+                    DbColumnName = "",
+                    ParamValue = waresGroupIds,
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+           
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
+        }
     }
 }

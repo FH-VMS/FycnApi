@@ -264,7 +264,8 @@ namespace Fycn.Utility
         }
 
 
-        public static string[] SecretKey = {"12345678","87654321","ABCDEFGH","HGFEDCBA","abcdefgh","hgfedcba","fy123456","123456yf"};
+        //public static string[] SecretKey = {"12345678","87654321","ABCDEFGH","HGFEDCBA","abcdefgh","hgfedcba","fy123456","123456yf"};
+        public static string[] SecretKey = { "13467543", "fjepoizv", "KJDAOIES", "980746ui", "aei97832", "lkdfaied", "980343te", "lkkdsa88" };
 
         //加密
         public static byte[] Encryption(int size, byte[] hex)
