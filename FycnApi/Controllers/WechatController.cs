@@ -109,7 +109,7 @@ namespace FycnApi.Controllers
         }
 
         //微信支付
-        public ResultObj<PayStateModel> PostDataW(string clientId, [FromBody]List<ProductPayModel> lstProductPay)
+        public ResultObj<PayStateModel> PostDataW(string clientId,string openId, [FromBody]List<ProductPayModel> lstProductPay)
         {
             try
             {
@@ -121,19 +121,21 @@ namespace FycnApi.Controllers
                 payConfig.NOTIFY_URL= PathConfig.NotidyAddr + "/Wechat/PostPayResultW"; //结果通知方法
                 JsApi jsApi = new JsApi();
                 PayModel payInfo = new PayModel();
+                payInfo.openid = openId;
                 //JsApi.payInfo = new PayModel();
                 //生成code 根据code取微信支付的openid和access_token
-                jsApi.GetOpenidAndAccessToken("-1", payConfig, payInfo, "/wechat.html#/pay?clientId=" + clientId, "");
+                //jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo, "/wechat.html#/pay?clientId=" + clientId, "");
 
                 PayStateModel payState = new PayStateModel();
 
 
                 //JSAPI支付预处理
 
-                string result = HttpService.Get(payInfo.redirect_url);
-                log.Info("mmmmmmmmmmmmmmmm:" + result);
+                //string result = HttpService.Get(payInfo.redirect_url);
+                log.Info("mmmmmmmmmmmmmmmm:" + openId);
                 //生成交易号
                 payInfo.trade_no = PayHelper.GeneraterTradeNo();
+                payInfo.jsonProduct = payInfo.trade_no;
                 //取商品信息
 
 
@@ -147,15 +149,15 @@ namespace FycnApi.Controllers
                 {
                     if (productInfo.IsGroup == 1)
                     {
-                        waresGroupId = waresGroupId + "'" + productInfo.WaresId + "',";
+                        waresGroupId = waresGroupId+ productInfo.WaresId + ",";
                     } 
                     else
                     {
-                        waresId = waresId + "'" + productInfo.WaresId + "',";
+                        waresId = waresId + productInfo.WaresId + ",";
                     }
                 }
                 
-                lstProduct = _iwechat.GetProdcutAndGroupList(waresId,waresGroupId);
+                lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
                 //遍历商品
                 foreach (ProductListModel productInfo in lstProduct)
                 {
@@ -199,6 +201,8 @@ namespace FycnApi.Controllers
                 string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
                 payState.RequestState = "1";
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
+                log.Info("json:" + payState.ProductJson);
+                log.Info("weixin:" + wxJsApiParam);
                 payState.RequestData = wxJsApiParam;
 
 

@@ -149,11 +149,10 @@ namespace Fycn.Service
         public List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds)
         {
             var conditions = new List<Condition>();
-            if(!string.IsNullOrEmpty(waresIds))
-            {
+           
                 conditions.Add(new Condition
                 {
-                    LeftBrace = "  ",
+                    LeftBrace = "",
                     ParamName = "WaresId",
                     DbColumnName = "",
                     ParamValue = waresIds,
@@ -161,22 +160,21 @@ namespace Fycn.Service
                     RightBrace = "",
                     Logic = ""
                 });
-            }
             
-            if(!string.IsNullOrEmpty(waresGroupIds))
-            {
+            
+          
                 conditions.Add(new Condition
                 {
-                    LeftBrace = "  ",
-                    ParamName = "WaresGroupId",
+                    LeftBrace = "",
+                    ParamName = "WaresGroupIds",
                     DbColumnName = "",
                     ParamValue = waresGroupIds,
                     Operation = ConditionOperate.None,
                     RightBrace = "",
                     Logic = ""
                 });
-            }
-           
+            
+          
             return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
         }
 
