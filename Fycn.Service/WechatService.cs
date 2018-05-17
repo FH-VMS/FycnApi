@@ -181,7 +181,7 @@ namespace Fycn.Service
         /// <summary>
         /// 7:待取货 8：已取货
         /// </summary>
-        public List<SaleModel> GetHistorySalesList(string openId)
+        public List<SaleModel> GetHistorySalesList(string openId, int pageIndex, int pageSize)
         {
             var conditions = new List<Condition>();
             
@@ -207,7 +207,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-
+            conditions.AddRange(CreatePaginConditions(pageIndex, pageSize));
             return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
         }
 

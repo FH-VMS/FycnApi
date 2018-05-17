@@ -42,7 +42,7 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> PostData([FromBody]PrivilegeModel privilegeInfo)
         {
-           
+            
             return Content(_IBase.PostData(privilegeInfo));
             
 

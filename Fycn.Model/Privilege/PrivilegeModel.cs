@@ -98,6 +98,12 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "bind_product_ids")]
+        public string BindProductIds
+        {
+            get;
+            set;
+        }
 
         [Column(Name = "source_id")]
         public string SourceId

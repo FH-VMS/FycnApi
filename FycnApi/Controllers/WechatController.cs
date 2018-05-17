@@ -18,6 +18,7 @@ using Fycn.Model.Product;
 using System.Xml;
 using System.Text;
 using Fycn.PaymentLib;
+using Fycn.Model.Sale;
 
 namespace FycnApi.Controllers
 {
@@ -279,6 +280,18 @@ namespace FycnApi.Controllers
             }
 
             //File.WriteAllText(@"c:\text.txt", postStr); 
+        }
+
+        public ResultObj<List<SaleModel>> GetHistorySalesList(string openId, int pageIndex=0, int pageSize=15)
+        {
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetHistorySalesList(openId, pageIndex, pageSize));
+        }
+
+        public ResultObj<List<SaleModel>> GetWaitingSalesList(string openId)
+        {
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetWaitingSalesList(openId));
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Fycn.Interface
         List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds);
 
         [Remark("根据opnid取历史订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
-        List<SaleModel> GetHistorySalesList(string openId);
+        List<SaleModel> GetHistorySalesList(string openId, int pageIndex, int pageSize);
 
         [Remark("根据opnid取待取货订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
         List<SaleModel> GetWaitingSalesList(string openId);

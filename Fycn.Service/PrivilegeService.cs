@@ -138,7 +138,7 @@ namespace Fycn.Service
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             privilegeInfo.ClientId = userClientId;
             privilegeInfo.CreateDate = DateTime.Now;
-            
+            privilegeInfo.PrivilegeId = Guid.NewGuid().ToString();
             result = GenerateDal.Create(privilegeInfo);
 
             return result;
