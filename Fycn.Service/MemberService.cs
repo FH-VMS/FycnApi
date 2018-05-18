@@ -1,4 +1,5 @@
 ﻿using Fycn.Interface;
+using Fycn.Model.Privilege;
 using Fycn.Model.Wechat;
 using Fycn.SqlDataAccess;
 using Fycn.Utility;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Fycn.Service
 {
-    public class MemberService : AbstractService, IBase<WechatMemberModel>
+    public class MemberService : AbstractService, IBase<WechatMemberModel>, IMember
     {
         public List<WechatMemberModel> GetAll(WechatMemberModel wechatMemberInfo)
         {
@@ -18,23 +19,29 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
-            conditions.Add(new Condition
+            if(userClientId!="self")
             {
-                LeftBrace = " AND ",
-                ParamName = "ClientId",
-                DbColumnName = "a.client_id",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.Equal,
-                RightBrace = " ",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "a.client_id",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = " ",
+                    Logic = ""
+                });
+            }
+          
+            
+           
             if (!string.IsNullOrEmpty(wechatMemberInfo.NickName))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "NickName",
-                    DbColumnName = "b.nickname",
+                    DbColumnName = "a.nickname",
                     ParamValue = "%" + wechatMemberInfo.NickName + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -59,23 +66,27 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
-            conditions.Add(new Condition
+            if (userClientId != "self")
             {
-                LeftBrace = " AND ",
-                ParamName = "ClientId",
-                DbColumnName = "a.client_id",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.Equal,
-                RightBrace = " ",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "a.client_id",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = " ",
+                    Logic = ""
+                });
+            }
+
             if (!string.IsNullOrEmpty(wechatMemberInfo.NickName))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "NickName",
-                    DbColumnName = "b.nickname",
+                    DbColumnName = "a.nickname",
                     ParamValue = "%" + wechatMemberInfo.NickName + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -97,6 +108,12 @@ namespace Fycn.Service
         public int PostData(WechatMemberModel wechatMemberInfo)
         {
             return 0;
+        }
+        
+        public int GivePrivilegeTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            privilegeMemberInfo.HappenDate = DateTime.Now;
+            return GenerateDal.Create(privilegeMemberInfo);
         }
 
         /// <summary>

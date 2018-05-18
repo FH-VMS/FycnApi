@@ -9,6 +9,7 @@ using Fycn.Model.Wechat;
 using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Model.Sys;
+using Fycn.Model.Privilege;
 
 namespace FycnApi.Controllers
 {
@@ -36,6 +37,12 @@ namespace FycnApi.Controllers
 
             var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
             return Content(users, pagination);
+        }
+
+        public ResultObj<int> GivePrivilegeTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            IMember _imember = new MemberService();
+            return Content(_imember.GivePrivilegeTicket(privilegeMemberInfo));
         }
     }
 }

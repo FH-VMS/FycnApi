@@ -13,7 +13,7 @@ namespace Fycn.Service
 {
     public class WechatService : AbstractService, IWechat
     {
-        public int CreateMember(WechatMemberModel memberInfo, ClientMemberRelationModel clientMemberInfo)
+        public int CreateMember(WechatMemberModel memberInfo)
         {
             try
             {
@@ -21,8 +21,6 @@ namespace Fycn.Service
                 memberInfo.CreateDate = DateTime.Now;
                 memberInfo.Privilege = null;
                 GenerateDal.Create(memberInfo);
-                clientMemberInfo.CreateTime= DateTime.Now;
-                GenerateDal.Create(clientMemberInfo);
                 GenerateDal.CommitTransaction();
                 return 1;
             }
@@ -33,11 +31,7 @@ namespace Fycn.Service
             }
         }
 
-        public int CreateClientAndMemberRelation(ClientMemberRelationModel clientMemberInfo)
-        {
-            clientMemberInfo.CreateTime = DateTime.Now;
-            return GenerateDal.Create(clientMemberInfo);
-        }
+      
 
         public List<WechatMemberModel> IsExistMember(WechatMemberModel memberInfo)
         {
@@ -46,12 +40,26 @@ namespace Fycn.Service
             {
                 return null;
             }
+            if (string.IsNullOrEmpty(memberInfo.ClientId))
+            {
+                return null;
+            }
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
                 ParamName = "OpenId",
-                DbColumnName = "a.openid",
+                DbColumnName = "openid",
                 ParamValue = memberInfo.OpenId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = " ",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = memberInfo.ClientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = " ",
                 Logic = ""

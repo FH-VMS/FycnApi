@@ -73,22 +73,14 @@ namespace FycnApi.Controllers
             payState.RequestData = "";
             IWechat iwechat = new WechatService();
             WechatMemberModel memberInfo = new WechatMemberModel();
+            memberInfo.ClientId = m;
             memberInfo.OpenId = payInfo.openid;
             List<WechatMemberModel> lstMemberInfo = iwechat.IsExistMember(memberInfo);
             if(lstMemberInfo.Count==0)
             {
                 WechatMemberModel createMemberInfo = JsonHandler.GetObjectFromJson<WechatMemberModel>(jsonUserInfo);
-                ClientMemberRelationModel clientMemberInfo = new ClientMemberRelationModel();
-                clientMemberInfo.ClientId = m;
-                clientMemberInfo.MemberId = createMemberInfo.OpenId;
-                iwechat.CreateMember(createMemberInfo, clientMemberInfo);
-            }
-            if (lstMemberInfo.Count > 0 && string.IsNullOrEmpty(lstMemberInfo[0].ClientId))
-            {
-                ClientMemberRelationModel clientMemberInfo = new ClientMemberRelationModel();
-                clientMemberInfo.ClientId = m;
-                clientMemberInfo.MemberId = lstMemberInfo[0].OpenId;
-                iwechat.CreateClientAndMemberRelation(clientMemberInfo);
+                createMemberInfo.ClientId = m;
+                iwechat.CreateMember(createMemberInfo);
             }
             //if(iwechat.IsExistMember(memberInfo))
             //log.Info("test");

@@ -78,11 +78,20 @@ namespace Fycn.Model.Wechat
             set;
         }
 
+        [Column(Name = "client_id")]
         public string ClientId
         {
             get;
             set;
         }
+
+        public string ClientName
+        {
+            get;
+            set;
+        }
+
+
 
         public int PageIndex
         {

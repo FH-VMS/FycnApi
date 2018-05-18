@@ -106,5 +106,19 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "come_from")]
+        public string ComeFrom
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "happen_date")]
+        public DateTime HappenDate
+        {
+            get;
+            set;
+        }
+
     }
 }
