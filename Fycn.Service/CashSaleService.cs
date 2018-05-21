@@ -88,6 +88,20 @@ namespace Fycn.Service
                 });
             }
 
+            if (!string.IsNullOrEmpty(cashSaleInfo.SalesType))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SalesType",
+                    DbColumnName = "a.sales_type",
+                    ParamValue = cashSaleInfo.SalesType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
             conditions.AddRange(CreatePaginConditions(cashSaleInfo.PageIndex, cashSaleInfo.PageSize));
 
             return GenerateDal.LoadByConditions<CashSaleModel>(CommonSqlKey.GetCashSaleList, conditions);

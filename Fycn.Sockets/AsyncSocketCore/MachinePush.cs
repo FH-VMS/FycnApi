@@ -463,6 +463,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                     try
                     {
                         CashSaleModel cashInfo = new CashSaleModel();
+                        cashInfo.SalesType="1";
                         cashInfo.MachineId = machineNum6B;
                         cashInfo.GoodsId = tunnelId;
                         cashInfo.SalesPrices = (Convert.ToInt32(price) / 100).ToString();
@@ -696,6 +697,55 @@ namespace Fycn.Sockets.AsyncSocketCore
                     //SendMsg(returnByteA5, myClientSocket);
                     ByteHelper.Encryption(size6F, finalResult6F.ToArray()).CopyTo(returnByte6F, 4);//加密
                     return returnByte6F;
+                    case "90": // 终端->服务器 上报现金出货
+                    int size90 = 14; //加密的长度
+                    string machineNum90 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByte90 = new byte[19]; //返回的长度
+                    returnByte90[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size90).CopyTo(returnByte90, 1); //size
+                    returnByte90[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByte90, 5);//机器编号
+
+                    string tunnelId90 = ByteHelper.GenerateRealityData(data.Skip(13).Take(5).ToArray(), "stringval");
+                    string price90 = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+                   
+                   
+                    try
+                    {
+                        CashSaleModel cashInfo90 = new CashSaleModel();
+                        cashInfo90.SalesType="2";
+                        cashInfo90.MachineId = machineNum90;
+                        cashInfo90.GoodsId = tunnelId90;
+                        cashInfo90.SalesPrices = (Convert.ToInt32(price90) / 100).ToString();
+                        int result6B = new CashSaleService().PostData(cashInfo90);
+                        if (result6B == 1)
+                        {
+                            returnByte90[17] = 48;
+                        }
+                        else
+                        {
+                            returnByte90[17] = 49;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByte90[17] = 49;
+                    }
+
+                    returnByte90[18] = 238;
+                    byte resultChunk90 = new byte();
+                    byte[] finalResult90 = returnByte90.Skip(4).Take(size90).ToArray();
+                    for (int i = 0; i < finalResult90.Length; i++)
+                    {
+                        resultChunk90 ^= finalResult90[i];
+                    }
+                    returnByte90[3] = resultChunk90;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(size90, finalResult90.ToArray()).CopyTo(returnByte90, 4);//加密
+                    return returnByte90;
             }
             return new byte[0];
         }
