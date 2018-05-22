@@ -466,7 +466,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                         cashInfo.SalesType="1";
                         cashInfo.MachineId = machineNum6B;
                         cashInfo.GoodsId = tunnelId;
-                        cashInfo.SalesPrices = (Convert.ToInt32(price) / 100).ToString();
+                        cashInfo.SalesPrices = (Convert.ToDouble(price) / 100).ToString("0.00");
                         int result6B = new CashSaleService().PostData(cashInfo);
                         if (result6B == 1)
                         {
@@ -719,7 +719,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                         cashInfo90.SalesType="2";
                         cashInfo90.MachineId = machineNum90;
                         cashInfo90.GoodsId = tunnelId90;
-                        cashInfo90.SalesPrices = (Convert.ToInt32(price90) / 100).ToString();
+                        cashInfo90.SalesPrices = (Convert.ToDouble(price90) / 100).ToString("0.00");
                         int result6B = new CashSaleService().PostData(cashInfo90);
                         if (result6B == 1)
                         {
