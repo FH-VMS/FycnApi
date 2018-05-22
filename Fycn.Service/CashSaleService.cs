@@ -186,6 +186,20 @@ namespace Fycn.Service
                 });
             }
 
+            if (!string.IsNullOrEmpty(cashSaleInfo.SalesType))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "SalesType",
+                    DbColumnName = "a.sales_type",
+                    ParamValue = cashSaleInfo.SalesType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
 
 
             result = GenerateDal.CountByConditions(CommonSqlKey.GetCashSaleCount, conditions);

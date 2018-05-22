@@ -22,7 +22,7 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<CashSaleModel>> GetData(string machineId = "", string salesDate = "", string tradeNo = "", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<CashSaleModel>> GetData(string machineId = "", string salesDate = "", string tradeNo = "",string salesType="", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
@@ -30,6 +30,7 @@ namespace FycnApi.Controllers
             CashSaleModel saleInfo = new CashSaleModel();
             saleInfo.MachineId = machineId;
             saleInfo.TradeNo = tradeNo;
+            saleInfo.SalesType = salesType;
 
             if (!string.IsNullOrEmpty(salesDate))
             {
