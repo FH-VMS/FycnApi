@@ -261,6 +261,11 @@ namespace Fycn.SqlDataAccess
 
         //微信会员
         GetWechatMemberList,
-        GetWechatMemberCount
+        GetWechatMemberCount,
+
+        //公众号设置
+        IsExistWechat,
+        GetWechatInfo,
+        UpdateWechatInfo
     }
 }

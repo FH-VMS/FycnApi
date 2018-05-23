@@ -235,6 +235,11 @@
   "GetTunnelStatusById": "SELECT * from table_goods_status ",
   "GetCopyMachineById": "SELECT * from table_machine ",
 
+  "_comment": "公众号设置",
+  "GetWechatInfo": "SELECT * FROM table_wechat_info ",
+  "UpdateWechatInfo": "UPDATE table_wechat_info SET client_id=?p_ClientId,name=?p_Name,service_json=?p_ServiceJson,carousel_json=?p_CarouselJson WHERE id=?p_Id",
+  "IsExistWechat": "SELECT count(1) FROM table_wechat_info ",
+
   "_comment": "公众号",
   "IsExistMember": "SELECT * FROM table_wechat_member ",
   "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
