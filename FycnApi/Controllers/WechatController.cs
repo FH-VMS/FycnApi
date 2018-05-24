@@ -106,8 +106,6 @@ namespace FycnApi.Controllers
         {
             try
             {
-                var log = LogManager.GetLogger("FycnApi", "wechat pay");
-               
                 IPay _ipay = new PayService();
                 //移动支付赋值
                 WxPayConfig payConfig = _ipay.GenerateConfigModelWByClientId(clientId);
@@ -125,7 +123,6 @@ namespace FycnApi.Controllers
                 //JSAPI支付预处理
 
                 //string result = HttpService.Get(payInfo.redirect_url);
-                log.Info("mmmmmmmmmmmmmmmm:" + openId);
                 //生成交易号
                 payInfo.trade_no = PayHelper.GeneraterTradeNo();
                 payInfo.jsonProduct = payInfo.trade_no;
@@ -182,11 +179,11 @@ namespace FycnApi.Controllers
                 //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
 
                 //写入交易中转
-                /*
+               
                 RedisHelper helper = new RedisHelper(0);
                 
-                helper.StringSet(JsApi.payInfo.trade_no.Trim(), JsApi.payInfo.jsonProduct, new TimeSpan(0, 10, 30));
-                */
+                helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPay, false), new TimeSpan(0, 10, 30));
+                
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo, payConfig);
@@ -194,8 +191,6 @@ namespace FycnApi.Controllers
                 string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
                 payState.RequestState = "1";
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
-                log.Info("json:" + payState.ProductJson);
-                log.Info("weixin:" + wxJsApiParam);
                 payState.RequestData = wxJsApiParam;
 
 
@@ -227,14 +222,14 @@ namespace FycnApi.Controllers
                 xmlDoc.LoadXml(postStr);
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
-                /*
+              
                 RedisHelper helper = new RedisHelper(0);
-                
-                if (!helper.KeyExists(tradeNoNode.InnerText))
+                string retProducts = helper.StringGet(tradeNoNode.InnerText);
+                if (string.IsNullOrEmpty(retProducts))
                 {
-                    return Content(1);
+                    return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
                 }
-                */
+               
                 /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
@@ -259,9 +254,13 @@ namespace FycnApi.Controllers
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                                                                                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
 
-                    KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
-                    IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
+                    List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
+                    IWechat _iwechat = new WechatService();
+                    int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
+                    if (result > 0)
+                    {
+                        helper.KeyDelete(tradeNoNode.InnerText);
+                    }
 
                 }
                 return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";

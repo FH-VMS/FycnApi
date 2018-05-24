@@ -248,5 +248,84 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
         }
+
+        //微信支付结果插入数据库
+        public int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate)
+        {
+            try
+            {
+                GenerateDal.BeginTransaction();
+
+                foreach (ProductPayModel payInfo in lstProductPay)
+                {
+                    SaleModel saleInfo = new SaleModel();
+                    saleInfo.SalesIcId = Guid.NewGuid().ToString();
+                    saleInfo.MachineId = "";
+                    saleInfo.SalesDate = DateTime.Now;
+                    saleInfo.SalesNumber = (payInfo.Number==0 ? 1 : payInfo.Number);
+                    saleInfo.PayDate = TransStrToDateTime(payDate, "w");
+                    saleInfo.PayInterface = "微信";
+                    saleInfo.PayType = "微信";
+                    saleInfo.TradeNo = payInfo.TradeNo;
+                    saleInfo.GoodsId = "";
+                    saleInfo.TradeStatus = 7;
+                    saleInfo.MerchantId = sellerId;
+                    saleInfo.BuyerId = buyerId;
+                    saleInfo.IsWeixinConcern = isConcern;
+                    saleInfo.TradeAmount = Convert.ToDouble(payInfo.TradeAmount);
+                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(payInfo.TradeAmount) * ConfigHandler.WeixinRate, 2, MidpointRounding.AwayFromZero);
+                    saleInfo.WaresId = payInfo.WaresId;
+                    saleInfo.WaresName = payInfo.WaresName;
+                    GenerateDal.Create(saleInfo);
+                    //更新存存
+                    // UpdateCurrStock(keyJsonModel.m, keyTunnelInfo.tid, saleInfo.SalesNumber);
+                }
+
+                GenerateDal.CommitTransaction();
+                return 1;
+            }
+            catch (Exception e)
+            {
+                GenerateDal.RollBack();
+                return 0;
+            }
+
+
+        }
+
+        private DateTime TransStrToDateTime(string strDate, string wOrA)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(strDate))
+                {
+                    return DateTime.Now;
+                }
+                if (wOrA == "w")
+                {
+                    if (strDate.Length == 14)
+                    {
+                        string year = strDate.Substring(0, 4);
+                        string month = strDate.Substring(4, 2);
+                        string day = strDate.Substring(6, 2);
+                        string hour = strDate.Substring(8, 2);
+                        string minute = strDate.Substring(10, 2);
+                        string second = strDate.Substring(12, 2);
+                        return Convert.ToDateTime(string.Format("{0}-{1}-{2} {3}:{4}:{5}", year, month, day, hour, minute, second));
+                    }
+                }
+                else if (wOrA == "a")
+                {
+                    return Convert.ToDateTime(strDate);
+                }
+                return DateTime.Now;
+            }
+            catch (Exception e)
+            {
+                return DateTime.Now;
+            }
+
+
+        }
     }
 }

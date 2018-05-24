@@ -72,10 +72,10 @@ namespace FycnApi.Controllers
             int result = _IBase.UpdateData(configInfo);
             if (result > 0)
             {
-                if(!string.IsNullOrEmpty(configInfo.WxTxtKey.Trim()))
+                if(!string.IsNullOrEmpty(configInfo.WxTxtKey))
                 {
-                    FileHandler.DeleteFile(ConfigHandler.WeixinTextAddress + "/MP_verify_" + configInfo.WxTxtKey + ".txt");
-                    FileHandler.WriteFile(ConfigHandler.WeixinTextAddress, "MP_verify_" + configInfo.WxTxtKey + ".txt", configInfo.WxTxtKey);
+                    FileHandler.DeleteFile(ConfigHandler.WeixinTextAddress + "/MP_verify_" + configInfo.WxTxtKey.Trim() + ".txt");
+                    FileHandler.WriteFile(ConfigHandler.WeixinTextAddress, "MP_verify_" + configInfo.WxTxtKey.Trim() + ".txt", configInfo.WxTxtKey);
                 }
                
             }

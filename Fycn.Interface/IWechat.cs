@@ -34,5 +34,8 @@ namespace Fycn.Interface
 
         [Remark("根据opnid取待取货订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
         List<SaleModel> GetWaitingSalesList(string openId);
+
+        [Remark("微信公众号支付通知", ParmsNote = "", ReturnNote = "")]
+        int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate);
     }
 }
