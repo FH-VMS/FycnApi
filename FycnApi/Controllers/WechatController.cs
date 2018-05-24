@@ -285,5 +285,22 @@ namespace FycnApi.Controllers
             IWechat iwechat = new WechatService();
             return Content(iwechat.GetWaitingSalesList(openId));
         }
+
+        public ResultObj<WebSettingModel> GetWechatSetting(string clientId = "")
+        {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
+            IBase<WebSettingModel> iwebSetting = new WebSettingService();
+            WebSettingModel webSettingInfo = new WebSettingModel();
+            webSettingInfo.ClientId = clientId;
+            List<WebSettingModel> lstWebSetting = iwebSetting.GetAll(webSettingInfo);
+            if (lstWebSetting.Count > 0)
+            {
+                lstWebSetting[0].StaticUrl = ConfigHandler.ResourceUrl;
+            }
+            return Content(lstWebSetting[0]);
+        }
     }
 }

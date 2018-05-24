@@ -9,6 +9,7 @@ using Fycn.Model.Wechat;
 using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Model.Sys;
+using Fycn.Utility;
 
 namespace FycnApi.Controllers
 {
@@ -26,7 +27,12 @@ namespace FycnApi.Controllers
         {
             WebSettingModel webSettingInfo = new WebSettingModel();
             webSettingInfo.ClientId = clientId;
-            return Content(_IBase.GetAll(webSettingInfo));
+            List<WebSettingModel> lstWebSetting = _IBase.GetAll(webSettingInfo);
+            if (lstWebSetting.Count > 0)
+            {
+                lstWebSetting[0].StaticUrl = ConfigHandler.ResourceUrl;
+            }
+            return Content(lstWebSetting);
         }
 
         public ResultObj<int> CreateWebInfo([FromBody]WebSettingModel webSettingInfo)

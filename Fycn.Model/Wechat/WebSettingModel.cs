@@ -42,5 +42,11 @@ namespace Fycn.Model.Wechat
             get;
             set;
         }
+        
+        public string StaticUrl
+        {
+            get;
+            set;
+        }
     }
 }
