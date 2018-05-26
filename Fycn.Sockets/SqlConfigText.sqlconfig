@@ -247,12 +247,14 @@
   "GetWechatProductInfo": "SELECT a.* FROM table_product a LEFT JOIN table_product_group_relation b ON a.wares_id=b.wares_id LEFT JOIN table_product_group c ON b.wares_group_id=c.wares_id ",
   "GetProdcutAndGroupList": "SELECT * FROM table_product WHERE wares_id in (?p_WaresId) UNION SELECT * FROM table_product_group WHERE wares_id in (?p_WaresGroupIds) ",
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
+  "GetActivityPrivilegeList":"SELECT * FROM table_privilege_info ",
+  "IsExistTicket":"SELECT COUNT(1) FROM table_privilege_member_relation ",
 
   "_comment": "优惠券",
-  "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id ",
+  "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName,c.book_chinese AS PrincipleTypeText,d.book_chinese AS TimeRuleText FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id LEFT JOIN table_book c ON a.principle_type=c.`value` AND c.id='privilegetype' LEFT JOIN table_book d ON a.time_rule=d.`value` AND d.id='timerule' ",
   "GetPrivilegeListCount": "SELECT COUNT(1) FROM table_privilege_info ",
   "DeletePrivilege": "DELETE FROM table_privilege_info where privilege_id=?p_PrivilegeId",
-  "UpdatePrivilege": "UPDATE table_privilege_Info SET privilege_name=?p_PrivilegeName,principle_type=?p_PrincipleType,use_money_limit=?p_UseMoneyLimit,expire_time=?p_ExpireTime,time_rule=?p_TimeRule,is_bind=?p_IsBind,is_overlay=?p_IsOverlay,numbers=?p_Numbers,privilege_instru=?p_PrivilegeInstru,source_id=?p_SourceId,money=?p_Money,discount=?p_Discount,bind_product_ids=?p_BindProductIds WHERE privilege_id=?p_PrivilegeId ",
+  "UpdatePrivilege": "UPDATE table_privilege_Info SET privilege_name=?p_PrivilegeName,principle_type=?p_PrincipleType,use_money_limit=?p_UseMoneyLimit,expire_time=?p_ExpireTime,time_rule=?p_TimeRule,is_bind=?p_IsBind,is_overlay=?p_IsOverlay,numbers=?p_Numbers,privilege_instru=?p_PrivilegeInstru,source_id=?p_SourceId,money=?p_Money,discount=?p_Discount,bind_product_ids=?p_BindProductIds, start_time=?p_StartTime WHERE privilege_id=?p_PrivilegeId ",
 
   "_comment": "微信会员",
   "GetWechatMemberList": "SELECT a.*,b.client_name as ClientName FROM table_wechat_member a LEFT JOIN table_client b ON a.client_id=b.client_id ",

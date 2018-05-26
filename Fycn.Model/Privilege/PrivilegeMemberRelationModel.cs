@@ -120,5 +120,18 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "get_date")]
+        public DateTime GetDate
+        {
+            get;
+            set;
+        }
+
+        public string TimeRule
+        {
+            get;
+            set;
+        }
+
     }
 }

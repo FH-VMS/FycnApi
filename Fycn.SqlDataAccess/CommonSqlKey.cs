@@ -252,6 +252,8 @@ namespace Fycn.SqlDataAccess
         GetWechatProductInfo,
         GetProdcutAndGroupList,
         GetHistorySalesList,
+        GetActivityPrivilegeList,
+        IsExistTicket,
 
         //优惠券信息
         GetPrivilegeList,

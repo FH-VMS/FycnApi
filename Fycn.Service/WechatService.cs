@@ -1,5 +1,6 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Pay;
+using Fycn.Model.Privilege;
 using Fycn.Model.Product;
 using Fycn.Model.Sale;
 using Fycn.Model.Wechat;
@@ -326,6 +327,129 @@ namespace Fycn.Service
             }
 
 
+        }
+         
+        // 取活动优惠券列表
+        public List<PrivilegeModel> GetActivityPrivilegeList(PrivilegeModel privilegeInfo)
+        {
+            var conditions = new List<Condition>();
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = privilegeInfo.ClientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "Numbers",
+                DbColumnName = "numbers",
+                ParamValue = 0,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND (",
+                ParamName = "StartTime",
+                DbColumnName = "start_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.LessThan,
+                RightBrace = "",
+                Logic = " OR "
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "StartTime1",
+                DbColumnName = "start_time",
+                ParamValue = "",
+                Operation = ConditionOperate.Null,
+                RightBrace = ")",
+                Logic = ""
+            });
+
+            if(!string.IsNullOrEmpty(privilegeInfo.PrincipleType))
+            {
+                    conditions.Add(new Condition
+                    {
+                        LeftBrace = " AND ",
+                        ParamName = "PrincipleType",
+                        DbColumnName = "principle_type",
+                        ParamValue = privilegeInfo.PrincipleType,
+                        Operation = ConditionOperate.Equal,
+                        RightBrace = "",
+                        Logic = ""
+                    });
+            }
+
+
+            return GenerateDal.LoadByConditions<PrivilegeModel>(CommonSqlKey.GetActivityPrivilegeList, conditions);
+        }
+
+
+        //会员领取优惠券
+        public int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            privilegeMemberInfo.GetDate=DateTime.Now;
+            return GenerateDal.Create(privilegeMemberInfo);
+        }
+
+        public int IsExistTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions=new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PrivilegeId",
+                DbColumnName = "privilege_id",
+                ParamValue = privilegeMemberInfo.PrivilegeId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = privilegeMemberInfo.ClientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ExpireTime",
+                DbColumnName = "expire_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
         }
     }
 }

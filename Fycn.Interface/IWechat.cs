@@ -1,4 +1,5 @@
 ﻿using Fycn.Model.Pay;
+using Fycn.Model.Privilege;
 using Fycn.Model.Product;
 using Fycn.Model.Sale;
 using Fycn.Model.Sys;
@@ -37,5 +38,14 @@ namespace Fycn.Interface
 
         [Remark("微信公众号支付通知", ParmsNote = "", ReturnNote = "")]
         int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate);
+
+        [Remark("获取符合条件的活动券", ParmsNote = "", ReturnNote = "")]
+        List<PrivilegeModel> GetActivityPrivilegeList(PrivilegeModel privilegeInfo);
+
+        [Remark("会员领取优惠券", ParmsNote = "", ReturnNote = "")]
+        int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo);
+
+        [Remark("避免重复领取", ParmsNote = "", ReturnNote = "")]
+        int IsExistTicket(PrivilegeMemberRelationModel privilegeMemberInfo);
     }
 }

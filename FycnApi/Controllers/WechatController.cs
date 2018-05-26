@@ -19,6 +19,7 @@ using System.Xml;
 using System.Text;
 using Fycn.PaymentLib;
 using Fycn.Model.Sale;
+using Fycn.Model.Privilege;
 
 namespace FycnApi.Controllers
 {
@@ -300,6 +301,36 @@ namespace FycnApi.Controllers
                 lstWebSetting[0].StaticUrl = ConfigHandler.ResourceUrl;
             }
             return Content(lstWebSetting[0]);
+        }
+
+        //获取符合活动规则的券
+        public ResultObj<List<PrivilegeModel>> GetActivityPrivilegeList(string clientId = "", string principleType="")
+        {
+            PrivilegeModel privilegeInfo=new PrivilegeModel();
+            privilegeInfo.ClientId=clientId;
+            privilegeInfo.PrincipleType=principleType;
+
+            IWechat iwechat=new WechatService();
+            return Content(iwechat.GetActivityPrivilegeList(privilegeInfo));
+        }
+
+        public ResultObj<int> GetTicket([FromBody]PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            IWechat iwechat=new WechatService();
+            int count=iwechat.IsExistTicket(privilegeMemberInfo);
+            if(count>0)
+            {
+                return Content(0);
+            }
+            if(!string.IsNullOrEmpty(privilegeMemberInfo.TimeRule))
+            {
+               if(privilegeMemberInfo.TimeRule=="1")
+               {
+                   privilegeMemberInfo.ExpireTime=Convert.ToDateTime(DateTime.Now.ToString("yyyyy-MM-dd") + " 23:59:59");
+               }
+            }
+            privilegeMemberInfo.PrivilegeStatus=1;
+            return Content(iwechat.PostTicket(privilegeMemberInfo));
         }
     }
 }

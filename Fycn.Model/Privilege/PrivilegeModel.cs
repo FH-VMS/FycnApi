@@ -49,6 +49,12 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public string PrincipleTypeText
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "use_money_limit")]
         public decimal UseMoneyLimit
         {
@@ -63,8 +69,21 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "start_time")]
+        public DateTime StartTime
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "time_rule")]
         public string TimeRule
+        {
+            get;
+            set;
+        }
+
+        public string TimeRuleText
         {
             get;
             set;
