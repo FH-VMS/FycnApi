@@ -332,5 +332,17 @@ namespace FycnApi.Controllers
             privilegeMemberInfo.PrivilegeStatus=1;
             return Content(iwechat.PostTicket(privilegeMemberInfo));
         }
+
+        public ResultObj<List<PrivilegeMemberRelationModel>> GetPrivilegeByMemberId(string memberId = "", int pageIndex=1, int pageSize=10)
+        {
+            PrivilegeMemberRelationModel privilegeMemberInfo=new PrivilegeMemberRelationModel();
+            privilegeMemberInfo.MemberId=memberId;
+            privilegeMemberInfo.PageIndex=pageIndex;
+            privilegeMemberInfo.PageSize=pageSize;
+
+            IWechat iwechat=new WechatService();
+            return Content(iwechat.GetPrivilegeByMemberId(privilegeMemberInfo));
+        }
+        
     }
 }

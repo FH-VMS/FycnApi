@@ -47,5 +47,8 @@ namespace Fycn.Interface
 
         [Remark("避免重复领取", ParmsNote = "", ReturnNote = "")]
         int IsExistTicket(PrivilegeMemberRelationModel privilegeMemberInfo);
+
+        [Remark("取得会员的优惠券", ParmsNote = "", ReturnNote = "")]
+        List<PrivilegeMemberRelationModel> GetPrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
     }
 }

@@ -133,5 +133,17 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public int PageIndex
+        {
+            get;
+            set;
+        }
+
+        public int PageSize
+        {
+            get;
+            set;
+        }
+
     }
 }

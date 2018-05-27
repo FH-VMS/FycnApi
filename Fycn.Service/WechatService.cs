@@ -451,5 +451,35 @@ namespace Fycn.Service
 
             return GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
         }
+
+        //取得会员的优惠券
+        public List<PrivilegeMemberRelationModel> GetPrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions=new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " ",
+                ParamName = "",
+                DbColumnName = "get_data desc",
+                ParamValue = "",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.AddRange(CreatePaginConditions(privilegeMemberInfo.PageIndex, privilegeMemberInfo.PageSize));
+            return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
+        }
     }
 }

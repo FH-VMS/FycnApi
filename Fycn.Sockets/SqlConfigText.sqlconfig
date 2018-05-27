@@ -249,6 +249,7 @@
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
   "GetActivityPrivilegeList":"SELECT * FROM table_privilege_info ",
   "IsExistTicket":"SELECT COUNT(1) FROM table_privilege_member_relation ",
+  "GetPrivilegeByMemberId":"SELECT * FROM table_privilege_member_relation ",
 
   "_comment": "优惠券",
   "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName,c.book_chinese AS PrincipleTypeText,d.book_chinese AS TimeRuleText FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id LEFT JOIN table_book c ON a.principle_type=c.`value` AND c.id='privilegetype' LEFT JOIN table_book d ON a.time_rule=d.`value` AND d.id='timerule' ",
