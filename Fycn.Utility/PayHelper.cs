@@ -7,7 +7,7 @@ namespace Fycn.Utility
 {
     public class PayHelper
     {
-        public static string GeneraterTradeNo()
+        public string GeneraterTradeNo()
         {
             Random ran = new Random();
             int RandKey = ran.Next(1000, 9999);
@@ -15,7 +15,7 @@ namespace Fycn.Utility
             return out_trade_no;
         }
 
-        public static KeyJsonModel AnalizeKey(string key)
+        public KeyJsonModel AnalizeKey(string key)
         {
             KeyJsonModel keyJsonInfo = null;
             try

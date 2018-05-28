@@ -227,7 +227,7 @@ namespace Fycn.Service
                         model.RefundReason = "部分出货失败";
                     }
 
-                    model.OutRequestNo = PayHelper.GeneraterTradeNo();
+                    model.OutRequestNo = new PayHelper().GeneraterTradeNo();
 
                     AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
                     //request.SetNotifyUrl(config.refund_notify_url);

@@ -19,3 +19,10 @@ CentOS 7 and above:
 	make install
 	cd /usr/lib64/
 	ln -s /usr/local/lib/libgdiplus.so gdiplus.dll
+
+
+	redis: 
+	0:机器在线情况
+	1:socket下推缓存
+	2：后台缓存 例如client_id
+	3:取货码缓存

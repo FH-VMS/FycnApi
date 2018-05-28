@@ -37,7 +37,7 @@ namespace Fycn.Interface
         List<SaleModel> GetWaitingSalesList(string openId);
 
         [Remark("微信公众号支付通知", ParmsNote = "", ReturnNote = "")]
-        int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate);
+        int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId);
 
         [Remark("获取符合条件的活动券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeModel> GetActivityPrivilegeList(PrivilegeModel privilegeInfo);

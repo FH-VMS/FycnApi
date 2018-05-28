@@ -43,7 +43,7 @@ namespace FycnApi.Controllers
               
             //解码机器传过来的key值
             //解析k值
-            KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
+            KeyJsonModel keyJsonInfo = new PayHelper().AnalizeKey(k);
             RedisHelper redisHelper=new RedisHelper(0);
             if(!redisHelper.KeyExists(keyJsonInfo.m))
             {
@@ -80,7 +80,7 @@ namespace FycnApi.Controllers
                     return Content(payState);
                 }
                 //生成交易号
-                payInfo.trade_no = PayHelper.GeneraterTradeNo();
+                payInfo.trade_no = new PayHelper().GeneraterTradeNo();
                 //取商品信息
                
 
@@ -202,7 +202,7 @@ namespace FycnApi.Controllers
             ////////////////////////////////////////////请求参数////////////////////////////////////////////
            
             //解析k值
-            KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
+            KeyJsonModel keyJsonInfo = new PayHelper().AnalizeKey(k);
 
             if (string.IsNullOrEmpty(keyJsonInfo.m) || keyJsonInfo.t.Count == 0)
             {
@@ -221,7 +221,7 @@ namespace FycnApi.Controllers
             //移动支付赋值
             Config config = _ipay.GenerateConfigModelA(keyJsonInfo.m);
             //生成交易号
-            string out_trade_no = PayHelper.GeneraterTradeNo();
+            string out_trade_no = new PayHelper().GeneraterTradeNo();
             //取商品信息
            
 

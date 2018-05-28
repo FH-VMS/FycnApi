@@ -258,7 +258,7 @@ namespace Fycn.Service
         }
 
         //微信支付结果插入数据库
-        public int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate)
+        public int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId)
         {
             try
             {
@@ -280,13 +280,49 @@ namespace Fycn.Service
                     saleInfo.MerchantId = sellerId;
                     saleInfo.BuyerId = buyerId;
                     saleInfo.IsWeixinConcern = isConcern;
-                    saleInfo.TradeAmount = Convert.ToDouble(payInfo.TradeAmount);
-                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(payInfo.TradeAmount) * ConfigHandler.WeixinRate, 2, MidpointRounding.AwayFromZero);
+                    saleInfo.TradeAmount = Convert.ToDouble(payInfo.TradeAmount) * saleInfo.SalesNumber;
+                    saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(payInfo.TradeAmount) * saleInfo.SalesNumber * ConfigHandler.WeixinRate, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = payInfo.WaresId;
                     saleInfo.WaresName = payInfo.WaresName;
                     GenerateDal.Create(saleInfo);
+
                     //更新存存
                     // UpdateCurrStock(keyJsonModel.m, keyTunnelInfo.tid, saleInfo.SalesNumber);
+                    //生成取货码
+                    if (payInfo.IsGroup != 1)
+                    {
+                        for (int i = 0; i < payInfo.Number; i++)
+                        {
+                            ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
+                            clientSalesInfo.ClientId = clientId;
+                            clientSalesInfo.TradeNo = payInfo.TradeNo;
+                            clientSalesInfo.PickupNo = GeneratePickupCode();
+                            clientSalesInfo.WaresId = payInfo.WaresId;
+                            clientSalesInfo.WaresName = payInfo.WaresName;
+                            clientSalesInfo.CodeStatus = 1;
+                            clientSalesInfo.CreateDate = DateTime.Now;
+                            GenerateDal.Create(clientSalesInfo);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < payInfo.Number; i++)
+                        {
+                            var listProduct = GetProductByGroupId(payInfo.WaresId);
+                            foreach(ProductListModel lInfo in listProduct)
+                            {
+                                ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
+                                clientSalesInfo.ClientId = clientId;
+                                clientSalesInfo.TradeNo = payInfo.TradeNo;
+                                clientSalesInfo.PickupNo = GeneratePickupCode();
+                                clientSalesInfo.WaresId = lInfo.WaresId;
+                                clientSalesInfo.WaresName = lInfo.WaresName;
+                                clientSalesInfo.CodeStatus = 1;
+                                clientSalesInfo.CreateDate = DateTime.Now;
+                                GenerateDal.Create(clientSalesInfo);
+                            }
+                        }
+                    }
                 }
 
                 GenerateDal.CommitTransaction();
@@ -300,6 +336,50 @@ namespace Fycn.Service
 
 
         }
+
+        private string GeneratePickupCode()
+        {
+            try
+            {
+                string tmpStr = Guid.NewGuid().GetHashCode().ToString().Substring(1, 8);
+                RedisHelper redisHelper3 = new RedisHelper(3);
+                if (redisHelper3.KeyExists(tmpStr))
+                {
+                    GeneratePickupCode();
+                    return "";
+                }
+                else
+                {
+                    redisHelper3.StringSet(tmpStr, "");
+                    return tmpStr;
+                }
+            }
+            catch
+            {
+                GeneratePickupCode();
+                return "";
+            }
+            
+        }
+
+        private List<ProductListModel> GetProductByGroupId(string groupId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WaresGroupId",
+                DbColumnName = "a.wares_group_id",
+                ParamValue = groupId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+           return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductByGroupId, conditions);
+        }
+
+        
 
         private DateTime TransStrToDateTime(string strDate, string wOrA)
         {

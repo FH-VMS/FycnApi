@@ -22,7 +22,7 @@ namespace Fycn.Model.Wechat
             set;
         }
 
-        [Column(Name = "pickup_no")]
+        [Column(Name = "pickup_code")]
         public string PickupNo
         {
             get;
@@ -45,6 +45,20 @@ namespace Fycn.Model.Wechat
 
         [Column(Name = "end_date")]
         public DateTime EndDate
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "wares_id")]
+        public string WaresId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "wares_name")]
+        public string WaresName
         {
             get;
             set;
