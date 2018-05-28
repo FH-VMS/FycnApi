@@ -158,32 +158,39 @@ namespace Fycn.Service
         public List<ProductListModel> GetProdcutAndGroupList(string waresIds, string waresGroupIds)
         {
             var conditions = new List<Condition>();
-           
-                conditions.Add(new Condition
+            string waresPara = string.Empty;
+            string groupPara = string.Empty;
+            if(!string.IsNullOrEmpty(waresIds))
+            {
+                waresPara = "'" + waresIds.Replace(",", "','") + "'";
+            }
+            //dics.Add("")
+            
+            conditions.Add(new Condition
                 {
-                    LeftBrace = "",
+                    LeftBrace = " AND ",
                     ParamName = "WaresId",
-                    DbColumnName = "",
-                    ParamValue = waresIds,
-                    Operation = ConditionOperate.None,
+                    DbColumnName = "a.wares_id",
+                    ParamValue = waresPara,
+                    Operation = ConditionOperate.INWithNoPara,
                     RightBrace = "",
                     Logic = ""
                 });
-            
-            
-          
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "WaresGroupIds",
-                    DbColumnName = "",
-                    ParamValue = waresGroupIds,
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-            
-          
+
+
+            /*
+                  conditions.Add(new Condition
+                  {
+                      LeftBrace = "",
+                      ParamName = "WaresGroupIds",
+                      DbColumnName = "",
+                      ParamValue = groupPara,
+                      Operation = ConditionOperate.None,
+                      RightBrace = "",
+                      Logic = ""
+                  });
+              */
+
             return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
         }
 
@@ -416,16 +423,6 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
-            conditions.Add(new Condition
-            {
-                LeftBrace = " AND ",
-                ParamName = "PrivilegeId",
-                DbColumnName = "privilege_id",
-                ParamValue = privilegeMemberInfo.PrivilegeId,
-                Operation = ConditionOperate.Equal,
-                RightBrace = "",
-                Logic = ""
-            });
 
             conditions.Add(new Condition
             {
@@ -471,7 +468,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " ",
                 ParamName = "",
-                DbColumnName = "get_data desc",
+                DbColumnName = "get_date desc",
                 ParamValue = "",
                 Operation = ConditionOperate.OrderBy,
                 RightBrace = "",
@@ -480,6 +477,58 @@ namespace Fycn.Service
 
             conditions.AddRange(CreatePaginConditions(privilegeMemberInfo.PageIndex, privilegeMemberInfo.PageSize));
             return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
+        }
+
+        //当前会员可领取的券的次数
+        public int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions = new List<Condition>();
+            if (privilegeMemberInfo.PrincipleType=="2")
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MemberId",
+                    DbColumnName = "member_id",
+                    ParamValue = privilegeMemberInfo.MemberId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = privilegeMemberInfo.ClientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ExpireTime",
+                    DbColumnName = "expire_time",
+                    ParamValue = DateTime.Now,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                int reuslt = GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
+                if (reuslt == 0)
+                {
+                    return 1;
+                }
+
+            }
+
+            return 0;
+            
+            
         }
     }
 }

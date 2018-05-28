@@ -138,14 +138,9 @@ namespace FycnApi.Controllers
                 string waresGroupId = string.Empty;
                 foreach(ProductPayModel productInfo in lstProductPay)
                 {
-                    if (productInfo.IsGroup == 1)
-                    {
-                        waresGroupId = waresGroupId+ productInfo.WaresId + ",";
-                    } 
-                    else
-                    {
+                   
                         waresId = waresId + productInfo.WaresId + ",";
-                    }
+                    
                 }
                 
                 lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
@@ -343,6 +338,22 @@ namespace FycnApi.Controllers
             IWechat iwechat=new WechatService();
             return Content(iwechat.GetPrivilegeByMemberId(privilegeMemberInfo));
         }
-        
+
+        /// <summary>
+        /// 取得会员可领优惠券的次数
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        public ResultObj<int> GetCanTakeTicketCount(string memberId = "", string clientId = "", string principleType="")
+        {
+            PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
+            privilegeMemberInfo.MemberId = memberId;
+            privilegeMemberInfo.ClientId = clientId;
+            privilegeMemberInfo.PrincipleType = principleType;
+
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetCanTakeTicketCount(privilegeMemberInfo));
+        }
     }
 }
