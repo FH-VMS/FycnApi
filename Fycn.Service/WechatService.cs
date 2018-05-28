@@ -234,8 +234,8 @@ namespace Fycn.Service
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
-                ParamName = "OpenId",
-                DbColumnName = "buyer_id",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
                 ParamValue = openId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
@@ -245,16 +245,16 @@ namespace Fycn.Service
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
-                ParamName = "TradeStatus",
-                DbColumnName = "trade_status",
-                ParamValue = 7,
+                ParamName = "CodeStatus",
+                DbColumnName = "code_status",
+                ParamValue = 1,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
                 Logic = ""
             });
 
 
-            return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
+            return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetWaitingSalesList, conditions);
         }
 
         //微信支付结果插入数据库
@@ -301,6 +301,7 @@ namespace Fycn.Service
                             clientSalesInfo.WaresName = payInfo.WaresName;
                             clientSalesInfo.CodeStatus = 1;
                             clientSalesInfo.CreateDate = DateTime.Now;
+                            clientSalesInfo.MemberId = buyerId;
                             GenerateDal.Create(clientSalesInfo);
                         }
                     }
@@ -319,6 +320,7 @@ namespace Fycn.Service
                                 clientSalesInfo.WaresName = lInfo.WaresName;
                                 clientSalesInfo.CodeStatus = 1;
                                 clientSalesInfo.CreateDate = DateTime.Now;
+                                clientSalesInfo.MemberId = buyerId;
                                 GenerateDal.Create(clientSalesInfo);
                             }
                         }

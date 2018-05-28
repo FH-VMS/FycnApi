@@ -247,6 +247,7 @@
   "GetWechatProductInfo": "SELECT a.* FROM table_product a LEFT JOIN table_product_group_relation b ON a.wares_id=b.wares_id LEFT JOIN table_product_group c ON b.wares_group_id=c.wares_id ",
   "GetProdcutAndGroupList": "SELECT * FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) a ",
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
+  "GetWaitingSalesList": "SELECT * FROM table_client_sales_relation ",
   "GetActivityPrivilegeList": "SELECT * FROM table_privilege_info ",
   "IsExistTicket": "SELECT COUNT(1) FROM table_privilege_member_relation ",
   "GetPrivilegeByMemberId": "SELECT * FROM table_privilege_member_relation ",

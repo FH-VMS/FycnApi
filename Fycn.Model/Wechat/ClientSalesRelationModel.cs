@@ -63,5 +63,12 @@ namespace Fycn.Model.Wechat
             get;
             set;
         }
+
+        [Column(Name = "member_id")]
+        public string MemberId
+        {
+            get;
+            set;
+        }
     }
 }
