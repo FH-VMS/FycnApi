@@ -160,9 +160,19 @@ namespace FycnApi.Controllers
 
                 }
 
-
+               
                 payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
 
+                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
+                /*******************优惠券信息**********************/
+                PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
+               privilegeInfo.ClientId = clientId;
+               privilegeInfo.MemberId = openId;
+               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, totalFee, waresId);
+                if (lstPrivilege.Count > 0)
+                {
+                    payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
+                }
                 //string total_fee = "1";
                 //检测是否给当前页面传递了相关参数
 
@@ -170,70 +180,80 @@ namespace FycnApi.Controllers
                 //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数 
 
                 // jsApiPay.openid = openid;
-
-                payInfo.total_fee = Convert.ToInt32((totalFee * 100));
-                //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
-
-                //写入交易中转
-               
-                RedisHelper helper = new RedisHelper(0);
-                
-                helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPay, false), new TimeSpan(0, 10, 30));
-                
-                // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
-
-                WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo, payConfig);
-                // Log.Write("GetDataW", "step step");
-                string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
-                payState.RequestState = "1";
-                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
-                payState.RequestData = wxJsApiParam;
-
-                var log = LogManager.GetLogger("FycnApi", "wechat");
-                log.Info("99999" + payInfo.trade_no);
-                return Content(payState);
-
-            }
-            catch (Exception ex)
-            {
-                PayStateModel payStateError = new PayStateModel();
-                payStateError.RequestState = "3";
-                payStateError.RequestData = ex.Message;
-                return Content(payStateError);
-            }
-            return Content(new PayStateModel());
-        }
-
-        // 微信支付结果
-        public string PostPayResultW()
-        {
-            var log = LogManager.GetLogger("FycnApi", "wechat");
-            try
-            {
-                var request = Fycn.Utility.HttpContext.Current.Request;
-                int len = (int)request.ContentLength;
-                byte[] b = new byte[len];
-                Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
-                string postStr = Encoding.UTF8.GetString(b);
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(postStr);
-                // 商户交易号
-                XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
-              
-                RedisHelper helper = new RedisHelper(0);
-                string retProducts = helper.StringGet(tradeNoNode.InnerText);
-                if (string.IsNullOrEmpty(retProducts))
+                decimal privilegeMoney = 0;
+                if (lstPrivilege.Count > 0)
                 {
-                    return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
+                    privilegeMoney = lstPrivilege[0].Money;
                 }
-               
-                /*
-                IMachine _imachine = new MachineService();
-                if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
+                int weixinMoney = Convert.ToInt32(((totalFee - privilegeMoney) * 100));
+               payInfo.total_fee = (weixinMoney < 0 ? 0 : weixinMoney);
+               //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
+
+               //写入交易中转
+               if(payInfo.total_fee==0)
                 {
-                    return Content(1);
+                    payState.RequestState = "2";
+                    payState.RequestData = "";
+                    return Content(payState);
                 }
-                */
+               RedisHelper helper = new RedisHelper(0);
+
+               helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPay, false), new TimeSpan(0, 10, 30));
+
+               // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
+
+               WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo, payConfig);
+               // Log.Write("GetDataW", "step step");
+               string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
+               payState.RequestState = "1";
+               payState.RequestData = wxJsApiParam;
+               
+
+               var log = LogManager.GetLogger("FycnApi", "wechat");
+               log.Info("99999" + payInfo.trade_no);
+               return Content(payState);
+
+           }
+           catch (Exception ex)
+           {
+               PayStateModel payStateError = new PayStateModel();
+               payStateError.RequestState = "3";
+               payStateError.RequestData = ex.Message;
+               return Content(payStateError);
+           }
+           return Content(new PayStateModel());
+       }
+
+       // 微信支付结果
+       public string PostPayResultW()
+       {
+           var log = LogManager.GetLogger("FycnApi", "wechat");
+           try
+           {
+               var request = Fycn.Utility.HttpContext.Current.Request;
+               int len = (int)request.ContentLength;
+               byte[] b = new byte[len];
+               Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
+               string postStr = Encoding.UTF8.GetString(b);
+               XmlDocument xmlDoc = new XmlDocument();
+               xmlDoc.LoadXml(postStr);
+               // 商户交易号
+               XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
+
+               RedisHelper helper = new RedisHelper(0);
+               string retProducts = helper.StringGet(tradeNoNode.InnerText);
+               if (string.IsNullOrEmpty(retProducts))
+               {
+                   return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
+               }
+
+               /*
+               IMachine _imachine = new MachineService();
+               if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
+               {
+                   return Content(1);
+               }
+               */
 
 
                 //支付结果

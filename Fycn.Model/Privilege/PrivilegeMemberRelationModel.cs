@@ -8,6 +8,13 @@ namespace Fycn.Model.Privilege
     [Table("table_privilege_member_relation")]
     public class PrivilegeMemberRelationModel
     {
+        [Column(Name = "id")]
+        public string Id
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "member_id")]
         public string MemberId
         {
@@ -122,6 +129,12 @@ namespace Fycn.Model.Privilege
 
         [Column(Name = "get_date")]
         public DateTime GetDate
+        {
+            get;
+            set;
+        }
+
+        public bool Chosen
         {
             get;
             set;

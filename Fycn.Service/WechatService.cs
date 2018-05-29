@@ -488,6 +488,7 @@ namespace Fycn.Service
         //会员领取优惠券
         public int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
         {
+            privilegeMemberInfo.Id = Guid.NewGuid().ToString();
             privilegeMemberInfo.GetDate=DateTime.Now;
             return GenerateDal.Create(privilegeMemberInfo);
         }
@@ -613,8 +614,8 @@ namespace Fycn.Service
             
         }
 
-        // 取未过期优惠券
-        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo)
+        // 取可以使用的优惠券
+        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, decimal totalFee, string waresId)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
@@ -631,6 +632,39 @@ namespace Fycn.Service
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
+                ParamName = "PrivilegeStatus",
+                DbColumnName = "privilege_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND (",
+                ParamName = "UseMoneyLimit",
+                DbColumnName = "use_money_limit",
+                ParamValue = 0,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = "OR"
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "UseMoneyLimit1",
+                DbColumnName = "use_money_limit",
+                ParamValue = totalFee,
+                Operation = ConditionOperate.LessThan,
+                RightBrace = ")",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
                 ParamName = "ExpireTime",
                 DbColumnName = "expire_time",
                 ParamValue = DateTime.Now,
@@ -638,6 +672,20 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            if(!string.IsNullOrEmpty(privilegeIds))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "Id",
+                    DbColumnName = "id",
+                    ParamValue = privilegeIds,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+           
 
             conditions.Add(new Condition
             {

@@ -27,6 +27,12 @@ namespace Fycn.Model.Pay
             get;
             set;
         }
+
+        public string PrivilegeJson
+        {
+            get;
+            set;
+        }
     }
 
 
