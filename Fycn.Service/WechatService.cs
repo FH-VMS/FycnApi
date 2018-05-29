@@ -227,7 +227,7 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetHistorySalesList, conditions);
         }
 
-        public List<SaleModel> GetWaitingSalesList(string openId)
+        public List<ClientSalesRelationModel> GetWaitingSalesList(string openId)
         {
             var conditions = new List<Condition>();
 
@@ -254,7 +254,7 @@ namespace Fycn.Service
             });
 
 
-            return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetWaitingSalesList, conditions);
+            return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingSalesList, conditions);
         }
 
         //微信支付结果插入数据库
@@ -611,6 +611,46 @@ namespace Fycn.Service
             return 0;
             
             
+        }
+
+        // 取未过期优惠券
+        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ExpireTime",
+                DbColumnName = "expire_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " ",
+                ParamName = "",
+                DbColumnName = "money desc",
+                ParamValue = "",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+            
+            return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
         }
     }
 }

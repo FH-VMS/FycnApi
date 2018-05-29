@@ -34,7 +34,7 @@ namespace Fycn.Interface
         List<SaleModel> GetHistorySalesList(string openId, int pageIndex, int pageSize);
 
         [Remark("根据opnid取待取货订单", ParmsNote = "会员id", ReturnNote = "实体列表")]
-        List<SaleModel> GetWaitingSalesList(string openId);
+        List<ClientSalesRelationModel> GetWaitingSalesList(string openId);
 
         [Remark("微信公众号支付通知", ParmsNote = "", ReturnNote = "")]
         int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId);
@@ -53,5 +53,8 @@ namespace Fycn.Interface
 
         [Remark("取得会员可领优惠券的次数", ParmsNote = "", ReturnNote = "")]
         int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo);
+
+        [Remark("取可用优惠券", ParmsNote = "", ReturnNote = "")]
+        List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo);
     }
 }

@@ -103,7 +103,7 @@ namespace FycnApi.Controllers
         }
 
         //微信支付
-        public ResultObj<PayStateModel> PostDataW(string clientId,string openId, [FromBody]List<ProductPayModel> lstProductPay)
+        public ResultObj<PayStateModel> PostDataW(string clientId,string openId,string privilegeIds, [FromBody]List<ProductPayModel> lstProductPay)
         {
             try
             {
@@ -278,7 +278,7 @@ namespace FycnApi.Controllers
             return Content(iwechat.GetHistorySalesList(openId, pageIndex, pageSize));
         }
 
-        public ResultObj<List<SaleModel>> GetWaitingSalesList(string openId)
+        public ResultObj<List<ClientSalesRelationModel>> GetWaitingSalesList(string openId)
         {
             IWechat iwechat = new WechatService();
             return Content(iwechat.GetWaitingSalesList(openId));
