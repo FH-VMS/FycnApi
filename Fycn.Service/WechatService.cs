@@ -258,12 +258,12 @@ namespace Fycn.Service
         }
 
         //微信支付结果插入数据库
-        public int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId)
+        public int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientIdAndPrivilege)
         {
             try
             {
                 GenerateDal.BeginTransaction();
-
+                string[] clientAndPrivilegeArr = clientIdAndPrivilege.Split('~');
                 foreach (ProductPayModel payInfo in lstProductPay)
                 {
                     SaleModel saleInfo = new SaleModel();
@@ -289,12 +289,13 @@ namespace Fycn.Service
                     //更新存存
                     // UpdateCurrStock(keyJsonModel.m, keyTunnelInfo.tid, saleInfo.SalesNumber);
                     //生成取货码
+                    
                     if (payInfo.IsGroup != 1)
                     {
                         for (int i = 0; i < payInfo.Number; i++)
                         {
                             ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
-                            clientSalesInfo.ClientId = clientId;
+                            clientSalesInfo.ClientId = clientAndPrivilegeArr[0];
                             clientSalesInfo.TradeNo = payInfo.TradeNo;
                             clientSalesInfo.PickupNo = GeneratePickupCode();
                             clientSalesInfo.WaresId = payInfo.WaresId;
@@ -313,7 +314,7 @@ namespace Fycn.Service
                             foreach(ProductListModel lInfo in listProduct)
                             {
                                 ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
-                                clientSalesInfo.ClientId = clientId;
+                                clientSalesInfo.ClientId = clientAndPrivilegeArr[0];
                                 clientSalesInfo.TradeNo = payInfo.TradeNo;
                                 clientSalesInfo.PickupNo = GeneratePickupCode();
                                 clientSalesInfo.WaresId = lInfo.WaresId;
@@ -326,6 +327,16 @@ namespace Fycn.Service
                         }
                     }
                 }
+                if (clientAndPrivilegeArr.Length > 1)
+                {
+                    PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
+                    privilegeMemberInfo.PrivilegeStatus = 2;
+                    privilegeMemberInfo.TradeNo = lstProductPay[0].TradeNo;
+                    privilegeMemberInfo.HappenDate = DateTime.Now;
+                    privilegeMemberInfo.Id = clientAndPrivilegeArr[1];
+                    GenerateDal.Update(CommonSqlKey.UseTicket, privilegeMemberInfo);
+                }
+                
 
                 GenerateDal.CommitTransaction();
                 return 1;
@@ -380,6 +391,8 @@ namespace Fycn.Service
 
            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductByGroupId, conditions);
         }
+
+        
 
         
 

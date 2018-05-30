@@ -257,6 +257,7 @@ namespace Fycn.SqlDataAccess
         IsExistTicket,
         GetPrivilegeByMemberId,
         GetProductByGroupId,
+        UseTicket,
 
         //优惠券信息
         GetPrivilegeList,

@@ -171,6 +171,15 @@ namespace FycnApi.Controllers
                List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, totalFee, waresId);
                 if (lstPrivilege.Count > 0)
                 {
+                    if(string.IsNullOrEmpty(privilegeIds))
+                    {
+                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + lstPrivilege[0].Id;
+                    }
+                    else
+                    {
+                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + privilegeIds;
+                    }
+                    
                     payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
                 }
                 //string total_fee = "1";

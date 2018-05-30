@@ -120,6 +120,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "trade_no")]
+        public string TradeNo
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "happen_date")]
         public DateTime HappenDate
         {
