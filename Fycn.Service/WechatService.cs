@@ -479,14 +479,14 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            if(!string.IsNullOrEmpty(privilegeInfo.PrincipleType))
+            if(!string.IsNullOrEmpty(privilegeInfo.PrincipleGroup))
             {
                     conditions.Add(new Condition
                     {
                         LeftBrace = " AND ",
-                        ParamName = "PrincipleType",
-                        DbColumnName = "principle_type",
-                        ParamValue = privilegeInfo.PrincipleType,
+                        ParamName = "PrincipleGroup",
+                        DbColumnName = "principle_group",
+                        ParamValue = privilegeInfo.PrincipleGroup,
                         Operation = ConditionOperate.Equal,
                         RightBrace = "",
                         Logic = ""

@@ -190,11 +190,22 @@ namespace FycnApi.Controllers
 
                 // jsApiPay.openid = openid;
                 decimal privilegeMoney = 0;
+                int weixinMoney = 0;
                 if (lstPrivilege.Count > 0)
                 {
-                    privilegeMoney = lstPrivilege[0].Money;
+                    if (lstPrivilege[0].Money>0)
+                    {
+                        privilegeMoney = lstPrivilege[0].Money;
+                        weixinMoney = Convert.ToInt32(((totalFee - privilegeMoney) * 100));
+                    } 
+                    else
+                    {
+                        privilegeMoney = lstPrivilege[0].Discount;
+                        weixinMoney = Convert.ToInt32(((totalFee) * 100)* (privilegeMoney/100));
+                    }
+                   
                 }
-                int weixinMoney = Convert.ToInt32(((totalFee - privilegeMoney) * 100));
+                
                payInfo.total_fee = (weixinMoney < 0 ? 0 : weixinMoney);
                //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
 
@@ -335,7 +346,7 @@ namespace FycnApi.Controllers
         {
             PrivilegeModel privilegeInfo=new PrivilegeModel();
             privilegeInfo.ClientId=clientId;
-            privilegeInfo.PrincipleType=principleType;
+            privilegeInfo.PrincipleGroup=principleType;
 
             IWechat iwechat=new WechatService();
             return Content(iwechat.GetActivityPrivilegeList(privilegeInfo));

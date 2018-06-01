@@ -141,6 +141,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "display_text")]
+        public string DisplayText
+        {
+            get;
+            set;
+        }
+
         public bool Chosen
         {
             get;

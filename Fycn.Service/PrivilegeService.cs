@@ -61,6 +61,20 @@ namespace Fycn.Service
                 });
             }
 
+            if (!string.IsNullOrEmpty(privilegeInfo.PrincipleGroup))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "PrincipleGroup",
+                    DbColumnName = "a.principle_group",
+                    ParamValue = privilegeInfo.PrincipleGroup,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
             conditions.AddRange(CreatePaginConditions(privilegeInfo.PageIndex, privilegeInfo.PageSize));
 
             return GenerateDal.LoadByConditions<PrivilegeModel>(CommonSqlKey.GetPrivilegeList, conditions);

@@ -49,6 +49,14 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+
+        [Column(Name = "principle_group")]
+        public string PrincipleGroup
+        {
+            get;
+            set;
+        }
+
         public string PrincipleTypeText
         {
             get;
@@ -146,6 +154,13 @@ namespace Fycn.Model.Privilege
         }
 
         public int PageIndex
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "display_text")]
+        public string DisplayText
         {
             get;
             set;
