@@ -64,6 +64,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "bind_product_ids")]
+        public string BindProductIds
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "is_bind")]
         public int IsBind
         {
@@ -143,6 +150,12 @@ namespace Fycn.Model.Privilege
 
         [Column(Name = "display_text")]
         public string DisplayText
+        {
+            get;
+            set;
+        }
+
+        public string CannotUseReason
         {
             get;
             set;

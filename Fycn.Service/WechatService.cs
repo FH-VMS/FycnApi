@@ -8,6 +8,7 @@ using Fycn.SqlDataAccess;
 using Fycn.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Fycn.Service
@@ -628,7 +629,7 @@ namespace Fycn.Service
         }
 
         // 取可以使用的优惠券
-        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, decimal totalFee, string waresId)
+        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, decimal totalFee, List<ProductPayModel> lstPayInfo)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
@@ -652,7 +653,7 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
-
+            
             conditions.Add(new Condition
             {
                 LeftBrace = " AND (",
@@ -685,6 +686,7 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+            /* 
             if(!string.IsNullOrEmpty(privilegeIds))
             {
                 conditions.Add(new Condition
@@ -698,7 +700,7 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-           
+           */
 
             conditions.Add(new Condition
             {
@@ -710,8 +712,95 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+
+            List<PrivilegeMemberRelationModel> lstPrivilege = GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
+            if(lstPrivilege.Count==0)
+            {
+                return lstPrivilege;
+            }
+            decimal canOverLayReducerMoney = totalFee;
+            decimal cannotOverlayReducerMoney=totalFee;
+            List<decimal> lstDeci=new List<decimal>();
+            var canOverLay = (from m in lstPrivilege
+                                where m.IsOverlay==1
+                                select m).ToList();
+                var cannotOverlay = (from m in lstPrivilege
+                                where m.IsOverlay!=1
+                                select m).ToList();
+                
+                foreach(PrivilegeMemberRelationModel privilegeRelationInfo in canOverLay)
+                {
+                    switch(privilegeRelationInfo.PrincipleType)
+                    {
+                        case "1":  //满减券
+                        canOverLayReducerMoney=canOverLayReducerMoney-privilegeRelationInfo.Money;
+                        break;
+                        case "2":  //折扣券
+                        canOverLayReducerMoney=canOverLayReducerMoney*(privilegeRelationInfo.Discount/100);
+                        break;
+                        case "3":  //赠品券
+                        var tmpWares = (from n in lstPayInfo
+                                       where n.WaresId==privilegeRelationInfo.BindProductIds
+                                       select n).ToList();
+                        if(tmpWares.Count>0){
+                            canOverLayReducerMoney = canOverLayReducerMoney-Convert.ToDecimal(tmpWares[0].TradeAmount);
+                        }
+                        break;
+                        /* 
+                        case "4":  //满减券绑定商品
+                        break;
+                        case "5":  //折扣券券绑定商品
+                        break;
+                        */
+                    }
+                }
+                if(cannotOverlay.Count>0)
+                {
+                    foreach(PrivilegeMemberRelationModel privilegeRelationInfo in cannotOverlay) 
+                    {
+                        switch(privilegeRelationInfo.PrincipleType)
+                        {
+                            case "1":  //满减券
+                            lstDeci.Add(totalFee-privilegeRelationInfo.Money);
+                            break;
+                            case "2":  //折扣券
+                            lstDeci.Add(totalFee*(privilegeRelationInfo.Discount/100));
+                            break;
+                            case "3":  //赠品券
+                            var tmpWares = (from n in lstPayInfo
+                                        where n.WaresId==privilegeRelationInfo.BindProductIds
+                                        select n).ToList();
+                            if(tmpWares.Count>0){
+                                lstDeci.Add(totalFee-Convert.ToDecimal(tmpWares[0].TradeAmount));
+                            }
+                            break;
+                            /* 
+                            case "4":  //满减券绑定商品
+                            break;
+                            case "5":  //折扣券券绑定商品
+                            break;
+                            */
+                        }
+                            
+
+                    }
+                }
+
+                var minMoney = lstDeci.Select(w => w).Min();
+                if(minMoney<=canOverLayReducerMoney)
+                {
+                    int index =lstDeci.FindIndex(x => x == minMoney);
+                    List<PrivilegeMemberRelationModel> ret = new List<PrivilegeMemberRelationModel>();
+                    ret.Add(cannotOverlay[index]);
+                    return ret;
+                } 
+                else 
+                {
+                  return canOverLay;
+                }
+                
+                
             
-            return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
         }
     }
 }

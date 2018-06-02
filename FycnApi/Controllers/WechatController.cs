@@ -168,12 +168,16 @@ namespace FycnApi.Controllers
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
                privilegeInfo.MemberId = openId;
-               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, totalFee, waresId);
+               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, totalFee, lstProductPay);
+               
+               var log = LogManager.GetLogger("FycnApi", "wechat");
+               log.Info("lllll" + lstPrivilege.Count);
                 if (lstPrivilege.Count > 0)
                 {
+                    string[] lstStr =lstPrivilege.Select(m=>m.PrivilegeId).ToArray();
                     if(string.IsNullOrEmpty(privilegeIds))
                     {
-                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + lstPrivilege[0].Id;
+                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + string.Join(",", lstStr);
                     }
                     else
                     {
@@ -204,6 +208,10 @@ namespace FycnApi.Controllers
                         weixinMoney = Convert.ToInt32(((totalFee) * 100)* (privilegeMoney/100));
                     }
                    
+                } 
+                else
+                {
+                    weixinMoney = Convert.ToInt32((totalFee) * 100);
                 }
                 
                payInfo.total_fee = (weixinMoney < 0 ? 0 : weixinMoney);
@@ -229,8 +237,7 @@ namespace FycnApi.Controllers
                payState.RequestData = wxJsApiParam;
                
 
-               var log = LogManager.GetLogger("FycnApi", "wechat");
-               log.Info("99999" + payInfo.trade_no);
+              
                return Content(payState);
 
            }
