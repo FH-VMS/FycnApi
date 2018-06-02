@@ -168,10 +168,10 @@ namespace FycnApi.Controllers
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
                privilegeInfo.MemberId = openId;
-               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, totalFee, lstProductPay);
+               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds,ref totalFee, lstProductPay);
                
                var log = LogManager.GetLogger("FycnApi", "wechat");
-               log.Info("lllll" + lstPrivilege.Count);
+               log.Info("ddddd" + lstPrivilege.Count);
                 if (lstPrivilege.Count > 0)
                 {
                     string[] lstStr =lstPrivilege.Select(m=>m.PrivilegeId).ToArray();
@@ -193,6 +193,7 @@ namespace FycnApi.Controllers
                 //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数 
 
                 // jsApiPay.openid = openid;
+                /* 
                 decimal privilegeMoney = 0;
                 int weixinMoney = 0;
                 if (lstPrivilege.Count > 0)
@@ -211,12 +212,13 @@ namespace FycnApi.Controllers
                 } 
                 else
                 {
-                    weixinMoney = Convert.ToInt32((totalFee) * 100);
-                }
+                    */
+                    int weixinMoney = Convert.ToInt32((totalFee) * 100);
+                //}
                 
                payInfo.total_fee = (weixinMoney < 0 ? 0 : weixinMoney);
                //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
-
+               payState.TotalMoney=(totalFee < 0 ? 0 : totalFee);
                //写入交易中转
                if(payInfo.total_fee==0)
                 {

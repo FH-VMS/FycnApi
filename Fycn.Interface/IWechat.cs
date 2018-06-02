@@ -55,6 +55,6 @@ namespace Fycn.Interface
         int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo);
 
         [Remark("取可用优惠券", ParmsNote = "", ReturnNote = "")]
-        List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, decimal totalFee, List<ProductPayModel> lstPayInfo);
+        List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds,ref decimal totalFee, List<ProductPayModel> lstPayInfo);
     }
 }

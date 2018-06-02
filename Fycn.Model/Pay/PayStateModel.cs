@@ -33,6 +33,12 @@ namespace Fycn.Model.Pay
             get;
             set;
         }
+
+        public decimal TotalMoney
+        {
+            get;
+            set;
+        }
     }
 
 

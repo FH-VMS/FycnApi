@@ -629,7 +629,7 @@ namespace Fycn.Service
         }
 
         // 取可以使用的优惠券
-        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, decimal totalFee, List<ProductPayModel> lstPayInfo)
+        public List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds,ref decimal totalFee, List<ProductPayModel> lstPayInfo)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
@@ -792,10 +792,12 @@ namespace Fycn.Service
                     int index =lstDeci.FindIndex(x => x == minMoney);
                     List<PrivilegeMemberRelationModel> ret = new List<PrivilegeMemberRelationModel>();
                     ret.Add(cannotOverlay[index]);
+                    totalFee=minMoney;
                     return ret;
                 } 
                 else 
                 {
+                  totalFee=canOverLayReducerMoney;
                   return canOverLay;
                 }
                 
