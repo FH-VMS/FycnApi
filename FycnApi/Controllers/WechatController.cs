@@ -205,7 +205,7 @@ namespace FycnApi.Controllers
                     else
                     {
                         privilegeMoney = lstPrivilege[0].Discount;
-                        weixinMoney = Convert.ToInt32(((totalFee) * 100)* (privilegeMoney/100));
+                        weixinMoney = Convert.ToInt32(((totalFee) * 100)* (privilegeMoney/10));
                     }
                    
                 } 
