@@ -149,6 +149,7 @@ namespace Fycn.Service
             productListInfo.Creator = userAccount;
             productListInfo.UpdateDate = DateTime.Now;
             productListInfo.ClientId = userClientId;
+            productListInfo.IsGroup=1;
             result = GenerateDal.Create(productListInfo);
 
 

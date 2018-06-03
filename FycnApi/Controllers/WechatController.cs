@@ -256,7 +256,7 @@ namespace FycnApi.Controllers
        // 微信支付结果
        public string PostPayResultW()
        {
-           var log = LogManager.GetLogger("FycnApi", "wechat");
+           //var log = LogManager.GetLogger("FycnApi", "wechat");
            try
            {
                var request = Fycn.Utility.HttpContext.Current.Request;
@@ -299,8 +299,8 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                                                                                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
-                    log.Info("nnnnnnn" + tradeNoNode.InnerText);
-                    log.Info("aaaaaaa"+retProducts);
+                    //log.Info("nnnnnnn" + tradeNoNode.InnerText);
+                    //log.Info("aaaaaaa"+retProducts);
                     List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
                     IWechat _iwechat = new WechatService();
                     int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
@@ -314,7 +314,7 @@ namespace FycnApi.Controllers
             }
             catch (Exception ex)
             {
-                log.Info("bbbb" + ex.Message);
+                //log.Info("bbbb" + ex.Message);
                 return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
             }
 

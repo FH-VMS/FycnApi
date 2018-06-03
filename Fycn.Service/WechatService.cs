@@ -330,12 +330,20 @@ namespace Fycn.Service
                 }
                 if (clientAndPrivilegeArr.Length > 1)
                 {
-                    PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
-                    privilegeMemberInfo.PrivilegeStatus = 2;
-                    privilegeMemberInfo.TradeNo = lstProductPay[0].TradeNo;
-                    privilegeMemberInfo.HappenDate = DateTime.Now;
-                    privilegeMemberInfo.Id = clientAndPrivilegeArr[1];
-                    GenerateDal.Update(CommonSqlKey.UseTicket, privilegeMemberInfo);
+                    string[] ids = clientAndPrivilegeArr[1].Split(',');
+                    foreach(string id in ids)
+                    {
+                       if(!string.IsNullOrEmpty(id))
+                       {
+                            PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
+                            privilegeMemberInfo.PrivilegeStatus = 2;
+                            privilegeMemberInfo.TradeNo = lstProductPay[0].TradeNo;
+                            privilegeMemberInfo.HappenDate = DateTime.Now;
+                            privilegeMemberInfo.Id = id;
+                            GenerateDal.Update(CommonSqlKey.UseTicket, privilegeMemberInfo);
+                       }
+                    }
+                   
                 }
                 
 
