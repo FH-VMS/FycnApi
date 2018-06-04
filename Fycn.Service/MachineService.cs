@@ -983,7 +983,11 @@ namespace Fycn.Service
                     tc.MachineId = machineId;
                     tc.TunnelId = priceAndStock.tid;
                     tc.CashPrices = priceAndStock.p1;
-                    
+                    tc.IcPrices= priceAndStock.p1;
+                    tc.WpayPrices= priceAndStock.p1;
+                    tc.AlipayPrices= priceAndStock.p1;
+
+
                     GenerateDal.Update(CommonSqlKey.UpdateCashPrice, tc);
 
 
