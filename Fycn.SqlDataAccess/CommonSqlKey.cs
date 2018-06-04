@@ -115,6 +115,8 @@ namespace Fycn.SqlDataAccess
         GetProductGroupListCount,
         GetProductGroupRelation,
         DeleteProductGroupRelation,
+        DeleteProductGroupList,
+        UpdateProductGroupList,
 
         //商品配置
         GetProductConfigAll,

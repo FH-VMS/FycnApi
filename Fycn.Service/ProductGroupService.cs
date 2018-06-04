@@ -138,24 +138,42 @@ namespace Fycn.Service
         /// <returns></returns>
         public int PostData(ProductGroupModel productListInfo)
         {
-            int result;
-            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
-            if (string.IsNullOrEmpty(userClientId))
+            try
             {
+                GenerateDal.BeginTransaction();
+                string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+                if (string.IsNullOrEmpty(userClientId))
+                {
+                    return 0;
+                }
+                string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
+                productListInfo.WaresId = Guid.NewGuid().ToString();
+                productListInfo.Creator = userAccount;
+                productListInfo.UpdateDate = DateTime.Now;
+                productListInfo.ClientId = userClientId;
+                productListInfo.IsGroup = 1;
+                if(productListInfo.lstProductRelation!=null && productListInfo.lstProductRelation.Count>0)
+                {
+                    foreach(ProductGroupRelationModel relationInfo in productListInfo.lstProductRelation)
+                    {
+                        relationInfo.WaresGroupId = productListInfo.WaresId;
+                        relationInfo.ClientId = userClientId;
+                        new ProductGroupRelationService().PostData(relationInfo);
+                    }
+                }
+                GenerateDal.Create(productListInfo);
+                GenerateDal.CommitTransaction();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                GenerateDal.RollBack();
                 return 0;
             }
-            string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-            productListInfo.WaresId = Guid.NewGuid().ToString();
-            productListInfo.Creator = userAccount;
-            productListInfo.UpdateDate = DateTime.Now;
-            productListInfo.ClientId = userClientId;
-            productListInfo.IsGroup=1;
-            result = GenerateDal.Create(productListInfo);
 
 
 
-
-            return result;
+            
         }
 
         /// <summary>
@@ -169,7 +187,7 @@ namespace Fycn.Service
                 GenerateDal.BeginTransaction();
                 ProductGroupModel productListInfo = new ProductGroupModel();
                 productListInfo.WaresId = id;
-                GenerateDal.Delete<ProductGroupModel>(CommonSqlKey.DeleteProductList, productListInfo);
+                GenerateDal.Delete<ProductGroupModel>(CommonSqlKey.DeleteProductGroupList, productListInfo);
                 new ProductGroupRelationService().DeleteData(id);
                 GenerateDal.CommitTransaction();
                 return 1;
@@ -186,11 +204,34 @@ namespace Fycn.Service
 
         public int UpdateData(ProductGroupModel productListInfo)
         {
-            productListInfo.UpdateDate = DateTime.Now;
-            string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-            productListInfo.Creator = userAccount;
-            productListInfo.UpdateDate = DateTime.Now;
-            return GenerateDal.Update(CommonSqlKey.UpdateProductList, productListInfo);
+            try
+            {
+                GenerateDal.BeginTransaction();
+                productListInfo.UpdateDate = DateTime.Now;
+                string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
+                productListInfo.Creator = userAccount;
+                productListInfo.UpdateDate = DateTime.Now;
+               
+                new ProductGroupRelationService().DeleteData(productListInfo.WaresId);
+                if (productListInfo.lstProductRelation != null && productListInfo.lstProductRelation.Count > 0)
+                {
+                    foreach (ProductGroupRelationModel relationInfo in productListInfo.lstProductRelation)
+                    {
+                        relationInfo.WaresGroupId = productListInfo.WaresId;
+                        relationInfo.ClientId = productListInfo.ClientId;
+                        new ProductGroupRelationService().PostData(relationInfo);
+                    }
+                }
+                GenerateDal.Update(CommonSqlKey.UpdateProductGroupList, productListInfo);
+                GenerateDal.CommitTransaction();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                GenerateDal.RollBack();
+                return 0;
+            }
+            
         }
     }
 }
