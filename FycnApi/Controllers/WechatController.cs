@@ -96,7 +96,7 @@ namespace FycnApi.Controllers
             return Content(iwechat.GetProdcutTypeByClientId(clientId));
         }
 
-        public ResultObj<List<ProductListModel>> GetProdcutByTypeAndClient(string typeId,string clientId="")
+        public ResultObj<List<ProductListModel>> GetProdcutByTypeAndClient(string typeId="",string clientId="")
         {
             IWechat iwechat = new WechatService();
             return Content(iwechat.GetProdcutByTypeAndClient(typeId,clientId));

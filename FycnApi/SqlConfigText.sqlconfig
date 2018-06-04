@@ -245,7 +245,7 @@
   "GetProductTypeByClientId": "SELECT * FROM table_product_type ",
   "GetProductByTypeAndClientId": "SELECT a.*, CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id ",
   "GetWechatProductInfo": "SELECT a.* FROM table_product a LEFT JOIN table_product_group_relation b ON a.wares_id=b.wares_id LEFT JOIN table_product_group c ON b.wares_group_id=c.wares_id ",
-  "GetProdcutAndGroupList": "SELECT * FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) a ",
+  "GetProdcutAndGroupList": "SELECT a.*,b.wares_type_name as WaresTypeText, CONCAT(?p_ResourceUrl,c.pic_path) as PicUrl FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) AS a LEFT JOIN table_product_type b ON a.wares_type_id=b.wares_type_id LEFT JOIN table_pic c ON a.pic_id=c.pic_id ",
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
   "GetWaitingSalesList": "SELECT * FROM table_client_sales_relation ",
   "GetActivityPrivilegeList": "SELECT * FROM table_privilege_info ",

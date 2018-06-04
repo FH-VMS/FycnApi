@@ -102,16 +102,20 @@ namespace Fycn.Service
         public List<ProductListModel> GetProdcutByTypeAndClient(string typeId,string clientId)
         {
             var conditions = new List<Condition>();
-            conditions.Add(new Condition
+            if (!string.IsNullOrEmpty(typeId))
             {
-                LeftBrace = " AND ",
-                ParamName = "WaresTypeId",
-                DbColumnName = "a.wares_type_id",
-                ParamValue = typeId,
-                Operation = ConditionOperate.Equal,
-                RightBrace = " ",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "WaresTypeId",
+                    DbColumnName = "a.wares_type_id",
+                    ParamValue = typeId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = " ",
+                    Logic = ""
+                });
+            }
+            
             if(!string.IsNullOrEmpty(clientId))
             {
                 conditions.Add(new Condition
@@ -128,6 +132,17 @@ namespace Fycn.Service
 
             conditions.Add(new Condition
             {
+                LeftBrace = " AND ",
+                ParamName = "WaresTypeId1",
+                DbColumnName = "a.wares_type_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.NotNull,
+                RightBrace = " ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
                 LeftBrace = "  ",
                 ParamName = "ResourceUrl",
                 DbColumnName = "",
@@ -137,7 +152,18 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProductByTypeAndClientId, conditions);
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "b.wares_type_id,b.sequence",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
         }
 
         public List<ProductListModel> GetWechatProductInfo(string waresIds)
