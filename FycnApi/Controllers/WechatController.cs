@@ -105,6 +105,9 @@ namespace FycnApi.Controllers
         //微信支付
         public ResultObj<PayStateModel> PostDataW(string clientId,string openId,string privilegeIds, [FromBody]List<ProductPayModel> lstProductPay)
         {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+               
+            log.Info("wwww:"+JsonHandler.GetJsonStrFromObject(lstProductPay,false));
             try
             {
                 IPay _ipay = new PayService();
@@ -144,6 +147,7 @@ namespace FycnApi.Controllers
                 }
                 
                 lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
+                log.Info("llllll:"+JsonHandler.GetJsonStrFromObject(lstProduct,false));
                 //遍历商品
                 foreach (ProductListModel productInfo in lstProduct)
                 {
@@ -164,13 +168,13 @@ namespace FycnApi.Controllers
                 payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
 
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
+                log.Info("ppppppppp:"+payState.ProductJson);
                 /*******************优惠券信息**********************/
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
                privilegeInfo.MemberId = openId;
                List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds,ref totalFee, lstProductPay);
                
-               var log = LogManager.GetLogger("FycnApi", "wechat");
                log.Info("ddddd" + lstPrivilege.Count);
                 if (lstPrivilege.Count > 0)
                 {

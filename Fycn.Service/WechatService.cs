@@ -135,9 +135,9 @@ namespace Fycn.Service
                 LeftBrace = " AND ",
                 ParamName = "WaresTypeId1",
                 DbColumnName = "a.wares_type_id",
-                ParamValue = clientId,
-                Operation = ConditionOperate.NotNull,
-                RightBrace = " ",
+                ParamValue = "",
+                Operation = ConditionOperate.NotEqual,
+                RightBrace = "",
                 Logic = ""
             });
 
@@ -218,7 +218,7 @@ namespace Fycn.Service
                   });
               */
 
-            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetProdcutAndGroupList, conditions);
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetPayProdcutAndGroupList, conditions);
         }
 
         /// <summary>
@@ -770,7 +770,7 @@ namespace Fycn.Service
                         canOverLayReducerMoney=canOverLayReducerMoney-privilegeRelationInfo.Money;
                         break;
                         case "2":  //折扣券
-                        canOverLayReducerMoney=canOverLayReducerMoney*(privilegeRelationInfo.Discount/100);
+                        canOverLayReducerMoney=canOverLayReducerMoney*(privilegeRelationInfo.Discount/10);
                         break;
                         case "3":  //赠品券
                         var tmpWares = (from n in lstPayInfo
@@ -798,7 +798,7 @@ namespace Fycn.Service
                             lstDeci.Add(totalFee-privilegeRelationInfo.Money);
                             break;
                             case "2":  //折扣券
-                            lstDeci.Add(totalFee*(privilegeRelationInfo.Discount/100));
+                            lstDeci.Add(totalFee*(privilegeRelationInfo.Discount/10));
                             break;
                             case "3":  //赠品券
                             var tmpWares = (from n in lstPayInfo
@@ -819,7 +819,12 @@ namespace Fycn.Service
 
                     }
                 }
-
+                if(lstDeci.Count==0)
+                {
+                  totalFee=canOverLayReducerMoney;
+                  return canOverLay;
+                }
+                
                 var minMoney = lstDeci.Select(w => w).Min();
                 if(minMoney<=canOverLayReducerMoney)
                 {

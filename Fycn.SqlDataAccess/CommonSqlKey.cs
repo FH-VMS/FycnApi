@@ -260,6 +260,7 @@ namespace Fycn.SqlDataAccess
         GetPrivilegeByMemberId,
         GetProductByGroupId,
         UseTicket,
+        GetPayProdcutAndGroupList,
 
         //优惠券信息
         GetPrivilegeList,
