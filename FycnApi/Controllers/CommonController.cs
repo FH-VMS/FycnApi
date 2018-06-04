@@ -194,17 +194,17 @@ namespace FycnApi.Controllers
         
 
         // 图片字典
-        public ResultObj<List<CommonDic>> GetPictureDic()
+        public ResultObj<List<CommonDic>> GetPictureDic(string clientId="")
         {
             ICommon menusService = new CommonService();
-            return Content(menusService.GetPictureDic());
+            return Content(menusService.GetPictureDic(clientId));
         }
 
         // 取商品作字典
-        public ResultObj<List<CommonDic>> GetProductDic()
+        public ResultObj<List<CommonDic>> GetProductDic(string clientId = "")
         {
             ICommon menusService = new CommonService();
-            return Content(menusService.GetProductDic());
+            return Content(menusService.GetProductDic(clientId));
         }
 
         // 取货柜作字典

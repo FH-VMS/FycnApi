@@ -41,10 +41,10 @@ namespace Fycn.Interface
         List<CommonDic> GetMachineDic(string name, int pageIndex, int pageSize);
 
         [Remark("取图片做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
-        List<CommonDic> GetPictureDic();
+        List<CommonDic> GetPictureDic(string clinetId);
 
         [Remark("取商品做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
-        List<CommonDic> GetProductDic();
+        List<CommonDic> GetProductDic(string clinetId);
 
         [Remark("取货柜做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetCabinetDic();

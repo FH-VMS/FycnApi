@@ -358,7 +358,7 @@ namespace Fycn.Service
         
 
         //取图片资源字典
-        public List<CommonDic> GetPictureDic()
+        public List<CommonDic> GetPictureDic(string clientId)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
@@ -378,17 +378,34 @@ namespace Fycn.Service
                 Logic = ""
             });
             */
-            string clientIds = GetChildAndParentIds(userClientId);
-            conditions.Add(new Condition
+            if(string.IsNullOrEmpty(clientId))
             {
-                LeftBrace = " AND ",
-                ParamName = "ClientId",
-                DbColumnName = "client_id",
-                ParamValue = "'" + clientIds.Replace(",", "','") + "'",
-                Operation = ConditionOperate.INWithNoPara,
-                RightBrace = "",
-                Logic = ""
-            });
+                string clientIds = GetChildAndParentIds(userClientId);
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",
@@ -403,23 +420,57 @@ namespace Fycn.Service
         }
 
         //取商品作字典
-        public List<CommonDic> GetProductDic()
+        public List<CommonDic> GetProductDic(string clientId)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
+            /*
             string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
             if (string.IsNullOrEmpty(sts))
             {
                 return null;
             }
+            */
+            
             var result = new List<CommonDic>();
             var conditions = new List<Condition>();
+            if(string.IsNullOrEmpty(clientId))
+            {
+                string clientIds = GetChildAndParentIds(userClientId);
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+           
+            /*
             if (sts == "100" || sts == "99")
             {
+            */
                 result = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductDicAll, conditions);
+            /*
             }
             else
             {
@@ -436,7 +487,7 @@ namespace Fycn.Service
                 result = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductDic, conditions);
 
             }
-
+            */
             return result;
         }
 
