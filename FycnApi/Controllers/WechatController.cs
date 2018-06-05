@@ -411,5 +411,21 @@ namespace FycnApi.Controllers
             IWechat iwechat = new WechatService();
             return Content(iwechat.GetCanTakeTicketCount(privilegeMemberInfo));
         }
+
+        #region 取货
+        public string VerifyCode(string machid="",string pickcode="")
+        {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+
+            log.Info("pickup:machid:" + machid + "pickcode:" + pickcode);
+            var request = Fycn.Utility.HttpContext.Current.Request;
+            int len = (int)request.ContentLength;
+            byte[] b = new byte[len];
+            Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
+            string postStr = Encoding.UTF8.GetString(b);
+            log.Info("postStr" + postStr);
+            return "NG 测试";
+        }
+        #endregion
     }
 }
