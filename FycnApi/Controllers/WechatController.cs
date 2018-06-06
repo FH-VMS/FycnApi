@@ -107,7 +107,6 @@ namespace FycnApi.Controllers
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
                
-            log.Info("wwww:"+JsonHandler.GetJsonStrFromObject(lstProductPay,false));
             try
             {
                 IPay _ipay = new PayService();
@@ -147,7 +146,6 @@ namespace FycnApi.Controllers
                 }
                 
                 lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
-                log.Info("llllll:"+JsonHandler.GetJsonStrFromObject(lstProduct,false));
                 //遍历商品
                 foreach (ProductListModel productInfo in lstProduct)
                 {
@@ -168,7 +166,6 @@ namespace FycnApi.Controllers
                 payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
 
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
-                log.Info("ppppppppp:"+payState.ProductJson);
                 /*******************优惠券信息**********************/
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
@@ -178,7 +175,7 @@ namespace FycnApi.Controllers
                log.Info("ddddd" + lstPrivilege.Count);
                 if (lstPrivilege.Count > 0)
                 {
-                    string[] lstStr =lstPrivilege.Select(m=>m.PrivilegeId).ToArray();
+                    string[] lstStr =lstPrivilege.Select(m=>m.Id).ToArray();
                     if(string.IsNullOrEmpty(privilegeIds))
                     {
                         payInfo.jsonProduct = payInfo.jsonProduct + "~" + string.Join(",", lstStr);
@@ -260,7 +257,7 @@ namespace FycnApi.Controllers
        // 微信支付结果
        public string PostPayResultW()
        {
-           //var log = LogManager.GetLogger("FycnApi", "wechat");
+           var log = LogManager.GetLogger("FycnApi", "wechat");
            try
            {
                var request = Fycn.Utility.HttpContext.Current.Request;
@@ -306,6 +303,8 @@ namespace FycnApi.Controllers
                     //log.Info("nnnnnnn" + tradeNoNode.InnerText);
                     //log.Info("aaaaaaa"+retProducts);
                     List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
+                    log.Info("sssss" + JsonHandler.GetJsonStrFromObject(lstProductPay, false));
+                    log.Info("mmmmm" + jsonProduct);
                     IWechat _iwechat = new WechatService();
                     int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
                     if (result > 0)
