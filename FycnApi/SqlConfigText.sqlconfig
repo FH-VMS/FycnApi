@@ -251,7 +251,8 @@
   "GetWaitingSalesList": "SELECT * FROM table_client_sales_relation ",
   "GetActivityPrivilegeList": "SELECT * FROM table_privilege_info ",
   "IsExistTicket": "SELECT COUNT(1) FROM table_privilege_member_relation ",
-  "GetPrivilegeByMemberId": "SELECT * FROM table_privilege_member_relation ",
+  "GetPrivilegeByMemberId": "SELECT *,b.book_chinese as PrivilegeTypeText,c.wares_name as WaresName FROM table_privilege_member_relation a LEFT JOIN table_book b ON a.principle_type=b.`value` AND b.id='privilegetype' LEFT JOIN table_product c ON a.bind_product_ids=c.wares_id ",
+  "GetPrivilegeCountByMemberId": "SELECT COUNT(1) FROM table_privilege_member_relation ",
   "GetProductByGroupId": "SELECT b.* FROM table_product_group_relation a LEFT JOIN table_product b ON a.wares_id=b.wares_id ",
   "UseTicket": "UPDATE table_privilege_member_relation SET privilege_status=?p_PrivilegeStatus,trade_no=?p_TradeNo,happen_date=?p_HappenDate WHERE id=?p_Id",
 

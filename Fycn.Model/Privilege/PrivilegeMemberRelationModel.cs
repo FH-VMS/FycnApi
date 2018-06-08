@@ -57,6 +57,18 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public string PrivilegeTypeText
+        {
+            get;
+            set;
+        }
+
+        public string WaresName
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "use_money_limit")]
         public decimal UseMoneyLimit
         {

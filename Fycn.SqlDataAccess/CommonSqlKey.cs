@@ -258,6 +258,7 @@ namespace Fycn.SqlDataAccess
         GetActivityPrivilegeList,
         IsExistTicket,
         GetPrivilegeByMemberId,
+        GetPrivilegeCountByMemberId,
         GetProductByGroupId,
         UseTicket,
         GetPayProdcutAndGroupList,

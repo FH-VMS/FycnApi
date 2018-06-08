@@ -44,5 +44,19 @@ namespace FycnApi.Controllers
             IMember _imember = new MemberService();
             return Content(_imember.GivePrivilegeTicket(privilegeMemberInfo));
         }
+
+        public ResultObj<List<PrivilegeMemberRelationModel>> GetPrivilegeByMemberId(string memberId = "", int pageIndex = 1, int pageSize = 10)
+        {
+            PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
+            privilegeMemberInfo.MemberId = memberId;
+            privilegeMemberInfo.PageIndex = pageIndex;
+            privilegeMemberInfo.PageSize = pageSize;
+
+            IWechat iwechat = new WechatService();
+            int totalcount = iwechat.GetPrivilegeCountByMemberId(privilegeMemberInfo);
+
+            var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = totalcount, TotalPage = 0 };
+            return Content(iwechat.GetPrivilegeByMemberId(privilegeMemberInfo), pagination);
+        }
     }
 }

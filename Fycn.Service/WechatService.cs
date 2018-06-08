@@ -610,6 +610,35 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
         }
 
+        //取得会员的优惠券总数
+        public int GetPrivilegeCountByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " ",
+                ParamName = "",
+                DbColumnName = "get_date desc",
+                ParamValue = "",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+            
+            return GenerateDal.CountByConditions(CommonSqlKey.GetPrivilegeCountByMemberId, conditions);
+        }
+
         //当前会员可领取的券的次数
         public int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo)
         {

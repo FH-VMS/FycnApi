@@ -51,6 +51,9 @@ namespace Fycn.Interface
         [Remark("取得会员的优惠券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeMemberRelationModel> GetPrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
 
+        [Remark("取得会员的优惠券总数", ParmsNote = "", ReturnNote = "")]
+        int GetPrivilegeCountByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
+
         [Remark("取得会员可领优惠券的次数", ParmsNote = "", ReturnNote = "")]
         int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo);
 
