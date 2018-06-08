@@ -57,6 +57,12 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public string PrincipleGroupText
+        {
+            get;
+            set;
+        }
+
         public string PrincipleTypeText
         {
             get;
