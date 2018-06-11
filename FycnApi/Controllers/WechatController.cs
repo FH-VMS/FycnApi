@@ -20,6 +20,7 @@ using System.Text;
 using Fycn.PaymentLib;
 using Fycn.Model.Sale;
 using Fycn.Model.Privilege;
+using System.Security.Cryptography;
 
 namespace FycnApi.Controllers
 {
@@ -444,15 +445,82 @@ namespace FycnApi.Controllers
                 return Content(payState);
 
             }
+            RedisHelper rh = new RedisHelper(4);
+            string ticket = rh.StringGet(clientId+"-ticket");
+            if(string.IsNullOrEmpty(ticket))
+            {
+                string urlAcess = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", payConfig.APPID, payConfig.APPSECRET);
+                string jsonResult = HttpService.Get(urlAcess);
+                log.Info("access_token:" + jsonResult);
+                Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
+                if(dicAcess["errmsg"]!="ok")
+                {
+                    return null;
+                }
+                string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
+                string jsonTicket = HttpService.Get(urlTicket);
+                log.Info("ticket:" + jsonTicket);
+                Dictionary<string, string> dicTicket = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonTicket);
+                if(dicTicket["errmsg"]=="ok")
+                {
+                    rh.StringSet(clientId + "-ticket", dicTicket["ticket"],new TimeSpan(1,50,50));
+                }
+            }
+            
+            payState.RequestState = "1";
+            payState.ProductJson = "";
+            string retJson = MakeJsSign(payConfig.APPID, ticket);
+            log.Info("result:" + retJson);
+            payState.RequestData = retJson;
+            return Content(payState);
+        }
 
-            string urlAcess = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", payConfig.APPID,payConfig.APPSECRET);
-            string jsonResult = HttpService.Get(urlAcess);
-            log.Info("access_token:" + jsonResult);
-            Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
-            string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
-            string jsonTicket = HttpService.Get(urlTicket);
-            log.Info("access_token:" + jsonTicket);
-            return null;
+        private string MakeJsSign(string appId,string ticket)
+        {
+            string timeStamp = WxPayApi.GenerateTimeStamp();
+            string onceStr = WxPayApi.GenerateNonceStr();
+            string signature = string.Empty;
+            WxPayData jsApiParam = new WxPayData();
+            jsApiParam.SetValue("appId", appId);
+            jsApiParam.SetValue("timestamp", timeStamp);
+            jsApiParam.SetValue("nonceStr", onceStr);
+            //jsApiParam.SetValue("signature", signature);
+            //string keys = string.Format("jsapi_ticket={0}&noncestr={1}&timestamp={2}&url={3}", ticket,onceStr,timeStamp, PathConfig.DomainConfig+"/wechat.html");
+            Dictionary<string, string> dicParam = new Dictionary<string, string>();
+            dicParam["jsapi_ticket"] = ticket;
+            dicParam["noncestr"] = onceStr;
+            dicParam["timestamp"] = timeStamp;
+            dicParam["url"] = "http://wechat.markhsiu.com/p/wechat.html";
+
+            signature = Sha1(dicParam, Encoding.UTF8).ToLower();
+            jsApiParam.SetValue("signature", signature);
+            return jsApiParam.ToJson();
+        }
+
+        private string Sha1(Dictionary<string, string> dicParam, Encoding encode)
+        {
+            try
+            {
+                var vDic = (from objDic in dicParam orderby objDic.Key ascending select objDic);
+                StringBuilder str = new StringBuilder();
+                foreach (KeyValuePair<string, string> kv in vDic)
+                {
+                    string pkey = kv.Key;
+                    string pvalue = kv.Value;
+                    str.Append(pkey + "=" + pvalue + "&");
+                }
+                SHA1 sha1 = new SHA1CryptoServiceProvider();
+                byte[] bytes_in = encode.GetBytes(str.ToString().TrimEnd('&'));
+                byte[] bytes_out = sha1.ComputeHash(bytes_in);
+                sha1.Dispose();
+                string result = BitConverter.ToString(bytes_out);
+                result = result.Replace("-", "");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("SHA1加密出错：" + ex.Message);
+            }
         }
     }
 }
