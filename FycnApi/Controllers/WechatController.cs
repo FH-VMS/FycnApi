@@ -426,5 +426,33 @@ namespace FycnApi.Controllers
             return "NG 测试";
         }
         #endregion
+
+
+        public ResultObj<PayStateModel> GetWeixinJsConfig(string clientId)
+        {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+            string url = string.Empty;
+            //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
+            IPay _ipay = new PayService();
+            WxPayConfig payConfig = _ipay.GenerateConfigModelWByClientId(clientId);
+            PayStateModel payState = new PayStateModel();
+            if (string.IsNullOrEmpty(payConfig.APPID))
+            {
+                payState.RequestState = "2";
+                payState.ProductJson = "";
+                payState.RequestData = "";
+                return Content(payState);
+
+            }
+
+            string urlAcess = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", payConfig.APPID,payConfig.APPSECRET);
+            string jsonResult = HttpService.Get(urlAcess);
+            log.Info("access_token:" + jsonResult);
+            Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
+            string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
+            string jsonTicket = HttpService.Get(urlTicket);
+            log.Info("access_token:" + jsonTicket);
+            return null;
+        }
     }
 }

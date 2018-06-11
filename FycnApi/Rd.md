@@ -22,7 +22,8 @@ CentOS 7 and above:
 
 
 	redis: 
-	0:机器在线情况
+	0:机器在线情况  订单是否过期
 	1:socket下推缓存
 	2：后台缓存 例如client_id
 	3:取货码缓存
+	4：微信鉴权
