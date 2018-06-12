@@ -84,6 +84,12 @@ namespace Fycn.SqlDataAccess
         DeleteMachineConfig,
         UpdateMachineConfig,
 
+        //机器地址
+        GetMachineLocationList,
+        GetMachineLocationCount,
+        DeleteMachineLocation,
+        UpdateMachineLocation,
+
         //货道配置
         GetTunnelConfigCount,
         GetTunnelConfig,
