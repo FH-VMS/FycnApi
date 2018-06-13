@@ -268,6 +268,7 @@ namespace Fycn.SqlDataAccess
         GetProductByGroupId,
         UseTicket,
         GetPayProdcutAndGroupList,
+        GetMachineLocations,
 
         //优惠券信息
         GetPrivilegeList,

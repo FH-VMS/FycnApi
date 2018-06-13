@@ -21,6 +21,7 @@ using Fycn.PaymentLib;
 using Fycn.Model.Sale;
 using Fycn.Model.Privilege;
 using System.Security.Cryptography;
+using Fycn.Model.Machine;
 
 namespace FycnApi.Controllers
 {
@@ -521,6 +522,18 @@ namespace FycnApi.Controllers
             {
                 throw new Exception("SHA1加密出错：" + ex.Message);
             }
+        }
+
+        //取附近的机器
+        public ResultObj<List<MachineLocationModel>> GetMachineLocations(string longitude="", string latitude="", int pageIndex=1,int pageSize=10)
+        {
+            IWechat iwechat = new WechatService();
+            MachineLocationModel machineLocations = new MachineLocationModel();
+            machineLocations.PageIndex = pageIndex;
+            machineLocations.PageSize = pageSize;
+            machineLocations.Longitude = longitude;
+            machineLocations.Latitude = latitude;
+            return Content(iwechat.GetMachineLocations(machineLocations));
         }
     }
 }

@@ -51,6 +51,12 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        public string Distance
+        {
+            get;
+            set;
+        }
+
         public string StartLong
         {
             get;

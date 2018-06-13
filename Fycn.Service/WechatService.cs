@@ -1,4 +1,5 @@
 ﻿using Fycn.Interface;
+using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
@@ -871,6 +872,54 @@ namespace Fycn.Service
                 
                 
             
+        }
+
+        public List<MachineLocationModel> GetMachineLocations(MachineLocationModel machineLocationInfo)
+        {
+            var conditions = new List<Condition>();
+            if(string.IsNullOrEmpty(machineLocationInfo.Longitude))
+            {
+                machineLocationInfo.Longitude = "120.1648200000";
+            }
+            if(string.IsNullOrEmpty(machineLocationInfo.Latitude))
+            {
+                machineLocationInfo.Latitude = "30.2435500000";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Longitude",
+                DbColumnName = "",
+                ParamValue = machineLocationInfo.Longitude,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Latitude",
+                DbColumnName = "",
+                ParamValue = machineLocationInfo.Latitude,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "Distance",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.AddRange(CreatePaginConditions(machineLocationInfo.PageIndex, machineLocationInfo.PageSize));
+
+            return GenerateDal.LoadByConditions<MachineLocationModel>(CommonSqlKey.GetMachineLocations, conditions);
         }
     }
 }

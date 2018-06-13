@@ -1,4 +1,5 @@
-﻿using Fycn.Model.Pay;
+﻿using Fycn.Model.Machine;
+using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
 using Fycn.Model.Sale;
@@ -59,5 +60,8 @@ namespace Fycn.Interface
 
         [Remark("取可用优惠券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds,ref decimal totalFee, List<ProductPayModel> lstPayInfo);
+
+        [Remark("取附近的机器", ParmsNote = "", ReturnNote = "")]
+        List<MachineLocationModel> GetMachineLocations(MachineLocationModel machineLocationInfo);
     }
 }

@@ -50,6 +50,7 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> PostData([FromBody]MachineLocationModel machineLocationInfo)
         {
+            machineLocationInfo.Id = Guid.NewGuid().ToString();
              return Content(_IBase.PostData(machineLocationInfo));
         }
 
