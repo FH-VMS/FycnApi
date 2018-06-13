@@ -51,6 +51,30 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        public string StartLong
+        {
+            get;
+            set;
+        }
+
+        public string EndLong
+        {
+            get;
+            set;
+        }
+
+        public string StartLati
+        {
+            get;
+            set;
+        }
+
+        public string EndLati
+        {
+            get;
+            set;
+        }
+
         public int PageIndex
         {
             get;

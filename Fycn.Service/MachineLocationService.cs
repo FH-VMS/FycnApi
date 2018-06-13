@@ -27,7 +27,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "a.client_id",
+                DbColumnName = "b.client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = " ",
@@ -39,7 +39,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = "machine_id",
+                    DbColumnName = "a.machine_id",
                     ParamValue = machineLocationInfo.MachineId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
@@ -47,7 +47,69 @@ namespace Fycn.Service
                 });
             }
 
-            conditions.AddRange(CreatePaginConditions(machineLocationInfo.PageIndex, machineLocationInfo.PageSize));
+            if(string.IsNullOrEmpty(machineLocationInfo.MachineId) && string.IsNullOrEmpty(machineLocationInfo.StartLong))
+            {
+                return null;
+            }
+
+            if(!string.IsNullOrEmpty(machineLocationInfo.StartLong))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "StartLong",
+                    DbColumnName = "a.longitude",
+                    ParamValue = machineLocationInfo.StartLong,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(machineLocationInfo.EndLong))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "EndLong",
+                    DbColumnName = "a.longitude",
+                    ParamValue = machineLocationInfo.EndLong,
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(machineLocationInfo.StartLati))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "StartLati",
+                    DbColumnName = "a.latitude",
+                    ParamValue = machineLocationInfo.StartLati,
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(machineLocationInfo.EndLati))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "EndLati",
+                    DbColumnName = "a.latitude",
+                    ParamValue = machineLocationInfo.EndLati,
+                    Operation = ConditionOperate.LessThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+
+            // conditions.AddRange(CreatePaginConditions(machineLocationInfo.PageIndex, machineLocationInfo.PageSize));
 
             return GenerateDal.LoadByConditions<MachineLocationModel>(CommonSqlKey.GetMachineLocationList, conditions);
         }
@@ -72,7 +134,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "a.client_id",
+                DbColumnName = "b.client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = " ",
@@ -84,7 +146,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = "machine_id",
+                    DbColumnName = "a.machine_id",
                     ParamValue = machineLocationInfo.MachineId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",

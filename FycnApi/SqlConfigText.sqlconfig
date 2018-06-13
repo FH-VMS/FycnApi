@@ -75,7 +75,7 @@
   "UpdateMachineConfig": "UPDATE table_machine SET  device_id =?p_DeviceId,  type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate WHERE machine_id =?p_MachineId",
 
   "_comment": "机器配置",
-  "GetMachineLocationList": "SELECT * FROM table_machine_location ",
+  "GetMachineLocationList": "SELECT a.* FROM table_machine_location a LEFT JOIN table_machine b ON a.machine_id=b.machine_id ",
   "GetMachineLocationCount": "SELECT COUNT(1) FROM table_machine_location ",
   "DeleteMachineLocation": "DELETE FROM table_machine_location WHERE machine_id=?p_MachineId ",
   "UpdateMachineLocation": "UPDATE table_machine_location SET address=?p_Address,longitude=?p_Longitude,latitude=?p_Latitude,remark=?p_Remark WHERE machine_id=?p_MachineId ",
