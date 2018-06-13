@@ -454,10 +454,7 @@ namespace FycnApi.Controllers
                 string jsonResult = HttpService.Get(urlAcess);
                 log.Info("access_token:" + jsonResult);
                 Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
-                if(dicAcess["errmsg"]!="ok")
-                {
-                    return null;
-                }
+              
                 string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
                 string jsonTicket = HttpService.Get(urlTicket);
                 log.Info("ticket:" + jsonTicket);
