@@ -461,6 +461,7 @@ namespace FycnApi.Controllers
                 Dictionary<string, string> dicTicket = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonTicket);
                 if(dicTicket["errmsg"]=="ok")
                 {
+                    ticket = dicTicket["ticket"];
                     rh.StringSet(clientId + "-ticket", dicTicket["ticket"],new TimeSpan(1,50,50));
                 }
             }
