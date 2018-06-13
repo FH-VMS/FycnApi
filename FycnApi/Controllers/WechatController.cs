@@ -488,7 +488,7 @@ namespace FycnApi.Controllers
             dicParam["jsapi_ticket"] = ticket;
             dicParam["noncestr"] = onceStr;
             dicParam["timestamp"] = timeStamp;
-            dicParam["url"] = "http://wechat.markhsiu.com/p/wechat.html";
+            dicParam["url"] = PathConfig.DomainConfig + "/wechat.html";
 
             signature = Sha1(dicParam, Encoding.UTF8).ToLower();
             jsApiParam.SetValue("signature", signature);
