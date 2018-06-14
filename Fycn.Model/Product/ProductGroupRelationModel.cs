@@ -28,5 +28,12 @@ namespace Fycn.Model.Product
             get;
             set;
         }
+
+        [Column(Name = "numbers")]
+        public int Numbers
+        {
+            get;
+            set;
+        }
     }
 }
