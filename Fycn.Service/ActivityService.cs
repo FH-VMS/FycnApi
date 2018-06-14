@@ -92,7 +92,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "a.client_id",
+                DbColumnName = "client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = " ",
@@ -104,7 +104,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "Name",
-                    DbColumnName = "a.name",
+                    DbColumnName = "name",
                     ParamValue = "%" + activityInfo.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -118,7 +118,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "ActivityType",
-                    DbColumnName = "a.activity_type",
+                    DbColumnName = "activity_type",
                     ParamValue = activityInfo.ActivityType,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
