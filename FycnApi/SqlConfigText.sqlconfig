@@ -241,6 +241,14 @@
   "GetTunnelStatusById": "SELECT * from table_goods_status ",
   "GetCopyMachineById": "SELECT * from table_machine ",
 
+  "_comment": "活动",
+  "GetActivityList": "SELECT a.*,b.book_chinese as TimeRuleText,c.book_chinese as ActivityTypeText FROM table_activity_info a LEFT JOIN table_book b ON a.time_rule=b.`value` AND b.id='timerule' LEFT JOIN table_book c ON a.activity_type=c.`value` AND c.id='privilegegroup' ",
+  "GetActivityCount": "SELECT COUNT(1) FROM table_activity_info",
+  "DeleteActivity": "DELETE FROM table_activity_info WHERE id=?p_Id ",
+  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId WHERE id=?p_Id ",
+  "GetActivityRelation": "SELECT * FROM table_activity_privilege_relation ",
+  "DeleteActivityRelation": "DELETE FROM table_activity_privilege_relation WHERE activity_id=?p_ActivityId ",
+
   "_comment": "公众号设置",
   "GetWechatInfo": "SELECT * FROM table_wechat_info ",
   "UpdateWechatInfo": "UPDATE table_wechat_info SET client_id=?p_ClientId,name=?p_Name,service_json=?p_ServiceJson,carousel_json=?p_CarouselJson WHERE id=?p_Id",
@@ -259,7 +267,7 @@
   "IsExistTicket": "SELECT COUNT(1) FROM table_privilege_member_relation ",
   "GetPrivilegeByMemberId": "SELECT *,b.book_chinese as PrivilegeTypeText,c.wares_name as WaresName FROM table_privilege_member_relation a LEFT JOIN table_book b ON a.principle_type=b.`value` AND b.id='privilegetype' LEFT JOIN table_product c ON a.bind_product_ids=c.wares_id ",
   "GetPrivilegeCountByMemberId": "SELECT COUNT(1) FROM table_privilege_member_relation ",
-  "GetProductByGroupId": "SELECT b.* FROM table_product_group_relation a LEFT JOIN table_product b ON a.wares_id=b.wares_id ",
+  "GetProductByGroupId": "SELECT b.*,a.numbers as Numbers FROM table_product_group_relation a LEFT JOIN table_product b ON a.wares_id=b.wares_id ",
   "UseTicket": "UPDATE table_privilege_member_relation SET privilege_status=?p_PrivilegeStatus,trade_no=?p_TradeNo,happen_date=?p_HappenDate WHERE id=?p_Id",
   "GetMachineLocations": "SELECT *, st_distance (point (?p_Longitude, ?p_Latitude),point(longitude,latitude) ) * 111195 AS Distance FROM table_machine_location ",
 

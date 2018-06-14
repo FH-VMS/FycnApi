@@ -341,16 +341,24 @@ namespace Fycn.Service
                             var listProduct = GetProductByGroupId(payInfo.WaresId);
                             foreach(ProductListModel lInfo in listProduct)
                             {
-                                ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
-                                clientSalesInfo.ClientId = clientAndPrivilegeArr[0];
-                                clientSalesInfo.TradeNo = payInfo.TradeNo;
-                                clientSalesInfo.PickupNo = GeneratePickupCode();
-                                clientSalesInfo.WaresId = lInfo.WaresId;
-                                clientSalesInfo.WaresName = lInfo.WaresName;
-                                clientSalesInfo.CodeStatus = 1;
-                                clientSalesInfo.CreateDate = DateTime.Now;
-                                clientSalesInfo.MemberId = buyerId;
-                                GenerateDal.Create(clientSalesInfo);
+                                if(lInfo.Numbers==0)
+                                {
+                                    lInfo.Numbers = 1;
+                                }
+                                for(int j = 0; j < lInfo.Numbers; j++)
+                                {
+                                    ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
+                                    clientSalesInfo.ClientId = clientAndPrivilegeArr[0];
+                                    clientSalesInfo.TradeNo = payInfo.TradeNo;
+                                    clientSalesInfo.PickupNo = GeneratePickupCode();
+                                    clientSalesInfo.WaresId = lInfo.WaresId;
+                                    clientSalesInfo.WaresName = lInfo.WaresName;
+                                    clientSalesInfo.CodeStatus = 1;
+                                    clientSalesInfo.CreateDate = DateTime.Now;
+                                    clientSalesInfo.MemberId = buyerId;
+                                    GenerateDal.Create(clientSalesInfo);
+                                }
+                                
                             }
                         }
                     }

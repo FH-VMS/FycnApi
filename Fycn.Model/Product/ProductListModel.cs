@@ -155,6 +155,12 @@ namespace Fycn.Model.Product
               set;
           }
 
+         public int Numbers
+         {
+             get;
+             set;
+         }
+
           public int PageIndex
           {
               get;

@@ -1,5 +1,5 @@
 ﻿using Fycn.Interface;
-using Fycn.Model.Product;
+using Fycn.Model.Privilege;
 using Fycn.SqlDataAccess;
 using Fycn.Utility;
 using System;
@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Fycn.Service
 {
-    public class ProductGroupService : AbstractService, IBase<ProductGroupModel>
+    public class ActivityService : AbstractService, IBase<ActivityModel>
     {
-        public List<ProductGroupModel> GetAll(ProductGroupModel productListInfo)
+        public List<ActivityModel> GetAll(ActivityModel activityInfo)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
@@ -23,7 +23,7 @@ namespace Fycn.Service
             {
                 clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
-            var result = new List<ProductGroupModel>();
+            var result = new List<ActivityModel>();
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
@@ -34,36 +34,36 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-            if (!string.IsNullOrEmpty(productListInfo.WaresName))
+            if (!string.IsNullOrEmpty(activityInfo.Name))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "WaresName",
-                    DbColumnName = "a.wares_name",
-                    ParamValue = "%" + productListInfo.WaresName + "%",
+                    ParamName = "Name",
+                    DbColumnName = "a.name",
+                    ParamValue = "%" + activityInfo.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
             }
 
-            if (!string.IsNullOrEmpty(productListInfo.WaresTypeId))
+            if (!string.IsNullOrEmpty(activityInfo.ActivityType))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "WaresTypeId",
-                    DbColumnName = "a.wares_type_id",
-                    ParamValue = productListInfo.WaresTypeId,
+                    ParamName = "ActivityType",
+                    DbColumnName = "a.activity_type",
+                    ParamValue = activityInfo.ActivityType,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
             }
-            conditions.AddRange(CreatePaginConditions(productListInfo.PageIndex, productListInfo.PageSize));
-            result = GenerateDal.LoadByConditions<ProductGroupModel>(CommonSqlKey.GetProductGroupList, conditions);
-            
+            conditions.AddRange(CreatePaginConditions(activityInfo.PageIndex, activityInfo.PageSize));
+            result = GenerateDal.LoadByConditions<ActivityModel>(CommonSqlKey.GetActivityList, conditions);
+
 
 
 
@@ -73,7 +73,7 @@ namespace Fycn.Service
         }
 
 
-        public int GetCount(ProductGroupModel productListInfo)
+        public int GetCount(ActivityModel activityInfo)
         {
             var result = 0;
 
@@ -98,75 +98,68 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-            if (!string.IsNullOrEmpty(productListInfo.WaresName))
+            if (!string.IsNullOrEmpty(activityInfo.Name))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "WaresName",
-                    DbColumnName = "a.wares_name",
-                    ParamValue = "%" + productListInfo.WaresName + "%",
+                    ParamName = "Name",
+                    DbColumnName = "a.name",
+                    ParamValue = "%" + activityInfo.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
             }
 
-            if (!string.IsNullOrEmpty(productListInfo.WaresTypeId))
+            if (!string.IsNullOrEmpty(activityInfo.ActivityType))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "WaresTypeId",
-                    DbColumnName = "a.wares_type_id",
-                    ParamValue = productListInfo.WaresTypeId,
+                    ParamName = "ActivityType",
+                    DbColumnName = "a.activity_type",
+                    ParamValue = activityInfo.ActivityType,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
             }
-            result = GenerateDal.CountByConditions(CommonSqlKey.GetProductGroupListCount, conditions);
-            
+            result = GenerateDal.CountByConditions(CommonSqlKey.GetActivityCount, conditions);
+
             return result;
         }
 
-
-        /// <summary>
-        /// 新增/修改会员信息
-        /// </summary>
-        /// <param name="memberInfo"></param>
-        /// <returns></returns>
-        public int PostData(ProductGroupModel productListInfo)
+        
+        public int PostData(ActivityModel activityInfo)
         {
             try
             {
                 GenerateDal.BeginTransaction();
-                string userClientId = productListInfo.ClientId;
-                
+                string userClientId = activityInfo.ClientId;
+
                 if (string.IsNullOrEmpty(userClientId))
                 {
                     userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
                 }
                 string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-                productListInfo.WaresId = Guid.NewGuid().ToString();
-                productListInfo.Creator = userAccount;
-                productListInfo.UpdateDate = DateTime.Now;
-                productListInfo.ClientId = userClientId;
-                productListInfo.IsGroup = 1;
-                if(productListInfo.lstProductRelation!=null && productListInfo.lstProductRelation.Count>0)
+                activityInfo.Id = Guid.NewGuid().ToString();
+                activityInfo.Creator = userAccount;
+                activityInfo.CreateDate = DateTime.Now;
+                activityInfo.ClientId = userClientId;
+                if (activityInfo.listActivityPrivilege != null && activityInfo.listActivityPrivilege.Count > 0)
                 {
-                    foreach(ProductGroupRelationModel relationInfo in productListInfo.lstProductRelation)
+                    foreach (ActivityPrivilegeRelationModel relationInfo in activityInfo.listActivityPrivilege)
                     {
-                        relationInfo.WaresGroupId = productListInfo.WaresId;
-                        relationInfo.ClientId = userClientId;
-                        new ProductGroupRelationService().PostData(relationInfo);
+                        relationInfo.ActivityId = activityInfo.Id;
+                        new ActivityRelationService().PostData(relationInfo);
                     }
                 }
-                GenerateDal.Create(productListInfo);
+                GenerateDal.Create(activityInfo);
                 GenerateDal.CommitTransaction();
                 return 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 GenerateDal.RollBack();
                 return 0;
@@ -174,7 +167,7 @@ namespace Fycn.Service
 
 
 
-            
+
         }
 
         /// <summary>
@@ -186,60 +179,58 @@ namespace Fycn.Service
             try
             {
                 GenerateDal.BeginTransaction();
-                ProductGroupModel productListInfo = new ProductGroupModel();
-                productListInfo.WaresId = id;
-                GenerateDal.Delete<ProductGroupModel>(CommonSqlKey.DeleteProductGroupList, productListInfo);
-                new ProductGroupRelationService().DeleteData(id);
+                ActivityModel activityInfo = new ActivityModel();
+                activityInfo.Id = id;
+                GenerateDal.Delete<ActivityModel>(CommonSqlKey.DeleteActivity, activityInfo);
+                new ActivityRelationService().DeleteData(id);
                 GenerateDal.CommitTransaction();
                 return 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 GenerateDal.RollBack();
                 return 0;
             }
-           
+
 
 
         }
 
-        public int UpdateData(ProductGroupModel productListInfo)
+        public int UpdateData(ActivityModel activityInfo)
         {
             try
             {
                 GenerateDal.BeginTransaction();
-                productListInfo.UpdateDate = DateTime.Now;
-                string userClientId = productListInfo.ClientId;
+                activityInfo.CreateDate = DateTime.Now;
+                string userClientId = activityInfo.ClientId;
 
                 if (string.IsNullOrEmpty(userClientId))
                 {
                     userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
                 }
                 string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-                productListInfo.ClientId = userClientId;
-                productListInfo.Creator = userAccount;
-                productListInfo.UpdateDate = DateTime.Now;
-               
-                new ProductGroupRelationService().DeleteData(productListInfo.WaresId);
-                if (productListInfo.lstProductRelation != null && productListInfo.lstProductRelation.Count > 0)
+                activityInfo.ClientId = userClientId;
+                activityInfo.Creator = userAccount;
+
+                new ActivityRelationService().DeleteData(activityInfo.Id);
+                if (activityInfo.listActivityPrivilege != null && activityInfo.listActivityPrivilege.Count > 0)
                 {
-                    foreach (ProductGroupRelationModel relationInfo in productListInfo.lstProductRelation)
+                    foreach (ActivityPrivilegeRelationModel relationInfo in activityInfo.listActivityPrivilege)
                     {
-                        relationInfo.WaresGroupId = productListInfo.WaresId;
-                        relationInfo.ClientId = userClientId;
-                        new ProductGroupRelationService().PostData(relationInfo);
+                        relationInfo.ActivityId = activityInfo.Id;
+                        new ActivityRelationService().PostData(relationInfo);
                     }
                 }
-                GenerateDal.Update(CommonSqlKey.UpdateProductGroupList, productListInfo);
+                GenerateDal.Update(CommonSqlKey.UpdateActivity, activityInfo);
                 GenerateDal.CommitTransaction();
                 return 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 GenerateDal.RollBack();
                 return 0;
             }
-            
+
         }
     }
 }

@@ -56,6 +56,10 @@ namespace FycnApi.Controllers
 
         public ResultObj<List<ProductGroupRelationModel>> GetProductRelationById(string waresGroupId)
         {
+            if(string.IsNullOrEmpty(waresGroupId))
+            {
+                return Content(new List<ProductGroupRelationModel>());
+            }
             IBase<ProductGroupRelationModel> baseRelation = new ProductGroupRelationService();
             ProductGroupRelationModel relationInfo = new ProductGroupRelationModel();
             relationInfo.WaresGroupId = waresGroupId;
