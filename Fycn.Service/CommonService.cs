@@ -733,5 +733,48 @@ namespace Fycn.Service
 
             return result;
         }
+
+        //取不过期的优惠券作为字典
+        public List<CommonDic> GetNotExpirePrivilegeDic(string clientId)
+        {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND (",
+                ParamName = "ExpireTime",
+                DbColumnName = "expire_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = " OR "
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "ExpireTime1",
+                DbColumnName = "expire_time",
+                ParamValue = "",
+                Operation = ConditionOperate.Null,
+                RightBrace = ")",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetNotExpirePrivilegeDic, conditions);
+        }
     }
 }

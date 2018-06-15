@@ -250,5 +250,12 @@ namespace FycnApi.Controllers
             ICommon commonService = new CommonService();
             return Content(commonService.GetProductTypeDic(clientId));
         }
+
+        //取未过期优惠券作字典
+        public ResultObj<List<CommonDic>> GetNotExpirePrivilegeDic(string clientId = "")
+        {
+            ICommon commonService = new CommonService();
+            return Content(commonService.GetNotExpirePrivilegeDic(clientId));
+        }
     }
 }

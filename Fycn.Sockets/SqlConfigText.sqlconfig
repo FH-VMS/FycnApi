@@ -45,6 +45,7 @@
   "GetPayConfigDic": "SELECT id,name FROM table_mobile_pay_config ",
   "GetAdDic": "SELECT id,name FROM table_ad ",
   "GetProductTypeDic": "SELECT wares_type_id as Id,wares_type_name as Name FROM table_product_type ",
+  "GetNotExpirePrivilegeDic": "SELECT privilege_id as Id, privilege_name as Name FROM table_privilege_info ",
 
   "_comment": "机型",
   "GetMachineType": "SELECT a.*,b.book_chinese as TypeTypeText FROM table_machine_type as a  LEFT JOIN table_book as b ON a.type_type=b.value WHERE b.id='typetype' ",
@@ -240,6 +241,14 @@
   "GetTunnelConfigById": "SELECT * from table_goods_config ",
   "GetTunnelStatusById": "SELECT * from table_goods_status ",
   "GetCopyMachineById": "SELECT * from table_machine ",
+
+  "_comment": "活动",
+  "GetActivityList": "SELECT a.*,b.book_chinese as TimeRuleText,c.book_chinese as ActivityTypeText FROM table_activity_info a LEFT JOIN table_book b ON a.time_rule=b.`value` AND b.id='timerule' LEFT JOIN table_book c ON a.activity_type=c.`value` AND c.id='privilegegroup' ",
+  "GetActivityCount": "SELECT COUNT(1) FROM table_activity_info",
+  "DeleteActivity": "DELETE FROM table_activity_info WHERE id=?p_Id ",
+  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId WHERE id=?p_Id ",
+  "GetActivityRelation": "SELECT * FROM table_activity_privilege_relation ",
+  "DeleteActivityRelation": "DELETE FROM table_activity_privilege_relation WHERE activity_id=?p_ActivityId ",
 
   "_comment": "公众号设置",
   "GetWechatInfo": "SELECT * FROM table_wechat_info ",

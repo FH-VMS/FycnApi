@@ -606,6 +606,17 @@ namespace Fycn.Service
 
             conditions.Add(new Condition
             {
+                LeftBrace = " AND ",
+                ParamName = "PrincipleType",
+                DbColumnName = "principle_type",
+                ParamValue = 4,
+                Operation = ConditionOperate.NotEqual,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
                 LeftBrace = " ",
                 ParamName = "",
                 DbColumnName = "get_date desc",
@@ -711,6 +722,17 @@ namespace Fycn.Service
                 DbColumnName = "member_id",
                 ParamValue = privilegeMemberInfo.MemberId,
                 Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PrincipleType",
+                DbColumnName = "principle_type",
+                ParamValue = 4,
+                Operation = ConditionOperate.NotEqual,
                 RightBrace = "",
                 Logic = ""
             });

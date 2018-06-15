@@ -18,7 +18,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ActivityId",
-                DbColumnName = "a.activity_id",
+                DbColumnName = "activity_id",
                 ParamValue = relationInfo.ActivityId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = " ",

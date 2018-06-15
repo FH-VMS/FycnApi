@@ -172,22 +172,27 @@ namespace FycnApi.Controllers
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
                privilegeInfo.MemberId = openId;
-               List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds,ref totalFee, lstProductPay);
-               
-               log.Info("ddddd" + lstPrivilege.Count);
-                if (lstPrivilege.Count > 0)
+                if(totalFee>0.01M)
                 {
-                    string[] lstStr =lstPrivilege.Select(m=>m.Id).ToArray();
-                    if(string.IsNullOrEmpty(privilegeIds))
+
+                
+                   List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds,ref totalFee, lstProductPay);
+               
+                   log.Info("ddddd" + lstPrivilege.Count);
+                    if (lstPrivilege.Count > 0)
                     {
-                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + string.Join(",", lstStr);
-                    }
-                    else
-                    {
-                        payInfo.jsonProduct = payInfo.jsonProduct + "~" + privilegeIds;
-                    }
+                        string[] lstStr =lstPrivilege.Select(m=>m.Id).ToArray();
+                        if(string.IsNullOrEmpty(privilegeIds))
+                        {
+                            payInfo.jsonProduct = payInfo.jsonProduct + "~" + string.Join(",", lstStr);
+                        }
+                        else
+                        {
+                            payInfo.jsonProduct = payInfo.jsonProduct + "~" + privilegeIds;
+                        }
                     
-                    payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
+                        payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
+                    }
                 }
                 //string total_fee = "1";
                 //检测是否给当前页面传递了相关参数
@@ -216,12 +221,12 @@ namespace FycnApi.Controllers
                 else
                 {
                     */
-                    int weixinMoney = Convert.ToInt32((totalFee) * 100);
+                int weixinMoney = Convert.ToInt32((totalFee) * 100);
                 //}
                 
-               payInfo.total_fee = (weixinMoney < 0 ? 0 : weixinMoney);
+               payInfo.total_fee = (weixinMoney < 0 ? 1 : weixinMoney);
                //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
-               payState.TotalMoney=(totalFee < 0 ? 0 : totalFee);
+               payState.TotalMoney=(totalFee < 0 ? Convert.ToDecimal(0.01) : totalFee);
                //写入交易中转
                if(payInfo.total_fee==0)
                 {

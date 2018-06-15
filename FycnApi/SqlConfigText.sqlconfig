@@ -45,6 +45,7 @@
   "GetPayConfigDic": "SELECT id,name FROM table_mobile_pay_config ",
   "GetAdDic": "SELECT id,name FROM table_ad ",
   "GetProductTypeDic": "SELECT wares_type_id as Id,wares_type_name as Name FROM table_product_type ",
+  "GetNotExpirePrivilegeDic": "SELECT privilege_id as Id, privilege_name as Name FROM table_privilege_info ",
 
   "_comment": "机型",
   "GetMachineType": "SELECT a.*,b.book_chinese as TypeTypeText FROM table_machine_type as a  LEFT JOIN table_book as b ON a.type_type=b.value WHERE b.id='typetype' ",

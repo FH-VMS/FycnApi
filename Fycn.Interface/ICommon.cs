@@ -73,5 +73,8 @@ namespace Fycn.Interface
         [Remark("取名下机器数量", ParmsNote = "", ReturnNote = "int")]
         int GetMachineCountByClientId(string clientId);
 
+        [Remark("取未过期优惠券作字典", ParmsNote = "", ReturnNote = "int")]
+        List<CommonDic> GetNotExpirePrivilegeDic(string clientId);
+
     }
 }
