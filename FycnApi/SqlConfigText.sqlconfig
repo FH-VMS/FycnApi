@@ -264,7 +264,7 @@
   "GetPayProdcutAndGroupList": "SELECT * FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) a ",
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
   "GetWaitingSalesList": "SELECT * FROM table_client_sales_relation ",
-  "GetActivityPrivilegeList": "SELECT * FROM table_privilege_info ",
+  "GetActivityPrivilegeList": "SELECT c.*,b.rate as Rate FROM table_activity_info a LEFT JOIN table_activity_privilege_relation b ON a.id=b.activity_id LEFT JOIN table_privilege_info c ON b.privilege_id=c.privilege_id ",
   "IsExistTicket": "SELECT COUNT(1) FROM table_privilege_member_relation ",
   "GetPrivilegeByMemberId": "SELECT *,b.book_chinese as PrivilegeTypeText,c.wares_name as WaresName FROM table_privilege_member_relation a LEFT JOIN table_book b ON a.principle_type=b.`value` AND b.id='privilegetype' LEFT JOIN table_product c ON a.bind_product_ids=c.wares_id ",
   "GetPrivilegeCountByMemberId": "SELECT COUNT(1) FROM table_privilege_member_relation ",

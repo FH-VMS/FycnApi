@@ -484,7 +484,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "client_id",
+                DbColumnName = "a.client_id",
                 ParamValue = privilegeInfo.ClientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
@@ -495,7 +495,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "Numbers",
-                DbColumnName = "numbers",
+                DbColumnName = "c.numbers",
                 ParamValue = 0,
                 Operation = ConditionOperate.GreaterThan,
                 RightBrace = "",
@@ -506,7 +506,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND (",
                 ParamName = "StartTime",
-                DbColumnName = "start_time",
+                DbColumnName = "a.start_time",
                 ParamValue = DateTime.Now,
                 Operation = ConditionOperate.LessThan,
                 RightBrace = "",
@@ -516,7 +516,7 @@ namespace Fycn.Service
             {
                 LeftBrace = "",
                 ParamName = "StartTime1",
-                DbColumnName = "start_time",
+                DbColumnName = "a.start_time",
                 ParamValue = "",
                 Operation = ConditionOperate.Null,
                 RightBrace = ")",
@@ -528,8 +528,8 @@ namespace Fycn.Service
                     conditions.Add(new Condition
                     {
                         LeftBrace = " AND ",
-                        ParamName = "PrincipleGroup",
-                        DbColumnName = "principle_group",
+                        ParamName = "ActivityType",
+                        DbColumnName = "a.activity_type",
                         ParamValue = privilegeInfo.PrincipleGroup,
                         Operation = ConditionOperate.Equal,
                         RightBrace = "",
