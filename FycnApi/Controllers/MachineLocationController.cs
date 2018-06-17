@@ -22,7 +22,7 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<MachineLocationModel>> GetData(string machineId = "",string startLong="", string endLong="",string startLati="", string endLati="", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<MachineLocationModel>> GetData(string machineId = "",string startLong="", string endLong="",string startLati="", string endLati="",string clientId="", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
@@ -35,6 +35,7 @@ namespace FycnApi.Controllers
             machineLocationInfo.EndLati = endLati;
             machineLocationInfo.PageIndex = pageIndex;
             machineLocationInfo.PageSize = pageSize;
+            machineLocationInfo.ClientId=clientId;
             var data = _IBase.GetAll(machineLocationInfo);
             //int totalcount = 0;
             /*

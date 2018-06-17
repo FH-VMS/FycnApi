@@ -51,6 +51,12 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        public string ClientId
+        {
+            get;
+            set;
+        }
+
         public string Distance
         {
             get;

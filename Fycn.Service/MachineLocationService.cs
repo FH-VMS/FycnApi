@@ -12,8 +12,14 @@ namespace Fycn.Service
     {
         public List<MachineLocationModel> GetAll(MachineLocationModel machineLocationInfo)
         {
-            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string userClientId = machineLocationInfo.ClientId;
+            // string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
+            {
+                userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+                // return null;
+            }
+            if(string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }

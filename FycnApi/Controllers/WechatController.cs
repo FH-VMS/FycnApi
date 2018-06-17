@@ -528,7 +528,7 @@ namespace FycnApi.Controllers
         }
 
         //取附近的机器
-        public ResultObj<List<MachineLocationModel>> GetMachineLocations(string longitude="", string latitude="", int pageIndex=1,int pageSize=10)
+        public ResultObj<List<MachineLocationModel>> GetMachineLocations(string longitude="", string latitude="",string clientId="", int pageIndex=1,int pageSize=10)
         {
             IWechat iwechat = new WechatService();
             MachineLocationModel machineLocations = new MachineLocationModel();
@@ -536,6 +536,7 @@ namespace FycnApi.Controllers
             machineLocations.PageSize = pageSize;
             machineLocations.Longitude = longitude;
             machineLocations.Latitude = latitude;
+            machineLocations.ClientId=clientId;
             return Content(iwechat.GetMachineLocations(machineLocations));
         }
     }

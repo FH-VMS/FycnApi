@@ -915,6 +915,28 @@ namespace Fycn.Service
             {
                 machineLocationInfo.Latitude = "30.2435500000";
             }
+
+            string userClientId = machineLocationInfo.ClientId;
+            if(string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",
@@ -935,6 +957,8 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+
+            
 
 
             conditions.Add(new Condition
