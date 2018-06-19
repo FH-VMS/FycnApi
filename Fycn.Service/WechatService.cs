@@ -832,22 +832,25 @@ namespace Fycn.Service
                 var cannotOverlay = (from m in lstPrivilege
                                 where m.IsOverlay!=1
                                 select m).ToList();
-                
-                foreach(PrivilegeMemberRelationModel privilegeRelationInfo in canOverLay)
+            List<PrivilegeMemberRelationModel> lstReturnCanOverlay = new List<PrivilegeMemberRelationModel>();
+                foreach (PrivilegeMemberRelationModel privilegeRelationInfo in canOverLay)
                 {
                     switch(privilegeRelationInfo.PrincipleType)
                     {
                         case "1":  //满减券
                         canOverLayReducerMoney=canOverLayReducerMoney-privilegeRelationInfo.Money;
+                        lstReturnCanOverlay.Add(privilegeRelationInfo);
                         break;
                         case "2":  //折扣券
                         canOverLayReducerMoney=canOverLayReducerMoney*(privilegeRelationInfo.Discount/10);
+                        lstReturnCanOverlay.Add(privilegeRelationInfo);
                         break;
                         case "3":  //赠品券
                         var tmpWares = (from n in lstPayInfo
                                        where n.WaresId==privilegeRelationInfo.BindProductIds
                                        select n).ToList();
                         if(tmpWares.Count>0){
+                            lstReturnCanOverlay.Add(privilegeRelationInfo);
                             canOverLayReducerMoney = canOverLayReducerMoney-Convert.ToDecimal(tmpWares[0].TradeAmount);
                         }
                         break;
@@ -859,23 +862,28 @@ namespace Fycn.Service
                         */
                     }
                 }
-                if(cannotOverlay.Count>0)
+            List<PrivilegeMemberRelationModel> lstReturnCannotOverlay = new List<PrivilegeMemberRelationModel>();
+            if (cannotOverlay.Count>0)
                 {
+
                     foreach(PrivilegeMemberRelationModel privilegeRelationInfo in cannotOverlay) 
                     {
                         switch(privilegeRelationInfo.PrincipleType)
                         {
                             case "1":  //满减券
                             lstDeci.Add(totalFee-privilegeRelationInfo.Money);
+                            lstReturnCannotOverlay.Add(privilegeRelationInfo);
                             break;
                             case "2":  //折扣券
                             lstDeci.Add(totalFee*(privilegeRelationInfo.Discount/10));
+                            lstReturnCannotOverlay.Add(privilegeRelationInfo);
                             break;
                             case "3":  //赠品券
                             var tmpWares = (from n in lstPayInfo
                                         where n.WaresId==privilegeRelationInfo.BindProductIds
                                         select n).ToList();
                             if(tmpWares.Count>0){
+                                lstReturnCannotOverlay.Add(privilegeRelationInfo);
                                 lstDeci.Add(totalFee-Convert.ToDecimal(tmpWares[0].TradeAmount));
                             }
                             break;
@@ -893,7 +901,7 @@ namespace Fycn.Service
                 if(lstDeci.Count==0)
                 {
                   totalFee=canOverLayReducerMoney;
-                  return canOverLay;
+                  return lstReturnCanOverlay;
                 }
                 
                 var minMoney = lstDeci.Select(w => w).Min();
@@ -901,14 +909,14 @@ namespace Fycn.Service
                 {
                     int index =lstDeci.FindIndex(x => x == minMoney);
                     List<PrivilegeMemberRelationModel> ret = new List<PrivilegeMemberRelationModel>();
-                    ret.Add(cannotOverlay[index]);
+                    ret.Add(lstReturnCannotOverlay[index]);
                     totalFee=minMoney;
                     return ret;
                 } 
                 else 
                 {
                   totalFee=canOverLayReducerMoney;
-                  return canOverLay;
+                  return lstReturnCanOverlay;
                 }
                 
                 
