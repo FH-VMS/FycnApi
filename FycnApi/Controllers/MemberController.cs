@@ -39,8 +39,16 @@ namespace FycnApi.Controllers
             return Content(users, pagination);
         }
 
-        public ResultObj<int> GivePrivilegeTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
+        public ResultObj<int> GivePrivilegeTicket([FromBody]PrivilegeMemberRelationModel privilegeMemberInfo)
         {
+            if (!string.IsNullOrEmpty(privilegeMemberInfo.TimeRule))
+            {
+                if (privilegeMemberInfo.TimeRule == "1")
+                {
+                    privilegeMemberInfo.ExpireTime = Convert.ToDateTime(DateTime.Now.ToString("yyyyy-MM-dd") + " 23:59:59");
+                }
+            }
+            privilegeMemberInfo.PrivilegeStatus = 1;
             IMember _imember = new MemberService();
             return Content(_imember.GivePrivilegeTicket(privilegeMemberInfo));
         }

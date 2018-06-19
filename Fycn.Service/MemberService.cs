@@ -112,7 +112,8 @@ namespace Fycn.Service
         
         public int GivePrivilegeTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
         {
-            privilegeMemberInfo.HappenDate = DateTime.Now;
+            privilegeMemberInfo.Id = Guid.NewGuid().ToString();
+            privilegeMemberInfo.GetDate = DateTime.Now;
             return GenerateDal.Create(privilegeMemberInfo);
         }
 
