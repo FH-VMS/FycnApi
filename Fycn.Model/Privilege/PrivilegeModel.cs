@@ -177,5 +177,11 @@ namespace Fycn.Model.Privilege
             get;
             set;
         }
+
+        public decimal Rate
+        {
+            get;
+            set;
+        }
     }
 }

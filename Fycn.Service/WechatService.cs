@@ -476,7 +476,7 @@ namespace Fycn.Service
         }
          
         // 取活动优惠券列表
-        public List<PrivilegeModel> GetActivityPrivilegeList(PrivilegeModel privilegeInfo)
+        public List<PrivilegeModel> GetActivityPrivilegeList(ActivityModel activityeInfo)
         {
             var conditions = new List<Condition>();
 
@@ -485,7 +485,7 @@ namespace Fycn.Service
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
                 DbColumnName = "a.client_id",
-                ParamValue = privilegeInfo.ClientId,
+                ParamValue = activityeInfo.ClientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
                 Logic = ""
@@ -495,7 +495,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "Numbers",
-                DbColumnName = "c.numbers",
+                DbColumnName = "a.numbers",
                 ParamValue = 0,
                 Operation = ConditionOperate.GreaterThan,
                 RightBrace = "",
@@ -523,14 +523,25 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            if(!string.IsNullOrEmpty(privilegeInfo.PrincipleGroup))
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "EndTime",
+                DbColumnName = "a.end_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(activityeInfo.ActivityType))
             {
                     conditions.Add(new Condition
                     {
                         LeftBrace = " AND ",
                         ParamName = "ActivityType",
                         DbColumnName = "a.activity_type",
-                        ParamValue = privilegeInfo.PrincipleGroup,
+                        ParamValue = activityeInfo.ActivityType,
                         Operation = ConditionOperate.Equal,
                         RightBrace = "",
                         Logic = ""

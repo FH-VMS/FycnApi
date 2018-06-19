@@ -41,7 +41,7 @@ namespace Fycn.Interface
         int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId);
 
         [Remark("获取符合条件的活动券", ParmsNote = "", ReturnNote = "")]
-        List<PrivilegeModel> GetActivityPrivilegeList(PrivilegeModel privilegeInfo);
+        List<PrivilegeModel> GetActivityPrivilegeList(ActivityModel privilegeInfo);
 
         [Remark("会员领取优惠券", ParmsNote = "", ReturnNote = "")]
         int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo);

@@ -763,6 +763,17 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = " OR "
             });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "",
+                ParamName = "TimeRule",
+                DbColumnName = "time_rule",
+                ParamValue = "",
+                Operation = ConditionOperate.NotNull,
+                RightBrace = "",
+                Logic = " OR "
+            });
             conditions.Add(new Condition
             {
                 LeftBrace = "",

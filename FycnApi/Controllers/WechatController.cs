@@ -361,14 +361,14 @@ namespace FycnApi.Controllers
         }
 
         //获取符合活动规则的券
-        public ResultObj<List<PrivilegeModel>> GetActivityPrivilegeList(string clientId = "", string principleType="")
+        public ResultObj<List<PrivilegeModel>> GetActivityPrivilegeList(string clientId = "", string activityType="")
         {
-            PrivilegeModel privilegeInfo=new PrivilegeModel();
-            privilegeInfo.ClientId=clientId;
-            privilegeInfo.PrincipleGroup=principleType;
+            ActivityModel activityInfo=new ActivityModel();
+            activityInfo.ClientId=clientId;
+            activityInfo.ActivityType= activityType;
 
             IWechat iwechat=new WechatService();
-            return Content(iwechat.GetActivityPrivilegeList(privilegeInfo));
+            return Content(iwechat.GetActivityPrivilegeList(activityInfo));
         }
 
         public ResultObj<int> GetTicket([FromBody]PrivilegeMemberRelationModel privilegeMemberInfo)
