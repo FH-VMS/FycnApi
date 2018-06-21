@@ -439,43 +439,51 @@ namespace FycnApi.Controllers
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
             string url = string.Empty;
-            //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
-            IPay _ipay = new PayService();
-            WxPayConfig payConfig = _ipay.GenerateConfigModelWByClientId(clientId);
             PayStateModel payState = new PayStateModel();
-            if (string.IsNullOrEmpty(payConfig.APPID))
+            //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
+            try
             {
-                payState.RequestState = "2";
+                IPay _ipay = new PayService();
+                WxPayConfig payConfig = _ipay.GenerateConfigModelWByClientId(clientId);
+               
+                if (string.IsNullOrEmpty(payConfig.APPID))
+                {
+                    payState.RequestState = "2";
+                    payState.ProductJson = "";
+                    payState.RequestData = "";
+                    return Content(payState);
+
+                }
+                RedisHelper rh = new RedisHelper(4);
+                string ticket = rh.StringGet(clientId + "-ticket");
+                if (string.IsNullOrEmpty(ticket))
+                {
+                    string urlAcess = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", payConfig.APPID, payConfig.APPSECRET);
+                    string jsonResult = HttpService.Get(urlAcess);
+                    log.Info("access_token:" + jsonResult);
+                    Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
+
+                    string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
+                    string jsonTicket = HttpService.Get(urlTicket);
+                    log.Info("ticket:" + jsonTicket);
+                    Dictionary<string, string> dicTicket = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonTicket);
+                    if (dicTicket["errmsg"] == "ok")
+                    {
+                        ticket = dicTicket["ticket"];
+                        rh.StringSet(clientId + "-ticket", dicTicket["ticket"], new TimeSpan(1, 50, 50));
+                    }
+                }
+
+                payState.RequestState = "1";
                 payState.ProductJson = "";
-                payState.RequestData = "";
-                return Content(payState);
+                string retJson = MakeJsSign(payConfig.APPID, ticket);
+                log.Info("result:" + retJson);
+                payState.RequestData = retJson;
+            }
+            catch(Exception ex)
+            {
 
             }
-            RedisHelper rh = new RedisHelper(4);
-            string ticket = rh.StringGet(clientId+"-ticket");
-            if(string.IsNullOrEmpty(ticket))
-            {
-                string urlAcess = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", payConfig.APPID, payConfig.APPSECRET);
-                string jsonResult = HttpService.Get(urlAcess);
-                log.Info("access_token:" + jsonResult);
-                Dictionary<string, string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonResult);
-              
-                string urlTicket = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={0}", dicAcess["access_token"]);
-                string jsonTicket = HttpService.Get(urlTicket);
-                log.Info("ticket:" + jsonTicket);
-                Dictionary<string, string> dicTicket = JsonHandler.GetObjectFromJson<Dictionary<string, string>>(jsonTicket);
-                if(dicTicket["errmsg"]=="ok")
-                {
-                    ticket = dicTicket["ticket"];
-                    rh.StringSet(clientId + "-ticket", dicTicket["ticket"],new TimeSpan(1,50,50));
-                }
-            }
-            
-            payState.RequestState = "1";
-            payState.ProductJson = "";
-            string retJson = MakeJsSign(payConfig.APPID, ticket);
-            log.Info("result:" + retJson);
-            payState.RequestData = retJson;
             return Content(payState);
         }
 
