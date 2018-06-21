@@ -547,5 +547,15 @@ namespace FycnApi.Controllers
             machineLocations.ClientId=clientId;
             return Content(iwechat.GetMachineLocations(machineLocations));
         }
+
+        //取未过期的券
+        public ResultObj<List<PrivilegeMemberRelationModel>> GetNoneExpirePrivilegeByMemberId(string memberId = "")
+        {
+            PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
+            privilegeMemberInfo.MemberId = memberId;
+
+            IWechat iwechat = new WechatService();
+            return Content(iwechat.GetNoneExpirePrivilegeByMemberId(privilegeMemberInfo));
+        }
     }
 }

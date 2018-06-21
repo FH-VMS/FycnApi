@@ -781,6 +781,7 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
@@ -993,6 +994,56 @@ namespace Fycn.Service
             conditions.AddRange(CreatePaginConditions(machineLocationInfo.PageIndex, machineLocationInfo.PageSize));
 
             return GenerateDal.LoadByConditions<MachineLocationModel>(CommonSqlKey.GetMachineLocations, conditions);
+        }
+
+        public List<PrivilegeMemberRelationModel> GetNoneExpirePrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PrincipleType",
+                DbColumnName = "principle_type",
+                ParamValue = 4,
+                Operation = ConditionOperate.NotEqual,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ExpireTime",
+                DbColumnName = "expire_time",
+                ParamValue = DateTime.Now,
+                Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " ",
+                ParamName = "",
+                DbColumnName = "get_date desc",
+                ParamValue = "",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
         }
     }
 }

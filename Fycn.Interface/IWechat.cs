@@ -63,5 +63,8 @@ namespace Fycn.Interface
 
         [Remark("取附近的机器", ParmsNote = "", ReturnNote = "")]
         List<MachineLocationModel> GetMachineLocations(MachineLocationModel machineLocationInfo);
+
+        [Remark("取得会员的优惠券", ParmsNote = "", ReturnNote = "")]
+        List<PrivilegeMemberRelationModel> GetNoneExpirePrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
     }
 }
