@@ -105,7 +105,7 @@ namespace FycnApi.Controllers
         }
 
         //微信支付
-        public ResultObj<PayStateModel> PostDataW(string clientId,string openId,string privilegeIds, [FromBody]List<ProductPayModel> lstProductPay)
+        public ResultObj<PayStateModel> PostDataW(string clientId,string openId,string privilegeIds,string selfChosen, [FromBody]List<ProductPayModel> lstProductPay)
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
                
@@ -174,10 +174,19 @@ namespace FycnApi.Controllers
                privilegeInfo.MemberId = openId;
                 if(totalFee>0.01M)
                 {
+                    List<PrivilegeMemberRelationModel> lstPrivilege=new List<PrivilegeMemberRelationModel>();
+                  if (string.IsNullOrEmpty(privilegeIds) && string.IsNullOrEmpty(selfChosen))
+                  {
+                        lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
+                  }
+                  else if (!string.IsNullOrEmpty(privilegeIds))
+                  {
+                        lstPrivilege = _iwechat.GetChosenPrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
+                    }
+                   
+            
 
-                
-                   List<PrivilegeMemberRelationModel> lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds,ref totalFee, lstProductPay);
-               
+
                    log.Info("ddddd" + lstPrivilege.Count);
                     if (lstPrivilege.Count > 0)
                     {
@@ -190,7 +199,7 @@ namespace FycnApi.Controllers
                         {
                             payInfo.jsonProduct = payInfo.jsonProduct + "~" + privilegeIds;
                         }
-                    
+                        
                         payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
                     }
                 }

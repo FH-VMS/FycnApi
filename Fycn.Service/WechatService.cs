@@ -924,6 +924,139 @@ namespace Fycn.Service
             
         }
 
+        public List<PrivilegeMemberRelationModel> GetChosenPrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string ids, ref decimal totalFee, List<ProductPayModel> lstPayInfo)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "a.member_id",
+                ParamValue = privilegeMemberInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+            ids = "'" + ids.Replace(",", "','") + "'";
+            
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "Id",
+                DbColumnName = "a.id",
+                ParamValue = ids,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+
+
+            List<PrivilegeMemberRelationModel> lstPrivilege = GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
+            if (lstPrivilege.Count == 0)
+            {
+                return lstPrivilege;
+            }
+            decimal canOverLayReducerMoney = totalFee;
+            decimal cannotOverlayReducerMoney = totalFee;
+            List<decimal> lstDeci = new List<decimal>();
+            var canOverLay = (from m in lstPrivilege
+                              where m.IsOverlay == 1
+                              select m).ToList();
+            var cannotOverlay = (from m in lstPrivilege
+                                 where m.IsOverlay != 1
+                                 select m).ToList();
+            List<PrivilegeMemberRelationModel> lstReturnCanOverlay = new List<PrivilegeMemberRelationModel>();
+            foreach (PrivilegeMemberRelationModel privilegeRelationInfo in canOverLay)
+            {
+                switch (privilegeRelationInfo.PrincipleType)
+                {
+                    case "1":  //满减券
+                        canOverLayReducerMoney = canOverLayReducerMoney - privilegeRelationInfo.Money;
+                        lstReturnCanOverlay.Add(privilegeRelationInfo);
+                        break;
+                    case "2":  //折扣券
+                        canOverLayReducerMoney = canOverLayReducerMoney * (privilegeRelationInfo.Discount / 10);
+                        lstReturnCanOverlay.Add(privilegeRelationInfo);
+                        break;
+                    case "3":  //赠品券
+                        var tmpWares = (from n in lstPayInfo
+                                        where n.WaresId == privilegeRelationInfo.BindProductIds
+                                        select n).ToList();
+                        if (tmpWares.Count > 0)
+                        {
+                            lstReturnCanOverlay.Add(privilegeRelationInfo);
+                            canOverLayReducerMoney = canOverLayReducerMoney - Convert.ToDecimal(tmpWares[0].TradeAmount);
+                        }
+                        break;
+                        /* 
+                        case "4":  //满减券绑定商品
+                        break;
+                        case "5":  //折扣券券绑定商品
+                        break;
+                        */
+                }
+            }
+            List<PrivilegeMemberRelationModel> lstReturnCannotOverlay = new List<PrivilegeMemberRelationModel>();
+            if (cannotOverlay.Count > 0)
+            {
+
+                foreach (PrivilegeMemberRelationModel privilegeRelationInfo in cannotOverlay)
+                {
+                    switch (privilegeRelationInfo.PrincipleType)
+                    {
+                        case "1":  //满减券
+                            lstDeci.Add(totalFee - privilegeRelationInfo.Money);
+                            lstReturnCannotOverlay.Add(privilegeRelationInfo);
+                            break;
+                        case "2":  //折扣券
+                            lstDeci.Add(totalFee * (privilegeRelationInfo.Discount / 10));
+                            lstReturnCannotOverlay.Add(privilegeRelationInfo);
+                            break;
+                        case "3":  //赠品券
+                            var tmpWares = (from n in lstPayInfo
+                                            where n.WaresId == privilegeRelationInfo.BindProductIds
+                                            select n).ToList();
+                            if (tmpWares.Count > 0)
+                            {
+                                lstReturnCannotOverlay.Add(privilegeRelationInfo);
+                                lstDeci.Add(totalFee - Convert.ToDecimal(tmpWares[0].TradeAmount));
+                            }
+                            break;
+                            /* 
+                            case "4":  //满减券绑定商品
+                            break;
+                            case "5":  //折扣券券绑定商品
+                            break;
+                            */
+                    }
+
+
+                }
+            }
+            if (lstDeci.Count == 0)
+            {
+                totalFee = canOverLayReducerMoney;
+                return lstReturnCanOverlay;
+            }
+
+            var minMoney = lstDeci.Select(w => w).Min();
+            if (minMoney <= canOverLayReducerMoney)
+            {
+                int index = lstDeci.FindIndex(x => x == minMoney);
+                List<PrivilegeMemberRelationModel> ret = new List<PrivilegeMemberRelationModel>();
+                ret.Add(lstReturnCannotOverlay[index]);
+                totalFee = minMoney;
+                return ret;
+            }
+            else
+            {
+                totalFee = canOverLayReducerMoney;
+                return lstReturnCanOverlay;
+            }
+        }
+
         public List<MachineLocationModel> GetMachineLocations(MachineLocationModel machineLocationInfo)
         {
             var conditions = new List<Condition>();

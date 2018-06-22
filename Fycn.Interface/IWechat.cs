@@ -61,6 +61,9 @@ namespace Fycn.Interface
         [Remark("取可用优惠券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds,ref decimal totalFee, List<ProductPayModel> lstPayInfo);
 
+        [Remark("用户自选优惠券", ParmsNote = "", ReturnNote = "")]
+        List<PrivilegeMemberRelationModel> GetChosenPrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds, ref decimal totalFee, List<ProductPayModel> lstPayInfo);
+        
         [Remark("取附近的机器", ParmsNote = "", ReturnNote = "")]
         List<MachineLocationModel> GetMachineLocations(MachineLocationModel machineLocationInfo);
 
