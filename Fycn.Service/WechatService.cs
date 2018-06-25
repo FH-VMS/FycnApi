@@ -144,6 +144,17 @@ namespace Fycn.Service
 
             conditions.Add(new Condition
             {
+                LeftBrace = " AND ",
+                ParamName = "WaresStatus",
+                DbColumnName = "a.wares_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
                 LeftBrace = "  ",
                 ParamName = "ResourceUrl",
                 DbColumnName = "",

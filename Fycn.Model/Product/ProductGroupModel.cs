@@ -37,7 +37,7 @@ namespace Fycn.Model.Product
         }
 
         [Column(Name = "wares_status")]
-        public int WaresStatus
+        public string WaresStatus
         {
             get;
             set;
