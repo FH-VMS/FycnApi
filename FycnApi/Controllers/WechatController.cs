@@ -156,7 +156,7 @@ namespace FycnApi.Controllers
                                       select m).ToList<ProductPayModel>();
                     if (productPay.Count > 0)
                     {
-                        totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresUnitPrice);
+                        totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresDiscountUnitPrice == 0 ? productInfo.WaresUnitPrice: productInfo.WaresDiscountUnitPrice);
                         productNames = productNames + productInfo.WaresName + ",";
                         productPay[0].TradeNo = payInfo.trade_no;
                     }
