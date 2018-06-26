@@ -1309,6 +1309,8 @@ namespace Fycn.Service
                         saleRelationModel.EndDate = DateTime.Now;
                         saleRelationModel.Remark = clinetSalesInfo.Remark;
                         GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatus, saleRelationModel);
+                        RedisHelper redisHelper3 = new RedisHelper(3);
+                        redisHelper3.KeyDelete(clinetSalesInfo.PickupNo);
                     }
                     else
                     {
