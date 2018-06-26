@@ -2,6 +2,7 @@
 using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Sale;
+using Fycn.Model.Wechat;
 using Fycn.Service;
 using Fycn.Utility;
 using System;
@@ -92,13 +93,13 @@ namespace Fycn.Sockets.AsyncSocketCore
                     m_asyncSocketUserToken.MachineId = machineNum41;
                     SocketDictionary.Add(machineNum41, m_asyncSocketUserToken);
 
-                    byte[] returnByteA1 = new byte[21];
-                    returnByteA1[0] = byteInfo[0];//包头;
-                    ByteHelper.IntToTwoByte(size41).CopyTo(returnByteA1, 1); //size
-                    returnByteA1[4] = data[0];
+                    byte[] returnByte41 = new byte[21];
+                    returnByte41[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(size41).CopyTo(returnByte41, 1); //size
+                    returnByte41[4] = data[0];
 
 
-                    ByteHelper.StrToByte(DateTime.Now.ToString("yyyyMMddHHmmss")).CopyTo(returnByteA1, 5);//机器编号
+                    ByteHelper.StrToByte(DateTime.Now.ToString("yyyyMMddHHmmss")).CopyTo(returnByte41, 5);//机器编号
 
                     if (MachineHelper.IsLegal(machineNum41, signCode, "code"))
                     {
@@ -110,37 +111,37 @@ namespace Fycn.Sockets.AsyncSocketCore
                             {
                                 MachineHelper.ClearCode(machineNum41, "code");
                                 MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
-                                returnByteA1[19] = 48;
+                                returnByte41[19] = 48;
                             }
                             else
                             {
-                                returnByteA1[19] = 49;
+                                returnByte41[19] = 49;
                             }
                         }
                         catch (Exception e)
                         {
-                            returnByteA1[19] = 50;
+                            returnByte41[19] = 50;
                         }
 
                     }
                     else
                     {
-                        returnByteA1[19] = 50;
+                        returnByte41[19] = 50;
                     }
 
-                    returnByteA1[20] = 238;//
+                    returnByte41[20] = 238;//
                                            //验证码生成
                     byte resultA1Chunk = new byte();
-                    byte[] finalResultA1 = returnByteA1.Skip(4).Take(size41).ToArray();
-                    for (int i = 0; i < finalResultA1.Length; i++)
+                    byte[] finalResult41 = returnByte41.Skip(4).Take(size41).ToArray();
+                    for (int i = 0; i < finalResult41.Length; i++)
                     {
-                        resultA1Chunk ^= finalResultA1[i];
+                        resultA1Chunk ^= finalResult41[i];
                     }
-                    returnByteA1[3] = resultA1Chunk;
+                    returnByte41[3] = resultA1Chunk;
                     //SendMsg(finalResultA1, myClientSocket);
-                    ByteHelper.Encryption(size41, finalResultA1.ToArray()).CopyTo(returnByteA1, 4);//加密
+                    ByteHelper.Encryption(size41, finalResult41.ToArray()).CopyTo(returnByte41, 4);//加密
 
-                    return returnByteA1;
+                    return returnByte41;
 
                 case "43": //上报出货结果
                     int size43 = 2;
@@ -746,6 +747,151 @@ namespace Fycn.Sockets.AsyncSocketCore
                     //SendMsg(returnByteA5, myClientSocket);
                     ByteHelper.Encryption(size90, finalResult90.ToArray()).CopyTo(returnByte90, 4);//加密
                     return returnByte90;
+              
+                case "A0": // 终端->服务器 取货码验证
+                    int sizeA0 = 20; //加密的长度
+                    string machineNumA0 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    //string serialNum48 = ByteHelper.GenerateRealityData(data.Skip(13).Take(12).ToArray(), "stringval");
+                    //string tunnelNumA5 = ByteHelper.GenerateRealityData(data.Skip(9).Take(5).ToArray(), "stringval");
+
+                    byte[] returnByteA0 = new byte[25]; //返回的长度
+                    returnByteA0[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(sizeA0).CopyTo(returnByteA0, 1); //size
+                    returnByteA0[4] = data[0];
+                    data.Skip(1).Take(12).ToArray().CopyTo(returnByteA0, 5);//机器编号
+
+                    //string tunnelId90 = ByteHelper.GenerateRealityData(data.Skip(13).Take(5).ToArray(), "stringval");
+                    //string price90 = ByteHelper.GenerateRealityData(data.Skip(18).Take(5).ToArray(), "stringval");
+                    string pickupCodeA0 = ByteHelper.GenerateRealityData(data.Skip(13).Take(8).ToArray(), "stringval");
+
+                    try
+                    {
+                        ClientSalesRelationModel clientSalesInfoA0 = new ClientSalesRelationModel();
+                        clientSalesInfoA0.MachineId = machineNumA0;
+                        clientSalesInfoA0.PickupNo = pickupCodeA0;
+                        List<ClientSalesRelationModel> lstClientSales = new WechatService().VerifyPickupCode(clientSalesInfoA0);
+                        if(lstClientSales.Count == 0)
+                        {
+                            returnByteA0[23] = 49; //非法取货
+                        }
+                        else if(lstClientSales.Count>1)
+                        {
+                            returnByteA0[23] = 52; //其它
+                        }
+                        else
+                        {
+                            ClientSalesRelationModel retInfo = lstClientSales[0];
+                            if(retInfo.CurrentStatus!=1)
+                            {
+                                returnByteA0[23] = 51; //商品售空
+                            } 
+                            else if(retInfo.CurrentStock==0)
+                            {
+                                returnByteA0[23] = 51; //商品售空
+                            }
+                            else
+                            {
+                                returnByteA0[23] = 48;
+                                ByteHelper.StrToByte(retInfo.TunnelId).CopyTo(returnByteA0, 17);
+                                if(retInfo.TotalNum==0)
+                                {
+                                    ByteHelper.strToAscii("1").CopyTo(returnByteA0, 22);
+                                }
+                                else
+                                {
+                                    ByteHelper.strToAscii(retInfo.TotalNum.ToString()).CopyTo(returnByteA0, 22);
+                                }
+                                
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByteA0[23] =53;
+                    }
+                  
+                    returnByteA0[24] = 238;
+                   
+                  byte resultChunkA0 = new byte();
+                  byte[] finalResultA0 = returnByteA0.Skip(4).Take(sizeA0).ToArray();
+                  for (int i = 0; i < finalResultA0.Length; i++)
+                  {
+                        resultChunkA0 ^= finalResultA0[i];
+                  }
+
+                    returnByteA0[3] = resultChunkA0;
+                  //SendMsg(returnByteA5, myClientSocket);
+                  ByteHelper.Encryption(sizeA0, finalResultA0.ToArray()).CopyTo(returnByteA0, 4);//加密
+                   
+                  return returnByteA0;
+
+                case "A1": // 终端->服务器 上报取货码结果
+                    int sizeA1 = 2; //加密的长度
+                    string machineNumA1 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    string pickupCodeA1 = ByteHelper.GenerateRealityData(data.Skip(13).Take(8).ToArray(), "stringval");
+                    string tunnelNumA1 = ByteHelper.GenerateRealityData(data.Skip(21).Take(5).ToArray(), "stringval");
+                    string totalNumA1= ByteHelper.GenerateRealityData(data.Skip(26).Take(1).ToArray(), "stringval");
+                    
+
+                    byte[] returnByteA1 = new byte[7]; //返回的长度
+                    returnByteA1[0] = byteInfo[0];//包头;
+                    ByteHelper.IntToTwoByte(sizeA1).CopyTo(returnByteA1, 1); //size
+                    returnByteA1[4] = data[0];
+
+                    
+                    try
+                    {
+                        ClientSalesRelationModel clientSalesInfoA1 = new ClientSalesRelationModel();
+                        clientSalesInfoA1.MachineId = machineNumA1;
+                        clientSalesInfoA1.PickupNo = pickupCodeA1;
+                        clientSalesInfoA1.TunnelId = tunnelNumA1;
+                        clientSalesInfoA1.TotalNum = int.Parse(totalNumA1);
+                        if(data[27]==48)
+                        {
+                            clientSalesInfoA1.Remark = "成功";
+                        }
+                        else if(data[27]==49)
+                        {
+                            clientSalesInfoA1.Remark = "失败";
+                        }
+                        else if(data[27] == 50)
+                        {
+                            clientSalesInfoA1.Remark = "货道故障";
+                        }
+                        else
+                        {
+                            clientSalesInfoA1.Remark = "其它故障";
+                        }
+                        int resultA1 = new WechatService().PutPayResultByPickupCode(clientSalesInfoA1);
+                        if (resultA1 == 0)
+                        {
+                            returnByteA1[5] = 49;
+                        }
+                        else
+                        {
+                            returnByteA1[5] = 48;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        returnByteA1[5] = 49;
+                    }
+
+                    returnByteA1[6] = 238;
+
+                    byte resultChunkA1 = new byte();
+                    byte[] finalResultA1 = returnByteA1.Skip(4).Take(sizeA1).ToArray();
+                    for (int i = 0; i < finalResultA1.Length; i++)
+                    {
+                        resultChunkA1 ^= finalResultA1[i];
+                    }
+
+                    returnByteA1[3] = resultChunkA1;
+                    //SendMsg(returnByteA5, myClientSocket);
+                    ByteHelper.Encryption(sizeA1, finalResultA1.ToArray()).CopyTo(returnByteA1, 4);//加密
+
+                    return returnByteA1;
+
             }
             return new byte[0];
         }

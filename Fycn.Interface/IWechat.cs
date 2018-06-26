@@ -69,5 +69,11 @@ namespace Fycn.Interface
 
         [Remark("取得会员的优惠券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeMemberRelationModel> GetNoneExpirePrivilegeByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
+
+        [Remark("验证取货码", ParmsNote = "", ReturnNote = "")]
+        List<ClientSalesRelationModel> VerifyPickupCode(ClientSalesRelationModel clientSalesInfo);
+
+        [Remark("上报取货结果", ParmsNote = "", ReturnNote = "")]
+        int PutPayResultByPickupCode(ClientSalesRelationModel clinetSalesInfo);
     }
 }

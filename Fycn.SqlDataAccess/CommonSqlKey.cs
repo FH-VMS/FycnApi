@@ -270,6 +270,9 @@ namespace Fycn.SqlDataAccess
         UseTicket,
         GetPayProdcutAndGroupList,
         GetMachineLocations,
+        VerifyPickupCode,
+        UpdateSalesCashlessByPickup,
+        UpdatePickupCodeStatus,
 
         //优惠券信息
         GetPrivilegeList,

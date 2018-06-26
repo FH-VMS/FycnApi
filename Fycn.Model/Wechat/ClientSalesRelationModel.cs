@@ -36,6 +36,14 @@ namespace Fycn.Model.Wechat
             set;
         }
 
+        [Column(Name = "total_num")]
+        public int TotalNum
+        {
+            get;
+            set;
+        }
+        
+
         [Column(Name = "create_date")]
         public DateTime CreateDate
         {
@@ -66,6 +74,37 @@ namespace Fycn.Model.Wechat
 
         [Column(Name = "member_id")]
         public string MemberId
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "remark")]
+        public string Remark
+        {
+            get;
+            set;
+        }
+
+        public string MachineId
+        {
+            get;
+            set;
+        }
+
+        public string TunnelId
+        {
+            get;
+            set;
+        }
+
+        public int CurrentStock
+        {
+            get;
+            set;
+        }
+
+        public int CurrentStatus
         {
             get;
             set;

@@ -1189,5 +1189,152 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
         }
+
+        //验证取货码
+        public List<ClientSalesRelationModel> VerifyPickupCode(ClientSalesRelationModel clientSalesInfo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(clientSalesInfo.MachineId))
+                {
+                    return null;
+                }
+
+                if (string.IsNullOrEmpty(clientSalesInfo.PickupNo))
+                {
+                    return null;
+                }
+                var conditions = new List<Condition>();
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "PickupCode",
+                    DbColumnName = "a.pickup_code",
+                    ParamValue = clientSalesInfo.PickupNo,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "MachineId",
+                    DbColumnName = "e.machine_id",
+                    ParamValue = clientSalesInfo.MachineId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "CodeStatus",
+                    DbColumnName = "a.code_status",
+                    ParamValue = 1,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.VerifyPickupCode, conditions);
+            }
+            catch (Exception e)
+            {
+                return new List<ClientSalesRelationModel>();
+            }
+            
+
+        }
+
+
+        // 上报出货码取货结果
+        public int PutPayResultByPickupCode(ClientSalesRelationModel clinetSalesInfo)
+        {
+            if(clinetSalesInfo.TotalNum==0)
+            {
+                return 2;
+            }
+            try
+            {
+                var conditions = new List<Condition>();
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "PickupCode",
+                    DbColumnName = "pickup_code",
+                    ParamValue = clinetSalesInfo.PickupNo,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "CodeStatus",
+                    DbColumnName = "code_status",
+                    ParamValue = 1,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                List<ClientSalesRelationModel> lstSaleInfo = GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingSalesList, conditions);
+                if (lstSaleInfo.Count == 0)
+                {
+                    return 3;
+                }
+                GenerateDal.BeginTransaction();
+
+                ClientSalesRelationModel saleRelationModel = lstSaleInfo[0];
+                if (saleRelationModel != null && saleRelationModel.CodeStatus == 1)
+                {
+                    if(clinetSalesInfo.Remark=="成功")
+                    {
+                        SaleModel saleInfo = new SaleModel();
+                        saleInfo.SalesDate = DateTime.Now;
+                        saleInfo.RealitySaleNumber = clinetSalesInfo.TotalNum;
+                        saleInfo.TradeStatus = 8;
+                        saleInfo.MachineId = clinetSalesInfo.MachineId;
+                        saleInfo.GoodsId = clinetSalesInfo.TunnelId;
+
+                        saleInfo.TradeNo = saleRelationModel.TradeNo;
+                        saleInfo.WaresId = saleRelationModel.WaresId;
+
+                        GenerateDal.Update(CommonSqlKey.UpdateSalesCashlessByPickup, saleInfo);
+                        UpdateCurrStock(clinetSalesInfo.MachineId, clinetSalesInfo.TunnelId, clinetSalesInfo.TotalNum);
+                        saleRelationModel.TotalNum = clinetSalesInfo.TotalNum;
+                        saleRelationModel.CodeStatus = 2;
+                        saleRelationModel.EndDate = DateTime.Now;
+                        saleRelationModel.Remark = clinetSalesInfo.Remark;
+                        GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatus, saleRelationModel);
+                    }
+                    else
+                    {
+                        saleRelationModel.Remark = clinetSalesInfo.Remark;
+                        GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatus, saleRelationModel);
+                    }
+                   
+                }
+                GenerateDal.CommitTransaction();
+               
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        private void UpdateCurrStock(string machineId, string tunnelId, int saleNumber)
+        {
+            TunnelInfoModel tunnelInfo = new TunnelInfoModel();
+            tunnelInfo.MachineId = machineId;
+            tunnelInfo.GoodsStuId = tunnelId;
+            tunnelInfo.CurrStock = saleNumber;
+            GenerateDal.Execute(CommonSqlKey.UpdateCurrStock, tunnelInfo);
+        }
     }
 }
