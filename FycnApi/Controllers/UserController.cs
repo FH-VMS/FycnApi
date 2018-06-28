@@ -66,5 +66,11 @@ namespace FycnApi.Controllers
             return Content(iCommon.GetAuthDic());
         }
 
+        public ResultObj<int> ResetPass([FromBody]UserModel userInfo)
+        {
+            ICommon iCommon = new CommonService();
+            return Content(iCommon.ResetPassword(userInfo));
+        }
+
     }
 }

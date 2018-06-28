@@ -70,6 +70,26 @@ namespace Fycn.Service
             
         }
 
+        // 重置密码
+        public int ResetPassword(UserModel userInfo)
+        {
+            try
+            {
+                string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
+                if (sts == "100" || sts == "99")
+                {
+                    userInfo.UserPassword = Md5.md5("888888", 16);
+                    return GenerateDal.Update(CommonSqlKey.ChangePassword, userInfo);
+                }
+                return 0;
+            }
+            catch(Exception e)
+            {
+                return 0;
+            }
+           
+        }
+
         //取字典的方法
         public List<DicModel> GetDic(string id)
         {

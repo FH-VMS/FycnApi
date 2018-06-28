@@ -76,5 +76,8 @@ namespace Fycn.Interface
         [Remark("取未过期优惠券作字典", ParmsNote = "", ReturnNote = "int")]
         List<CommonDic> GetNotExpirePrivilegeDic(string clientId);
 
+        [Remark("重置密码", ParmsNote = "", ReturnNote = "int")]
+        int ResetPassword(UserModel userInfo);
+
     }
 }
