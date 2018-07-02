@@ -501,10 +501,6 @@ namespace Fycn.SqlDataAccess
                     return finalWhereCondition;
                 case CommonSqlKey.GetStatisticSalesMoneyByDate:
                     return finalWhereCondition;
-                case CommonSqlKey.GetPayConfigList:
-                    return finalWhereCondition;
-                case CommonSqlKey.GetPayConfigListCount:
-                    return finalWhereCondition;
                 case CommonSqlKey.GetLogin:
                     return finalWhereCondition;
                 case CommonSqlKey.GetUser:

@@ -31,13 +31,18 @@ namespace Fycn.Service
             {
                 return new DataTable();
             }
+            string clientIds = new CommonService().GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = "",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -48,7 +53,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -62,7 +67,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue =  Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -136,13 +141,18 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = "",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -153,7 +163,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = salesDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -167,7 +177,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = Convert.ToDateTime(salesDateEnd).AddDays(1),
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -217,21 +227,31 @@ namespace Fycn.Service
             {
                 return null;
             }
-            string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return null;
-            }
+          
             DataTable result = new DataTable();
             var conditions = new List<Condition>();
-
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(saleInfo.SaleDateStart))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateStart",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = saleInfo.SaleDateStart,
                     Operation = ConditionOperate.GreaterThan,
                     RightBrace = "",
@@ -245,7 +265,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "SaleDateEnd",
-                    DbColumnName = "pay_date",
+                    DbColumnName = "a.pay_date",
                     ParamValue = saleInfo.SaleDateEnd,
                     Operation = ConditionOperate.LessThan,
                     RightBrace = "",
@@ -256,17 +276,6 @@ namespace Fycn.Service
          
 
           
-
-            conditions.Add(new Condition
-            {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
-                RightBrace = "",
-                Logic = ""
-            });
 
             conditions.Add(new Condition
             {

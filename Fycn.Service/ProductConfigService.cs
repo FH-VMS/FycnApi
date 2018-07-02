@@ -18,20 +18,31 @@ namespace Fycn.Service
             {
                 return null;
             }
-            string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return null;
-            }
+           
             var result = new List<ProductConfigModel>();
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(productConfigInfo.WaresConfigName))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
                     ParamName = "WaresConfigName",
-                    DbColumnName = "wares_config_name",
+                    DbColumnName = "b.wares_config_name",
                     ParamValue = "%" + productConfigInfo.WaresConfigName + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -40,30 +51,7 @@ namespace Fycn.Service
             }
 
             conditions.AddRange(CreatePaginConditions(productConfigInfo.PageIndex, productConfigInfo.PageSize));
-
-            if (userStatus == "100" || userStatus == "99")
-            {
-                result = GenerateDal.LoadByConditions<ProductConfigModel>(CommonSqlKey.GetProductConfigAll, conditions);
-            }
-            else
-            {
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientId",
-                    DbColumnName = "",
-                    ParamValue = userClientId,
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-                result = GenerateDal.LoadByConditions<ProductConfigModel>(CommonSqlKey.GetProductConfig, conditions);
-            }
-
-
-
-
-
+            result = GenerateDal.LoadByConditions<ProductConfigModel>(CommonSqlKey.GetProductConfigAll, conditions);
             return result;
         }
 
@@ -77,12 +65,23 @@ namespace Fycn.Service
             {
                 return 0;
             }
-            string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return 0;
-            }
+          
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(productConfigInfo.WaresConfigName))
             {
                 conditions.Add(new Condition
@@ -98,24 +97,9 @@ namespace Fycn.Service
             }
 
 
-            if (userStatus == "100" || userStatus == "99")
-            {
-                result = GenerateDal.CountByConditions(CommonSqlKey.GetProductConfigAllCount, conditions);
-            }
-            else
-            {
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientId",
-                    DbColumnName = "",
-                    ParamValue = userClientId,
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-                result = GenerateDal.CountByConditions(CommonSqlKey.GetProductConfigCount, conditions);
-            }
+          
+           result = GenerateDal.CountByConditions(CommonSqlKey.GetProductConfigAllCount, conditions);
+            
 
 
 

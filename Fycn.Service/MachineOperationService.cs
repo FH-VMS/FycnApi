@@ -19,13 +19,18 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = " ",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -35,7 +40,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = " a.machine_id ",
+                    DbColumnName = " machine_id ",
                     ParamValue = "%" + commonDic.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -46,7 +51,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " Or ",
                     ParamName = "Remark",
-                    DbColumnName = " a.remark ",
+                    DbColumnName = " remark ",
                     ParamValue = "%" + commonDic.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -67,13 +72,18 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = " ",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -83,7 +93,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = " a.machine_id ",
+                    DbColumnName = "machine_id ",
                     ParamValue = "%" + commonDic.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -94,7 +104,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " Or ",
                     ParamName = "Remark",
-                    DbColumnName = " a.remark ",
+                    DbColumnName = " remark ",
                     ParamValue = "%" + commonDic.Name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",

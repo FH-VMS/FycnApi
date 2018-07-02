@@ -19,14 +19,18 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
-
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = "",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -118,13 +122,18 @@ namespace Fycn.Service
                 return 0;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
             conditions.Add(new Condition
             {
-                LeftBrace = "",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });

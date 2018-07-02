@@ -20,11 +20,7 @@ namespace Fycn.Service
             {
                 return null;
             }
-            var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return null;
-            }
+           
             /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");
@@ -41,6 +37,21 @@ namespace Fycn.Service
             */
 
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(userInfo.UserAccount))
             {
                 conditions.Add(new Condition
@@ -68,35 +79,7 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            if (userStatus == "100" || userStatus == "99")
-            {
-                //dics.Add("ClientFatherId", "self");
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientFatherId",
-                    DbColumnName = "",
-                    ParamValue = "self",
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-            }
-            else
-            {
-                //dics.Add("ClientFatherId", userClientId);
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientFatherId",
-                    DbColumnName = "",
-                    ParamValue = userClientId,
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-            }
-
+       
            
 
            
@@ -150,11 +133,7 @@ namespace Fycn.Service
             {
                 return 0;
             }
-            var userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return 0;
-            }
+          
             /*
             var dics = new Dictionary<string, object>();
             dics.Add("UserAccount", userInfo.UserAccount + "%");
@@ -176,6 +155,21 @@ namespace Fycn.Service
             result = GenerateDal.CountByDictionary<UserModel>(CommonSqlKey.GetUserCount, dics);
               */
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "b.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = "",
+                Logic = ""
+            });
             if (!string.IsNullOrEmpty(userInfo.UserAccount))
             {
                 conditions.Add(new Condition
@@ -203,34 +197,7 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            if (userStatus == "100" || userStatus == "99")
-            {
-                //dics.Add("ClientFatherId", "self");
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientFatherId",
-                    DbColumnName = "",
-                    ParamValue = "self",
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-            }
-            else
-            {
-                //dics.Add("ClientFatherId", userClientId);
-                conditions.Add(new Condition
-                {
-                    LeftBrace = "",
-                    ParamName = "ClientFatherId",
-                    DbColumnName = "",
-                    ParamValue = userClientId,
-                    Operation = ConditionOperate.None,
-                    RightBrace = "",
-                    Logic = ""
-                });
-            }
+        
             result = GenerateDal.CountByConditions(CommonSqlKey.GetUserCount, conditions);
             return result;
         }
