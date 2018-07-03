@@ -22,13 +22,14 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<PictureModel>> GetData(string fileType="", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<PictureModel>> GetData(string fileType="",string belong="", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
 
             PictureModel picInfo = new PictureModel();
             picInfo.FileType = fileType;
+            picInfo.Belong = belong;
             picInfo.PageIndex = pageIndex;
             picInfo.PageSize = pageSize;
             var resources = _IBase.GetAll(picInfo);

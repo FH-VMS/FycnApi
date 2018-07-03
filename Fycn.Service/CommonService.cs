@@ -378,7 +378,7 @@ namespace Fycn.Service
         
 
         //取图片资源字典
-        public List<CommonDic> GetPictureDic(string clientId)
+        public List<CommonDic> GetPictureDic(string clientId, string typ)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
@@ -425,7 +425,19 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
-            
+            if(!string.IsNullOrEmpty(typ))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "Belong",
+                    DbColumnName = "belong",
+                    ParamValue = typ,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",

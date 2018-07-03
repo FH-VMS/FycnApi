@@ -32,7 +32,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "b.client_id",
+                DbColumnName = "a.client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
@@ -47,6 +47,21 @@ namespace Fycn.Service
                     ParamName = "FileType",
                     DbColumnName = "a.file_type",
                     ParamValue = pictureInfo.FileType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+
+            if (!string.IsNullOrEmpty(pictureInfo.Belong))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "Belong",
+                    DbColumnName = "a.belong",
+                    ParamValue = pictureInfo.Belong,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
@@ -118,7 +133,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "b.client_id",
+                DbColumnName = "a.client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
@@ -133,6 +148,20 @@ namespace Fycn.Service
                     ParamName = "FileType",
                     DbColumnName = "a.file_type",
                     ParamValue = pictureInfo.FileType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            if (!string.IsNullOrEmpty(pictureInfo.Belong))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "Belong",
+                    DbColumnName = "a.belong",
+                    ParamValue = pictureInfo.Belong,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""

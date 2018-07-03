@@ -79,7 +79,7 @@ namespace FycnApi.Controllers
         }
 
         // 上传图片
-        public ResultObj<List<CommonDic>> PostUpload()
+        public ResultObj<List<CommonDic>> PostUpload(string typ)
         {
             string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
@@ -124,6 +124,7 @@ namespace FycnApi.Controllers
                 pictureInfo.UploadTime = DateTime.Now;
                 pictureInfo.FileType = FileType(readFile.Split('.')[1]);
                 pictureInfo.Size = size;
+                pictureInfo.Belong = typ;
                 pictureInfo.PageIndex = 1;
                 pictureInfo.PageSize = 2;
                 List<PictureModel> lstPic= _ibase.GetAll(pictureInfo);
@@ -194,10 +195,10 @@ namespace FycnApi.Controllers
         
 
         // 图片字典
-        public ResultObj<List<CommonDic>> GetPictureDic(string clientId="")
+        public ResultObj<List<CommonDic>> GetPictureDic(string clientId="", string typ="")
         {
             ICommon menusService = new CommonService();
-            return Content(menusService.GetPictureDic(clientId));
+            return Content(menusService.GetPictureDic(clientId, typ));
         }
 
         // 取商品作字典

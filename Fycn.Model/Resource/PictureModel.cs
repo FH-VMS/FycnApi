@@ -45,6 +45,13 @@ namespace Fycn.Model.Resource
             set;
         }
 
+        [Column(Name = "belong")]
+        public string Belong
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "upload_time")]
         public DateTime UploadTime
         {

@@ -46,7 +46,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "b.client_id",
+                DbColumnName = "a.usr_client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
@@ -164,7 +164,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "b.client_id",
+                DbColumnName = "a.usr_client_id",
                 ParamValue = clientIds,
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",

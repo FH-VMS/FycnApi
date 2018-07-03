@@ -126,7 +126,7 @@
   "GetPictureList": "SELECT a.*,CONCAT(?p_ResourceUrl,a.pic_path) as PicUrl,b.client_name as ClientName FROM table_pic a Left JOIN table_client b ON a.client_id = b.client_id ",
   "GetPictureListCount": "SELECT count(1) FROM table_pic a Left JOIN table_client b ON a.client_id = b.client_id ",
   "DeletePictureList": "DELETE from table_pic where pic_id=?p_PicId",
-  "UpdatePictureList": "UPDATE table_pic SET  pic_name =?p_PicName, client_id=?p_ClientId, size=?p_Size WHERE pic_id =?p_PicId",
+  "UpdatePictureList": "UPDATE table_pic SET  pic_name =?p_PicName, client_id=?p_ClientId, size=?p_Size, belong=?p_Belong WHERE pic_id =?p_PicId",
   "GetResourceById": "SELECT * FROM table_pic ",
   "GetAdSource": "SELECT d.pic_id as SourceId,CONCAT(?p_ResourceUrl,d.pic_path) AS SourceUrl, a.sequence as Sequence, a.ad_type AS AdType, a.play_time as PlayTime,b.is_push as IsPush from table_ad_relation a LEFT JOIN table_ad b ON a.ad_id=b.id LEFT JOIN table_machine c ON b.id=c.ad_id LEFT JOIN table_pic d ON a.source_id=d.pic_id ",
 
