@@ -258,5 +258,16 @@ namespace FycnApi.Controllers
             ICommon commonService = new CommonService();
             return Content(commonService.GetNotExpirePrivilegeDic(clientId));
         }
+
+        public ResultObj<int> ClearLoginCache()
+        {
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if(string.IsNullOrEmpty(userClientId))
+            {
+                return Content(0);
+            }
+            WebCacheHelper.ClearIds(userClientId);
+            return Content(1);
+        }
     }
 }
