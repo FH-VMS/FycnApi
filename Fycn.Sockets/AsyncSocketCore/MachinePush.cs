@@ -59,13 +59,23 @@ namespace Fycn.Sockets.AsyncSocketCore
                 case "30": //申请签到随机码
                     int size30 = 19;
                     //机器编号
-                    string machineNum30 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    int infoSize30 = int.Parse(ByteHelper.GenerateRealityData(byteInfo.Skip(1).Take(2).ToArray(), "intval"));
+                    string machineNum30 = string.Empty;
+                    if(infoSize30<15)
+                    {
+                        machineNum30 = ByteHelper.GenerateRealityData(data.Skip(1).Take(12).ToArray(), "stringval");
+                    }
+                    else
+                    {
+                        string deviceId = ByteHelper.GenerateRealityData(data.Skip(1).Take(15).ToArray(), "stringval");
+                        machineNum30 = imachine.GetMachineIdByDeviceId(deviceId);
+                    }
 
                     byte[] returnByte30 = new byte[24];
                     returnByte30[0] = byteInfo[0];//包头;
                     ByteHelper.IntToTwoByte(size30).CopyTo(returnByte30, 1); //size
                                                                              //returnByte30[4] = data[0];
-                    data.Take(13).ToArray().CopyTo(returnByte30, 4);
+                    ByteHelper.StrToByte(machineNum30).CopyTo(returnByte30, 4);
 
                     ByteHelper.StrToByte(MachineHelper.GenerateCode(machineNum30, "code")).CopyTo(returnByte30, 17);//机器编号
 
@@ -106,7 +116,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                         try
                         {
                             ICommon common41 = new CommonService();
-                            int machineCount = common41.CheckMachineId(machineNum41);
+                            int machineCount = common41.CheckMachineId(machineNum41,"");
                             if (machineCount > 0)
                             {
                                 MachineHelper.ClearCode(machineNum41, "code");

@@ -23,13 +23,13 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<MachineListModel>> GetData(string deviceId = "", string clinetName = "", string userAccount="", string typeId="", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<MachineListModel>> GetData(string machineId = "", string clinetName = "", string userAccount="", string typeId="", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
 
             MachineListModel machineListInfo = new MachineListModel();
-            machineListInfo.DeviceId = deviceId;
+            machineListInfo.MachineId = machineId;
             machineListInfo.ClientText = clinetName;
             machineListInfo.UserAccount = userAccount;
             machineListInfo.TypeId = typeId;
@@ -45,7 +45,7 @@ namespace FycnApi.Controllers
         public ResultObj<int> PostData([FromBody]MachineListModel machineListInfo)
         {
             ICommon icommon = new CommonService();
-            int result = icommon.CheckMachineId(machineListInfo.DeviceId);
+            int result = icommon.CheckMachineId(machineListInfo.MachineId,machineListInfo.DeviceId);
             if (result > 0)
             {
                 return Content(0,ResultCode.Fail,"该机器编号已存在");

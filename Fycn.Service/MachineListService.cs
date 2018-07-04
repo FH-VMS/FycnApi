@@ -37,13 +37,13 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-            if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
+            if (!string.IsNullOrEmpty(machineListInfo.MachineId))
             {
                 conditions.Add(new Condition{
                     LeftBrace = " AND ",
-                    ParamName = "DeviceId",
-                    DbColumnName = "a.device_id",
-                    ParamValue = "%" + machineListInfo.DeviceId + "%",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + machineListInfo.MachineId + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
@@ -134,14 +134,14 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-            if (!string.IsNullOrEmpty(machineListInfo.DeviceId))
+            if (!string.IsNullOrEmpty(machineListInfo.MachineId))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "DeviceId",
-                    DbColumnName = "a.device_id",
-                    ParamValue = "%"+machineListInfo.DeviceId + "%",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%"+machineListInfo.MachineId + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
@@ -207,7 +207,6 @@ namespace Fycn.Service
             int result;
 
             string userAccount = HttpContextHandler.GetHeaderObj("UserAccount").ToString();
-            machineListInfo.MachineId = machineListInfo.DeviceId;
             machineListInfo.CreateDate = DateTime.Now;
             machineListInfo.Creator = userAccount;
             result = GenerateDal.Create(machineListInfo);

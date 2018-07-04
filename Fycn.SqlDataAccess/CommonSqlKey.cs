@@ -206,6 +206,7 @@ namespace Fycn.SqlDataAccess
         GetCabinetId,
         GetSalesByNo,
         UpdateCashPrice,
+        GetMachineIdByDeviceId,
         //支付对应接口
         GetProductInfo,
         GetProductInfoByWaresId,

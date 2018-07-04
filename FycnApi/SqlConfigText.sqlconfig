@@ -33,7 +33,7 @@
   "GetDic": "SELECT id,value,book_chinese FROM table_book WHERE id=?p_Id ",
   "GetRank": "SELECT id,value,book_chinese FROM table_book WHERE id=?p_Id And value > (select rank from table_dms WHERE id = ?p_DmsId) ",
   "GetUserByClientId": "SELECT id as Id,usr_account as Name FROM table_user ",
-  "GetMachineDic": "SELECT machine_id as Id, CONCAT(device_id,' | ',IFNULL(remark,'')) as Name FROM table_machine ",
+  "GetMachineDic": "SELECT machine_id as Id, CONCAT(machine_id,' | ',IFNULL(remark,'')) as Name FROM table_machine ",
   "GetMachineDicCount": "SELECT count(1) FROM table_machine ",
   "GetCabinetByMachineId": "SELECT a.cabinet_id as Id,a.cabinet_name as 'Name' FROM table_cabinet_config a LEFT JOIN table_mt_goods b ON a.cabinet_id=b.cabinet_type_id LEFT JOIN table_machine c ON b.machine_type_id = c.type_id ",
   "GetPictureDic": "SELECT pic_id as Id, CONCAT(?p_ResourceUrl,pic_path) as Name FROM table_pic ",
@@ -65,7 +65,7 @@
   "GetMachineList": "SELECT a.*,TIMESTAMPDIFF(SECOND,a.latest_date,NOW()) as LatestOnline, b.client_name as ClientText, c.usr_account as UserAccountName, d.type_name as TypeText FROM table_machine a LEFT JOIN table_client b ON a.client_id = b.client_id Left JOIN table_user c ON a.usr_account = c.id Left JOIN table_machine_type d ON a.type_id = d.id ",
   "GetMachineListCount": "SELECT count(1) FROM table_machine a  LEFT JOIN table_client b ON a.client_id = b.client_id Left JOIN table_user c ON a.usr_account = c.id ",
   "DeleteMachineList": "DELETE from table_machine where machine_id=?p_MachineId",
-  "UpdateMachineList": "UPDATE table_machine SET  device_id =?p_DeviceId,  type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate, remark=?p_Remark, start_date=?p_StartDate, stop_date=?p_StopDate,mobile_pay_id=?p_MobilePayId, ip_v4=?p_IpV4, ad_id=?p_AdId WHERE machine_id =?p_MachineId",
+  "UpdateMachineList": "UPDATE table_machine SET  device_id =?p_DeviceId, machine_id=?p_MachineId, type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate, remark=?p_Remark, start_date=?p_StartDate, stop_date=?p_StopDate,mobile_pay_id=?p_MobilePayId, ip_v4=?p_IpV4, ad_id=?p_AdId WHERE machine_id =?p_MachineId",
   "GetMachineTypeDic": "SELECT id as Id, type_name as Name FROM table_machine_type ",
   "GetMachineCountWithStatus": "SELECT COUNT(1) as vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id WHERE a.latest_date IS NULL UNION ALL SELECT COUNT(1) as Vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id  WHERE TIMESTAMPDIFF(SECOND,a.latest_date,NOW()) > 900 UNION ALL SELECT COUNT(1) as Vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id  WHERE TIMESTAMPDIFF(SECOND,a.latest_date,NOW()) <= 900",
 
@@ -208,6 +208,8 @@
   "GetMachineByMachineId": "SELECT TIMESTAMPDIFF(SECOND,latest_date,NOW()) as LatestOnline FROM table_machine ",
   "GetPayConfig": "SELECT * FROM table_mobile_pay_config a LEFT JOIN table_machine b ON a.id=b.mobile_pay_id ",
   "GetPayConfigByClientId": "SELECT * FROM table_mobile_pay_config ",
+  "GetMachineIdByDeviceId": "select machine_id from table_machine ",
+
   "_comment": "总额及体现记录",
   "GetTotalMoneyByClient": "select a.client_id,a.ali_account,a.wx_account from table_total_money a INNER JOIN (select client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId))) b ON a.client_id=b.client_id UNION ALL SELECT * FROM table_total_money WHERE client_id = ?p_ClientId",
 

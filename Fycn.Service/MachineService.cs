@@ -1101,5 +1101,36 @@ namespace Fycn.Service
 
             return GenerateDal.LoadDataTableByConditions(CommonSqlKey.GetIpByMachineId, conditions);
         }
+
+        //根据设备id取机器id
+        public string GetMachineIdByDeviceId(string deviceId)
+        {
+            var conditions = new List<Condition>();
+
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                return "";
+            }
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "DeviceId",
+                DbColumnName = "device_id",
+                ParamValue = deviceId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            var lstMachine = GenerateDal.LoadByConditions<MachineListModel>(CommonSqlKey.GetMachineIdByDeviceId, conditions);
+            if(lstMachine.Count==0)
+            {
+                return "";
+            }
+            else
+            {
+                return lstMachine[0].MachineId;
+            }
+        }
     }
 }

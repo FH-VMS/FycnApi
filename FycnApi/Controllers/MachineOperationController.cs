@@ -29,7 +29,7 @@ namespace FycnApi.Controllers
         public ResultObj<int> CopyOneMachine(string oldMachineId, string newMachineId, [FromBody]List<string> copyItem)
         {
             ICommon icommon = new CommonService();
-            int result = icommon.CheckMachineId(newMachineId);
+            int result = icommon.CheckMachineId(newMachineId,"");
             if (result > 0)
             {
                 return Content(0, ResultCode.Fail, "该机器编号已存在");

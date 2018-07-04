@@ -79,5 +79,8 @@ namespace Fycn.Interface
         
         [Remark("安卓取商品数量", ParmsNote = "", ReturnNote = "")]
         int GetProductAndroidCount(ProductForMachineModel machineInfo);
+
+        [Remark("根据设备id取机器ID", ParmsNote = "", ReturnNote = "")]
+        string GetMachineIdByDeviceId(string deviceId);
     }
 }

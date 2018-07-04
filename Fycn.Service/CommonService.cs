@@ -572,17 +572,28 @@ namespace Fycn.Service
         /// 取机器各个状态数
         /// </summary>
         /// <returns></returns>
-        public int CheckMachineId(string machineId)
+        public int CheckMachineId(string machineId, string deviceId)
         {
             var conditions = new List<Condition>();
             conditions.Add(new Condition
             {
-                LeftBrace = " AND ",
-                ParamName = "DeviceId",
-                DbColumnName = "device_id",
+                LeftBrace = " AND (",
+                ParamName = "MachineId",
+                DbColumnName = "machine_id",
                 ParamValue = machineId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " OR ",
+                ParamName = "DeviceId",
+                DbColumnName = "device_id",
+                ParamValue = deviceId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = ")",
                 Logic = ""
             });
             return GenerateDal.CountByConditions(CommonSqlKey.CheckMachineId, conditions);
