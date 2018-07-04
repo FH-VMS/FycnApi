@@ -115,7 +115,7 @@ namespace Fycn.Service
             return GenerateDal.CountByConditions(CommonSqlKey.GetMachineDicCount, conditions);
         }
 
-        public int CopyOneMachine(string oldMachineId, string newMachineId, List<string> copyItem,string machineName)
+        public int CopyOneMachine(string oldMachineId, string newMachineId, string newDeviceId, List<string> copyItem,string machineName)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace Fycn.Service
                 }
                 var newMachineInfo = machineList[0];
                 newMachineInfo.MachineId = newMachineId;
-                newMachineInfo.DeviceId = newMachineId;
+                newMachineInfo.DeviceId = newDeviceId;
                 newMachineInfo.Remark = string.IsNullOrEmpty(machineName)? machineList[0].Remark + "-复制":machineName;// machineList[0].Remark + "-复制";
                 newMachineInfo.CreateDate = DateTime.Now;
                 newMachineInfo.LatestDate = null;

@@ -26,16 +26,16 @@ namespace FycnApi.Controllers
         }
 
         // 复制机器
-        public ResultObj<int> CopyOneMachine(string oldMachineId, string newMachineId, [FromBody]List<string> copyItem)
+        public ResultObj<int> CopyOneMachine(string oldMachineId, string newMachineId, string newDeviceId, [FromBody]List<string> copyItem)
         {
             ICommon icommon = new CommonService();
-            int result = icommon.CheckMachineId(newMachineId,"");
+            int result = icommon.CheckMachineId(newMachineId, newDeviceId);
             if (result > 0)
             {
                 return Content(0, ResultCode.Fail, "该机器编号已存在");
             }
             IMachineOperation imachine = new MachineOperationService();
-            return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, copyItem,""));
+            return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, newDeviceId, copyItem, ""));
         }
     }
 }
