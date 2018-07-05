@@ -321,13 +321,14 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
+            string clientIds = GetChildAndParentIds(clientId);
             conditions.Add(new Condition
             {
-                LeftBrace = " ",
+                LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = clientId,
-                Operation = ConditionOperate.None,
+                DbColumnName = "client_id",
+                ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
             });
@@ -337,7 +338,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = "a.machine_id",
+                    DbColumnName = "machine_id",
                     ParamValue = "%" + name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -348,7 +349,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " OR ",
                     ParamName = "Remark",
-                    DbColumnName = "a.remark",
+                    DbColumnName = "remark",
                     ParamValue = "%" + name + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
