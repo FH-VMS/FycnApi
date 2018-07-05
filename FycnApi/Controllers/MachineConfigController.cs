@@ -23,13 +23,13 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<MachineConfigModel>> GetData(string deviceId = "", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<MachineConfigModel>> GetData(string machineId = "", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
 
             MachineConfigModel machineConfigInfo = new MachineConfigModel();
-            machineConfigInfo.DeviceId = deviceId;
+            machineConfigInfo.MachineId = machineId;
             machineConfigInfo.PageIndex = pageIndex;
             machineConfigInfo.PageSize = pageSize;
             var users = _IBase.GetAll(machineConfigInfo);
