@@ -441,6 +441,20 @@ namespace FycnApi.Controllers
             log.Info("postStr" + postStr);
             return "NG 测试";
         }
+
+        public string PickupResult(string machid,string pickcode,string name,string price,string trackno,string saletime)
+        {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+
+            log.Info("PickupResult:" + machid + "pickcode:" + pickcode + "name:"+name+"price:"+price+"trackno:"+trackno+"saletime:"+saletime);
+            var request = Fycn.Utility.HttpContext.Current.Request;
+            int len = (int)request.ContentLength;
+            byte[] b = new byte[len];
+            Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
+            string postStr = Encoding.UTF8.GetString(b);
+            log.Info("result postStr" + postStr);
+            return "NG 测试";
+        }
         #endregion
 
 
