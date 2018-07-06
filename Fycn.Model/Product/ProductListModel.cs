@@ -45,6 +45,12 @@ namespace Fycn.Model.Product
             set;
         }
 
+        public string WaresStatusText
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "wares_weight")]
          public decimal WaresWeight
          {
