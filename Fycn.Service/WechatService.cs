@@ -233,6 +233,40 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetPayProdcutAndGroupList, conditions);
         }
 
+        // 根据waresId 取对应的商品或商品组
+        public List<ProductListModel> GetProdcutAndGroupByWaresId(string waresId)
+        {
+            var conditions = new List<Condition>();
+            //dics.Add("")
+            
+            conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "WaresId",
+                    DbColumnName = "a.wares_id",
+                    ParamValue = waresId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+
+            /*
+                  conditions.Add(new Condition
+                  {
+                      LeftBrace = "",
+                      ParamName = "WaresGroupIds",
+                      DbColumnName = "",
+                      ParamValue = groupPara,
+                      Operation = ConditionOperate.None,
+                      RightBrace = "",
+                      Logic = ""
+                  });
+              */
+
+            return GenerateDal.LoadByConditions<ProductListModel>(CommonSqlKey.GetPayProdcutAndGroupList, conditions);
+        }
+
         /// <summary>
         /// 7:待取货 8：已取货
         /// </summary>

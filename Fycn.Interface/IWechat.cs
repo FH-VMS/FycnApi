@@ -75,5 +75,8 @@ namespace Fycn.Interface
 
         [Remark("上报取货结果", ParmsNote = "", ReturnNote = "")]
         int PutPayResultByPickupCode(ClientSalesRelationModel clinetSalesInfo);
+
+        [Remark("根据商品id取对应的商品或商品组", ParmsNote = "", ReturnNote = "")]
+        List<ProductListModel> GetProdcutAndGroupByWaresId(string waresId);
     }
 }

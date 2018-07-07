@@ -22,6 +22,7 @@ using Fycn.Model.Sale;
 using Fycn.Model.Privilege;
 using System.Security.Cryptography;
 using Fycn.Model.Machine;
+using System.Web;
 
 namespace FycnApi.Controllers
 {
@@ -29,7 +30,7 @@ namespace FycnApi.Controllers
     //[Route("api/Wechat")]
     public class WechatController : ApiBaseController
     {
-        public ResultObj<PayStateModel> GetUrl(string m, string code)
+        public ResultObj<PayStateModel> GetUrl(string m, string code, string retBack = "")
         {
 
             //var log = LogManager.GetLogger("FycnApi", "wechat");
@@ -51,7 +52,11 @@ namespace FycnApi.Controllers
             //JsApi.payInfo = new PayModel();
             payInfo.k = m;
             JsApi jsApi = new JsApi();
-            jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo,"/wechat.html?clientId="+m, "snsapi_userinfo");
+            string backUrl = "/wechat.html?clientId="+m;
+            if(!string.IsNullOrEmpty(retBack)) {
+                backUrl = backUrl + HttpUtility.UrlDecode(retBack);
+            }
+            jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo,backUrl, "snsapi_userinfo");
             
             if (string.IsNullOrEmpty(payInfo.openid))
             {
@@ -579,6 +584,25 @@ namespace FycnApi.Controllers
 
             IWechat iwechat = new WechatService();
             return Content(iwechat.GetNoneExpirePrivilegeByMemberId(privilegeMemberInfo));
+        }
+
+        //根据商品id取对应的商品或商品组
+        public ResultObj<ProductListModel> GetProdcutAndGroupByWaresId(string waresId)
+        {
+            if (string.IsNullOrEmpty(waresId)) 
+            {
+               return null;
+            }
+            IWechat iwechat = new WechatService();
+            List<ProductListModel> lstProduct = iwechat.GetProdcutAndGroupByWaresId(waresId);
+            if (lstProduct.Count != 1)  
+            {
+                return null;
+            }
+            else 
+            {
+                return Content(lstProduct[0]);
+            }
         }
     }
 }
