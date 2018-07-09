@@ -145,7 +145,7 @@
   "GetMachineByMachineId": "SELECT * from table_machine ",
 
   "_comment": "取货码销售记录",
-  "GetPickSales": "SELECT a.machine_id,a.sales_date,a.sales_number,a.pay_date,a.pay_type,a.pay_interface,a.acquiring_merchant,a.trade_no,a.payer,a.goods_id,a.com_id,a.trade_amount,a.trade_status,a.random_id,a.reality_sale_number,a.service_charge,a.wares_id,a.wares_name,c.client_name as ClientName,b.pickup_code as PickupCode FROM table_client_sales_relation b LEFT JOIN table_sales_cashless a ON a.trade_no = b.trade_no LEFT JOIN table_client c ON b.client_id=c.client_id ",
+  "GetPickSales": "SELECT a.machine_id,a.sales_date,a.sales_number,a.pay_date,a.pay_type,a.pay_interface,a.acquiring_merchant,a.trade_no,a.payer,a.goods_id,a.com_id,a.trade_amount,a.trade_status,a.random_id,a.reality_sale_number,a.service_charge,a.wares_id,a.wares_name,c.client_name as ClientName,b.pickup_code as PickupCode,d.remark as MachineName FROM table_client_sales_relation b LEFT JOIN table_sales_cashless a ON a.trade_no = b.trade_no LEFT JOIN table_client c ON b.client_id=c.client_id LEFT JOIN table_machine d ON a.machine_id=d.machine_id ",
   "GetPickSalesCount": "SELECT count(1) FROM table_client_sales_relation b LEFT JOIN table_sales_cashless a ON a.trade_no = b.trade_no LEFT JOIN table_client c ON b.client_id=c.client_id ",
 
   "_comment": "现金销售",
