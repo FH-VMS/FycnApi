@@ -171,6 +171,12 @@ namespace Fycn.Model.Sale
              set;
          }
 
+        public string PickupCode
+        {
+            get;
+            set;
+        }
+
          public string SaleDateEnd
          {
              get;

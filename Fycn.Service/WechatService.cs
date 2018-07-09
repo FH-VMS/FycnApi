@@ -1254,7 +1254,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "MachineId",
-                    DbColumnName = "e.machine_id",
+                    DbColumnName = "c.machine_id",
                     ParamValue = clientSalesInfo.MachineId,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",

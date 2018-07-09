@@ -153,6 +153,10 @@ namespace Fycn.SqlDataAccess
         GetClientParentIds,
         GetRefundDetail,
 
+        //取货销售
+        GetPickSales,
+        GetPickSalesCount,
+
         //现金销售
         GetCashSaleList,
         GetCashSaleCount,

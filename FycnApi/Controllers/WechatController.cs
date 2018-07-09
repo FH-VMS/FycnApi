@@ -433,25 +433,82 @@ namespace FycnApi.Controllers
         }
 
         #region 取货
+        [HttpPost]
         public string VerifyCode(string machid="",string pickcode="")
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
 
             log.Info("pickup:machid:" + machid + "pickcode:" + pickcode);
+            RedisHelper redisHelper3 = new RedisHelper(3);
+            if(!redisHelper3.KeyExists(pickcode))
+            {
+                return "NG取货码错误";
+            }
+            ICommon icommon = new CommonService();
+            if(string.IsNullOrEmpty(machid))
+            {
+                return "NG机器编号错误";
+            }
+            if(string.IsNullOrEmpty(pickcode))
+            {
+                return "NG取货码错误";
+            }
+            int machineCount = icommon.CheckMachineId(machid, "");
+            if(machineCount==0)
+            {
+                return "NG机器编号不存在";
+            }
+            IWechat iwechat = new WechatService();
+            ClientSalesRelationModel clientSalesRelation = new ClientSalesRelationModel();
+            clientSalesRelation.MachineId = machid;
+            clientSalesRelation.PickupNo = pickcode;
+            var lstRelation = iwechat.VerifyPickupCode(clientSalesRelation);
+            if(lstRelation.Count==0)
+            {
+                return "NG取货码不存在";
+            }
+            if(lstRelation.Count>1)
+            {
+                return "NG取货码错误";
+            }
+            
+            redisHelper3.KeyDelete(pickcode);
+            return "OK" + lstRelation[0].WaresName;
+            /*
             var request = Fycn.Utility.HttpContext.Current.Request;
             int len = (int)request.ContentLength;
             byte[] b = new byte[len];
             Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
             string postStr = Encoding.UTF8.GetString(b);
             log.Info("postStr" + postStr);
-            return "NG 测试";
+            */
         }
 
+        [HttpPost]
         public string PickupResult(string machid,string pickcode,string name,string price,string trackno,string saletime)
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
 
             log.Info("PickupResult:" + machid + "pickcode:" + pickcode + "name:"+name+"price:"+price+"trackno:"+trackno+"saletime:"+saletime);
+            IWechat iwechat = new WechatService();
+            ClientSalesRelationModel clientSalesRelation = new ClientSalesRelationModel();
+            clientSalesRelation.TotalNum = 1;
+            clientSalesRelation.TunnelId = trackno;
+            clientSalesRelation.MachineId = machid;
+            clientSalesRelation.PickupNo = pickcode;
+            clientSalesRelation.Remark = "成功";
+            int result = iwechat.PutPayResultByPickupCode(clientSalesRelation);
+            if(result==3)
+            {
+                return "NG取货码不存在";
+            }
+            if(result==0)
+            {
+                return "NG系统内部错误";
+            }
+
+            return "OK";
+            /*
             var request = Fycn.Utility.HttpContext.Current.Request;
             int len = (int)request.ContentLength;
             byte[] b = new byte[len];
@@ -459,6 +516,7 @@ namespace FycnApi.Controllers
             string postStr = Encoding.UTF8.GetString(b);
             log.Info("result postStr" + postStr);
             return "NG 测试";
+            */
         }
         #endregion
 
