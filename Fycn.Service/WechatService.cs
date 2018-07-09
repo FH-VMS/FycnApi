@@ -1358,6 +1358,7 @@ namespace Fycn.Service
             }
             catch (Exception e)
             {
+                GenerateDal.RollBack();
                 return 0;
             }
 

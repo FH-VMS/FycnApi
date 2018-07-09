@@ -280,7 +280,7 @@
   "GetMachineLocations": "SELECT a.*, st_distance (point (?p_Longitude, ?p_Latitude),point(a.longitude,a.latitude) ) * 111195 AS Distance FROM table_machine_location a LEFT JOIN table_machine b ON a.machine_id=b.machine_id ",
   "VerifyPickupCode": "SELECT a.*,e.curr_status as CurrentStatus, e.curr_stock as CurrentStock,c.machine_id as MachineId,d.tunnel_id as TunnelId FROM table_client_sales_relation a LEFT JOIN table_wechat_member b ON a.member_id=b.openid LEFT JOIN table_machine c ON b.client_id=c.client_id LEFT JOIN table_goods_config d ON c.machine_id=d.machine_id AND a.wares_id=d.wares_id LEFT JOIN table_goods_status e ON d.machine_id=e.machine_id AND d.tunnel_id=e.goods_stu_id ",
   "UpdateSalesCashlessByPickup": "UPDATE table_sales_cashless SET machine_id=?p_MachineId, goods_id=?p_GoodsId,trade_status=?p_TradeStatus,sales_date=?p_SalesDate,reality_sale_number=?p_RealitySaleNumber WHERE trade_no=?p_TradeNo AND wares_id=?p_WaresId ",
-  "UpdatePickupCodeStatus": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND pickup_code=?p_PickupCode ",
+  "UpdatePickupCodeStatus": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND pickup_code=?p_PickupNo ",
 
   "_comment": "优惠券",
   "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName,c.book_chinese AS PrincipleTypeText,d.book_chinese AS TimeRuleText FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id LEFT JOIN table_book c ON a.principle_type=c.`value` AND c.id='privilegetype' LEFT JOIN table_book d ON a.time_rule=d.`value` AND d.id='timerule' ",
