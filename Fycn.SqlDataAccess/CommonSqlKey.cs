@@ -279,6 +279,7 @@ namespace Fycn.SqlDataAccess
         VerifyPickupCode,
         UpdateSalesCashlessByPickup,
         UpdatePickupCodeStatus,
+        ExchangeFromFriend,
 
         //优惠券信息
         GetPrivilegeList,

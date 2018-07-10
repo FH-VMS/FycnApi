@@ -78,5 +78,11 @@ namespace Fycn.Interface
 
         [Remark("根据商品id取对应的商品或商品组", ParmsNote = "", ReturnNote = "")]
         List<ProductListModel> GetProdcutAndGroupByWaresId(string waresId);
+
+        [Remark("分享给朋友，朋友领取分享的商品", ParmsNote = "", ReturnNote = "")]
+        int ExchangeFromFriend(ClientSalesRelationModel clientSalesInfo);
+
+        [Remark("根据取货码和会员id取对应数据", ParmsNote = "", ReturnNote = "")]
+        List<ClientSalesRelationModel> GetClientSalesByPickNo(ClientSalesRelationModel clientSalesInfo);
     }
 }

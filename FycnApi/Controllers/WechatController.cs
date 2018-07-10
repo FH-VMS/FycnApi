@@ -662,5 +662,24 @@ namespace FycnApi.Controllers
                 return Content(lstProduct[0]);
             }
         }
+
+        [HttpPost]
+        public ResultObj<int> PostFriendShare(string openId,string pickupNo)
+        {
+            ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
+            clientSalesInfo.MemberId = openId;
+            clientSalesInfo.PickupNo = pickupNo;
+            IWechat iwechat = new WechatService();
+            var lstResult = iwechat.GetClientSalesByPickNo(clientSalesInfo);
+            if(lstResult.Count==0)
+            {
+                return Content(0, ResultCode.Success, "取货码不存在", new Pagination { });
+            }
+            if(lstResult[0].MemberId==openId)
+            {
+                return Content(2, ResultCode.Success, "该宝贝已经在您囊中", new Pagination { });
+            }
+            return Content(iwechat.ExchangeFromFriend(clientSalesInfo));
+        }
     }
 }

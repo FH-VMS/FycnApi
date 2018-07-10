@@ -1373,5 +1373,60 @@ namespace Fycn.Service
             tunnelInfo.CurrStock = saleNumber;
             GenerateDal.Execute(CommonSqlKey.UpdateCurrStock, tunnelInfo);
         }
+
+        //分享给朋友，朋友领取分享的商品
+        public int ExchangeFromFriend(ClientSalesRelationModel clientSalesInfo)
+        {
+            if(string.IsNullOrEmpty(clientSalesInfo.PickupNo))
+            {
+                return 0;
+            }
+            if (string.IsNullOrEmpty(clientSalesInfo.MemberId))
+            {
+                return 0;
+            }
+            clientSalesInfo.CodeStatus = 1;
+            return GenerateDal.Update(CommonSqlKey.ExchangeFromFriend, clientSalesInfo);
+        }
+
+        //根据取货码和会员id取对应数据
+        public List<ClientSalesRelationModel> GetClientSalesByPickNo(ClientSalesRelationModel clientSalesInfo)
+        {
+            var conditions = new List<Condition>();
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PickupCode",
+                DbColumnName = "pickup_code",
+                ParamValue = clientSalesInfo.PickupNo,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "CodeStatus",
+                DbColumnName = "code_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MemberId",
+                DbColumnName = "member_id",
+                ParamValue = clientSalesInfo.MemberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            List<ClientSalesRelationModel> lstSaleInfo = GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingSalesList, conditions);
+            return lstSaleInfo;
+        }
     }
 }
