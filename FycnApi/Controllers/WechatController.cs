@@ -673,11 +673,11 @@ namespace FycnApi.Controllers
             var lstResult = iwechat.GetClientSalesByPickNo(clientSalesInfo);
             if(lstResult.Count==0)
             {
-                return Content(0, ResultCode.Success, "取货码不存在", new Pagination { });
+                return Content(0);
             }
             if(lstResult[0].MemberId==openId)
             {
-                return Content(2, ResultCode.Success, "该宝贝已经在您囊中", new Pagination { });
+                return Content(2);
             }
             return Content(iwechat.ExchangeFromFriend(clientSalesInfo));
         }
