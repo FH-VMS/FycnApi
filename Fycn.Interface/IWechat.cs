@@ -83,6 +83,6 @@ namespace Fycn.Interface
         int ExchangeFromFriend(ClientSalesRelationModel clientSalesInfo);
 
         [Remark("根据取货码和会员id取对应数据", ParmsNote = "", ReturnNote = "")]
-        List<ClientSalesRelationModel> GetClientSalesByPickNo(ClientSalesRelationModel clientSalesInfo);
+        List<ClientSalesRelationModel> GetClientSalesByPickNo(string otherOpenId,ClientSalesRelationModel clientSalesInfo);
     }
 }

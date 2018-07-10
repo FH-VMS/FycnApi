@@ -664,18 +664,18 @@ namespace FycnApi.Controllers
         }
 
         [HttpPost]
-        public ResultObj<int> PostFriendShare(string openId,string pickupNo)
+        public ResultObj<int> PostFriendShare(string otherOpenId,string myOpenId,string pickupNo)
         {
             ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
-            clientSalesInfo.MemberId = openId;
+            clientSalesInfo.MemberId = myOpenId;
             clientSalesInfo.PickupNo = pickupNo;
             IWechat iwechat = new WechatService();
-            var lstResult = iwechat.GetClientSalesByPickNo(clientSalesInfo);
+            var lstResult = iwechat.GetClientSalesByPickNo(otherOpenId, clientSalesInfo);
             if(lstResult.Count==0)
             {
                 return Content(0);
             }
-            if(lstResult[0].MemberId==openId)
+            if(lstResult[0].MemberId== myOpenId)
             {
                 return Content(2);
             }

@@ -1390,7 +1390,7 @@ namespace Fycn.Service
         }
 
         //根据取货码和会员id取对应数据
-        public List<ClientSalesRelationModel> GetClientSalesByPickNo(ClientSalesRelationModel clientSalesInfo)
+        public List<ClientSalesRelationModel> GetClientSalesByPickNo(string otherOpendId, ClientSalesRelationModel clientSalesInfo)
         {
             var conditions = new List<Condition>();
 
@@ -1414,13 +1414,12 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
-
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
                 ParamName = "MemberId",
                 DbColumnName = "member_id",
-                ParamValue = clientSalesInfo.MemberId,
+                ParamValue = otherOpendId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
                 Logic = ""
