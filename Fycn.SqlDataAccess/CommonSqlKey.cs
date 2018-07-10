@@ -57,6 +57,7 @@ namespace Fycn.SqlDataAccess
         GetAdDic,
         GetProductTypeDic,
         GetNotExpirePrivilegeDic,
+        GetPicPathByWaresId,
 
         //机型
         GetMachineType,

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fycn.Utility;
 using Fycn.Model.Sys;
+using Fycn.Model.Resource;
 
 namespace Fycn.Service
 {
@@ -830,6 +831,34 @@ namespace Fycn.Service
             });
 
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetNotExpirePrivilegeDic, conditions);
+        }
+
+        //根据商品id取图片路径
+        public List<PictureModel> GetPicPathByWaresId(string waresId)
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WaresId",
+                DbColumnName = "a.wares_id",
+                ParamValue = waresId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<PictureModel>(CommonSqlKey.GetPicPathByWaresId, conditions);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Fycn.Model.Common;
+using Fycn.Model.Resource;
 using Fycn.Model.Sys;
 using Fycn.Model.User;
 using System;
@@ -78,6 +79,9 @@ namespace Fycn.Interface
 
         [Remark("重置密码", ParmsNote = "", ReturnNote = "int")]
         int ResetPassword(UserModel userInfo);
+
+        [Remark("根据商品id取图片路径", ParmsNote = "", ReturnNote = "图片列表实体")]
+        List<PictureModel> GetPicPathByWaresId(string waresId);
 
     }
 }

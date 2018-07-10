@@ -269,5 +269,24 @@ namespace FycnApi.Controllers
             WebCacheHelper.ClearIds(userClientId);
             return Content(1);
         }
+
+        public ResultObj<string> GetPicPathByWaresId(string waresId)
+        {
+            
+            if (string.IsNullOrEmpty(waresId))
+            {
+                return Content("");
+            }
+            ICommon commonService = new CommonService();
+            List<PictureModel> lstResult = commonService.GetPicPathByWaresId(waresId);
+            if(lstResult.Count==0)
+            {
+                return Content("");
+            }
+            else
+            {
+                return Content(lstResult[0].PicUrl);
+            }
+        }
     }
 }
