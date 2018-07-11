@@ -25,6 +25,10 @@ namespace FycnApi.Controllers
     {
         public string RequestPayUrl(string machineId,string waresId)
         {
+            if(string.IsNullOrEmpty(machineId))
+            {
+                return "";
+            }
             KeyJsonModel jsonModel = new KeyJsonModel();
             jsonModel.m = machineId;
             jsonModel.t = new List<KeyTunnelModel>();
@@ -41,6 +45,10 @@ namespace FycnApi.Controllers
 
         public ResultObj<List<AndroidProductModel>> GetProductByMachine(string machineId,string waresTypeId="", int pageIndex = 1, int pageSize = 10)
         {
+            if(string.IsNullOrEmpty(machineId))
+            {
+                return Content(new List<AndroidProductModel>());
+            }
             //KeyJsonModel keyJsonInfo = AnalizeKey(k);
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
@@ -85,6 +93,10 @@ namespace FycnApi.Controllers
 
         public ResultObj<List<AndroidProductTypeModel>> GetProductTypeByMachine(string machineId)
         {
+            if(string.IsNullOrEmpty(machineId))
+            {
+                return Content(new List<AndroidProductTypeModel>());
+            }
            
             IAndroid imachine = new AndroidService();
             var data = imachine.GetProductTypeByMachine(machineId);
@@ -93,6 +105,7 @@ namespace FycnApi.Controllers
 
         public ResultObj<List<SourceToMachineModel>> GetAd(string machineId)
         {
+            
             IAdRelation _iad = new AdRelationService();
             return Content(_iad.GetAdSource(machineId));
         }
