@@ -16,6 +16,7 @@ using System.Web;
 using Fycn.Model.Machine;
 using System.Linq;
 using Fycn.Model.Ad;
+using Fycn.PaymentLib;
 
 namespace FycnApi.Controllers
 {
@@ -23,7 +24,7 @@ namespace FycnApi.Controllers
     {
         public string RequestPayUrl(string machineId,string waresId)
         {
-            KeyJsonModel jsonModel = new KeyJsonModel();
+             KeyJsonModel jsonModel = new KeyJsonModel();
             jsonModel.m = machineId;
             jsonModel.t = new List<KeyTunnelModel>();
             jsonModel.t.Add(new KeyTunnelModel() { tid = waresId, n = "1" });
@@ -31,7 +32,7 @@ namespace FycnApi.Controllers
             //byte[] byteSend = System.Text.Encoding.Default.GetBytes(json);
             //string hex = ByteHelper.byteToHexStr(byteSend);
             Dictionary<string, string> dicRet = new Dictionary<string, string>();
-            dicRet["url"] = "http://120.27.217.224/p/m.html#/paybyproduct?k=" + json;
+            dicRet["url"] = PathConfig.DomainConfig+"/m.html#/paybyproduct?k=" + json;
             dicRet["waresId"] = waresId;
             string retJson = JsonHandler.GetJsonStrFromObject(dicRet);
             return HttpUtility.UrlDecode(retJson); 

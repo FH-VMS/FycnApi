@@ -50,7 +50,7 @@ namespace FycnApi
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder
-                    .WithOrigins("http://120.27.217.224")
+                    .WithOrigins("http://www.fy-cn.top")
                     //.AllowAnyOrigin()
                     .WithMethods("GET", "POST", "PUT", "DELETE")
                     .AllowAnyHeader()
