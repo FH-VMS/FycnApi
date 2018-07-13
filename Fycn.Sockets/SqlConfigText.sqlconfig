@@ -254,7 +254,7 @@
   "GetActivityList": "SELECT a.*,b.book_chinese as TimeRuleText,c.book_chinese as ActivityTypeText FROM table_activity_info a LEFT JOIN table_book b ON a.time_rule=b.`value` AND b.id='timerule' LEFT JOIN table_book c ON a.activity_type=c.`value` AND c.id='privilegegroup' ",
   "GetActivityCount": "SELECT COUNT(1) FROM table_activity_info",
   "DeleteActivity": "DELETE FROM table_activity_info WHERE id=?p_Id ",
-  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId WHERE id=?p_Id ",
+  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId,numbers=?p_Numbers WHERE id=?p_Id ",
   "GetActivityRelation": "SELECT * FROM table_activity_privilege_relation ",
   "DeleteActivityRelation": "DELETE FROM table_activity_privilege_relation WHERE activity_id=?p_ActivityId ",
 

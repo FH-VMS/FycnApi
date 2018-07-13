@@ -48,6 +48,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "numbers")]
+        public int Numbers
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "start_time")]
         public DateTime StartTime
         {
