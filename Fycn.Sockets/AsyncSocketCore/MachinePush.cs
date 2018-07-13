@@ -74,10 +74,10 @@ namespace Fycn.Sockets.AsyncSocketCore
                     byte[] returnByte30 = new byte[24];
                     returnByte30[0] = byteInfo[0];//包头;
                     ByteHelper.IntToTwoByte(size30).CopyTo(returnByte30, 1); //size
-                                                                             //returnByte30[4] = data[0];
-                    ByteHelper.StrToByte(machineNum30).CopyTo(returnByte30, 4);
+                    returnByte30[4] = data[0];
+                    ByteHelper.StrToByte(machineNum30).CopyTo(returnByte30, 5);//机器编号
 
-                    ByteHelper.StrToByte(MachineHelper.GenerateCode(machineNum30, "code")).CopyTo(returnByte30, 17);//机器编号
+                    ByteHelper.StrToByte(MachineHelper.GenerateCode(machineNum30, "code")).CopyTo(returnByte30, 17);
 
 
                     returnByte30[23] = 238;//
