@@ -23,6 +23,7 @@ using Fycn.Model.Privilege;
 using System.Security.Cryptography;
 using Fycn.Model.Machine;
 using System.Web;
+using Microsoft.AspNetCore.Cors;
 
 namespace FycnApi.Controllers
 {
@@ -433,6 +434,7 @@ namespace FycnApi.Controllers
         }
 
         #region 取货
+        [EnableCors("AllowAllOrigin")]
         [HttpPost]
         public string VerifyCode(string machid="",string pickcode="")
         {
@@ -484,6 +486,7 @@ namespace FycnApi.Controllers
             */
         }
 
+        [EnableCors("AllowAllOrigin")]
         [HttpPost]
         public string PickupResult(string machid,string pickcode,string name,string price,string trackno,string saletime)
         {
