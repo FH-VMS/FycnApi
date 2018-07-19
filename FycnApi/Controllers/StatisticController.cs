@@ -22,12 +22,12 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<string> GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId="", string machineId="", string tradeStatus="2")
+        public ResultObj<string> GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId="", string machineId="", string tradeStatus= "2^7^8")
         {
             return Content(JsonHandler.DataTable2Json(_istatistic.GetMobilePayStatistic(salesDateStart, salesDateEnd, clientId, machineId, tradeStatus)));
         }
 
-        public ResultObj<string> GetProductStatistic(string salesDateStart, string salesDateEnd, string productName="", string clientId="", string machineId="", string tradeStatus="2",int pageIndex=1, int pageSize=10)
+        public ResultObj<string> GetProductStatistic(string salesDateStart, string salesDateEnd, string productName="", string clientId="", string machineId="", string tradeStatus="2^7^8",int pageIndex=1, int pageSize=10)
         {
             int count =_istatistic.GetProductStatisticCount(salesDateStart, salesDateEnd, productName, clientId, machineId, tradeStatus);
             var pagination = new Pagination { PageSize = pageSize, PageIndex = pageIndex, StartIndex = 0, TotalRows = count, TotalPage = 0 };

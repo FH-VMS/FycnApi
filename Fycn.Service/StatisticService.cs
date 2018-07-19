@@ -860,16 +860,65 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            conditions.Add(new Condition
+            string[] statusArr = tradeStatus.Split('^');
+            if (statusArr.Length == 1)
             {
-                LeftBrace = " AND ",
-                ParamName = "TradeStatus",
-                DbColumnName = "a.trade_status",
-                ParamValue = tradeStatus,
-                Operation = ConditionOperate.Equal,
-                RightBrace = "",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeStatus",
+                    DbColumnName = "a.trade_status",
+                    ParamValue = statusArr[0],
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                for (int i = 0; i < statusArr.Length; i++)
+                {
+                    if (i == 0 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " AND (",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                    else if (i == statusArr.Length - 1 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = ")",
+                            Logic = ""
+                        });
+                    }
+                    else
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                }
+            }
 
             if (!string.IsNullOrEmpty(salesDateStart))
             {
@@ -957,17 +1006,67 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-
-            conditions.Add(new Condition
+            string[] statusArr = tradeStatus.Split('^');
+            if(statusArr.Length==1)
             {
-                LeftBrace = " AND ",
-                ParamName = "TradeStatus",
-                DbColumnName = "a.trade_status",
-                ParamValue = tradeStatus,
-                Operation = ConditionOperate.Equal,
-                RightBrace = "",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeStatus",
+                    DbColumnName = "a.trade_status",
+                    ParamValue = statusArr[0],
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            } 
+            else
+            {
+                for (int i = 0; i < statusArr.Length; i++)
+                {
+                    if (i == 0 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " AND (",
+                            ParamName = "TradeStatus"+i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                    else if(i== statusArr.Length - 1 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = ")",
+                            Logic = ""
+                        });
+                    } 
+                    else
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                }
+            }
+           
+            
 
             if (!string.IsNullOrEmpty(salesDateStart))
             {
@@ -1072,16 +1171,65 @@ namespace Fycn.Service
                 Logic = ""
             });
 
-            conditions.Add(new Condition
+            string[] statusArr = tradeStatus.Split('^');
+            if (statusArr.Length == 1)
             {
-                LeftBrace = " AND ",
-                ParamName = "TradeStatus",
-                DbColumnName = "a.trade_status",
-                ParamValue = tradeStatus,
-                Operation = ConditionOperate.Equal,
-                RightBrace = "",
-                Logic = ""
-            });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeStatus",
+                    DbColumnName = "a.trade_status",
+                    ParamValue = statusArr[0],
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                for (int i = 0; i < statusArr.Length; i++)
+                {
+                    if (i == 0 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " AND (",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                    else if (i == statusArr.Length - 1 && !string.IsNullOrEmpty(statusArr[i]))
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = ")",
+                            Logic = ""
+                        });
+                    }
+                    else
+                    {
+                        conditions.Add(new Condition
+                        {
+                            LeftBrace = " OR ",
+                            ParamName = "TradeStatus" + i,
+                            DbColumnName = "a.trade_status",
+                            ParamValue = statusArr[i],
+                            Operation = ConditionOperate.Equal,
+                            RightBrace = "",
+                            Logic = ""
+                        });
+                    }
+                }
+            }
 
             if (!string.IsNullOrEmpty(salesDateStart))
             {
