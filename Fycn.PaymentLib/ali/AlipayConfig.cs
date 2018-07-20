@@ -107,5 +107,8 @@ namespace Fycn.PaymentLib.ali
         public string new_charset = "UTF-8";
 
 
+        /*****************************************国际版******************************************/
+        public string i_service = "create_forex_trade_wap";
+
     }
 }
