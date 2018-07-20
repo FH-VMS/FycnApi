@@ -54,6 +54,7 @@ namespace FycnApi.Controllers
         public ResultObj<int> DeleteData(string idList)
         {
            ICommon mBase = new CommonService();
+            WebCacheHelper.ClearIds(idList);
             int machineCount = mBase.GetMachineCountByClientId(idList);
             if(machineCount>0)
             {
