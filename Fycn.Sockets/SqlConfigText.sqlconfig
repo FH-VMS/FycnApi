@@ -15,8 +15,8 @@
   "ChangePassword": "UPDATE table_user SET usr_pwd=?p_UserPassword WHERE id =?p_Id",
 
   "_comment": "客户列表",
-  "GetCustomer": "select * from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId))",
-  "GetCustomerCount": "select count(1) from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId))",
+  "GetCustomer": "SELECT a.*, b.client_name as FatherName from table_client a LEFT JOIN table_client b ON a.client_father_id=b.client_id ",
+  "GetCustomerCount": "select count(1) from table_client a LEFT JOIN table_client b ON a.client_father_id=b.client_id ",
   "DeleteCustomer": "DELETE from table_client where client_id=?p_Id",
   "UpdateCustomer": "UPDATE table_client SET  client_name =?p_ClientName,  client_status =?p_ClientStatus, client_type =?p_ClientType,  client_contect =?p_ClientContect,  client_tel =?p_ClientTel,  client_email =?p_ClientEmail,  client_country =?p_ClientCountry,  client_currency =?p_ClientCurrency,  client_address =?p_ClientAddress,  creator =?p_Creator,  create_date =?p_CreateDate,  updater =?p_Updater,  update_date =?p_UpdateDate,  remark =?p_Remark  WHERE client_id =?p_Id",
   "UpdateChildCustomer": "UPDATE table_client SET  client_father_id =?p_ClientFatherId  WHERE client_father_id =?p_Id",

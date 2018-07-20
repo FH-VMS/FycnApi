@@ -16,18 +16,37 @@ namespace Fycn.Service
 
         public List<CustomerModel> GetAll(CustomerModel customerInfo)
         {
+            /*
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
             if (string.IsNullOrEmpty(userStatus))
             {
                 return null;
             }
-            var userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            */
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
             {
                 return null;
             }
-
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+          
+
+           
 
             if (!string.IsNullOrEmpty(customerInfo.ClientName))
             {
@@ -35,7 +54,7 @@ namespace Fycn.Service
                 {
                     LeftBrace = " AND ",
                     ParamName = "ClientName",
-                    DbColumnName = "client_name",
+                    DbColumnName = "a.client_name",
                     ParamValue = "%" + customerInfo.ClientName + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
@@ -45,11 +64,11 @@ namespace Fycn.Service
 
             conditions.Add(new Condition
             {
-                LeftBrace = "",
-                ParamName = "ClientId",
-                DbColumnName = "",
-                ParamValue = userClientId,
-                Operation = ConditionOperate.None,
+                LeftBrace = "  ",
+                ParamName = "ClientFatherId",
+                DbColumnName = "b.client_id",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
                 RightBrace = "",
                 Logic = ""
             });
@@ -58,7 +77,6 @@ namespace Fycn.Service
            // var dics = new Dictionary<string, object>();
 
             //dics.Add("ClientName", customerInfo.ClientName + "%");
-            List<CustomerModel> result = null;
             /*
             if (userStatus == "100" || userStatus == "99")
             {
@@ -73,15 +91,15 @@ namespace Fycn.Service
                 dics.Add("PageSize", customerInfo.PageSize);
             
             */
-            result = GenerateDal.LoadByConditions<CustomerModel>(CommonSqlKey.GetCustomer, conditions);
-            CustomerModel curItem = new CustomerModel();
-            curItem.Id = userClientId;
-            var finalResult = LoopToAppendChildren(result, curItem);
+            List<CustomerModel> result = GenerateDal.LoadByConditions<CustomerModel>(CommonSqlKey.GetCustomer, conditions);
+            //CustomerModel curItem = new CustomerModel();
+            //curItem.Id = userClientId;
+            //var finalResult = LoopToAppendChildren(result, curItem);
 
 
-            return finalResult;
+            return result;
         }
-
+        /*
         private int keyI = 0;
         private int keyJ = 0;
         private List<CustomerModel> LoopToAppendChildren(List<CustomerModel> all, CustomerModel curItem)
@@ -104,34 +122,50 @@ namespace Fycn.Service
             return subItems;
         }
 
-
+    */
         public int GetCount(CustomerModel customerInfo)
         {
             var result = 0;
-            string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
-            if (string.IsNullOrEmpty(userStatus))
-            {
-                return 0;
-            }
-            var userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
             if (string.IsNullOrEmpty(userClientId))
             {
                 return 0;
             }
-            var dics = new Dictionary<string, object>();
-
-            dics.Add("ClientName", customerInfo.ClientName + "%");
-            if (userStatus == "100" || userStatus == "99")
+            var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(userClientId);
+            if (clientIds.Contains("self"))
             {
-                dics.Add("ClientId", "self");
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
             }
-            else
+            conditions.Add(new Condition
             {
-                dics.Add("ClientId", userClientId);
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "a.client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
 
+
+
+
+            if (!string.IsNullOrEmpty(customerInfo.ClientName))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientName",
+                    DbColumnName = "a.client_name",
+                    ParamValue = "%" + customerInfo.ClientName + "%",
+                    Operation = ConditionOperate.Like,
+                    RightBrace = "",
+                    Logic = ""
+                });
             }
 
-            result = GenerateDal.CountByDictionary<CustomerModel>(CommonSqlKey.GetCustomerCount, dics);
+            result = GenerateDal.CountByConditions(CommonSqlKey.GetCustomerCount, conditions);
 
             return result;
         }

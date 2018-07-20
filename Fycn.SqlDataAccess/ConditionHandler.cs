@@ -481,10 +481,6 @@ namespace Fycn.SqlDataAccess
             }
             switch (sqlKey)
             {
-                case CommonSqlKey.GetCustomer:
-                    return finalWhereCondition;
-                case CommonSqlKey.GetCustomerCount:
-                    return finalWhereCondition;
                 case CommonSqlKey.GetAuth:
                     return finalWhereCondition;
                 case CommonSqlKey.GetRankValue:

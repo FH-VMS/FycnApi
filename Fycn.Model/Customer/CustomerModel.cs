@@ -109,16 +109,24 @@ namespace Fycn.Model.Customer
             set;
         }
 
+        public string FatherName
+        {
+            get;
+            set;
+        }
+        /*
         public List<CustomerModel> children
         {
             get;
             set;
         }
+        
 
         public string key
         {
             get;
             set;
         }
+        */
     }
 }

@@ -130,7 +130,7 @@ namespace Fycn.Model.Pay
         }
 
         [Column(Name = "config_type")]
-        public string ConfigType
+        public string ConfigType // 0或空代表客户自带支付配置国内收账   1代表自带支付配置国外收账  2代表国内收账分账
         {
             get;
             set;
