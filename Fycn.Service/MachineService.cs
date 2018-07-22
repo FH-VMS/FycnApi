@@ -440,15 +440,19 @@ namespace Fycn.Service
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                 }
                 GenerateDal.CommitTransaction();
-                RefundService refund = new RefundService();
-                if(saleModel.PayInterface=="微信")
+                if(saleModel.TradeStatus !=2)
                 {
-                        refund.PostRefundW(lstSaleModel);
+                    RefundService refund = new RefundService();
+                    if(saleModel.PayInterface=="微信")
+                    {
+                            refund.PostRefundW(lstSaleModel);
+                    }
+                    else if(saleModel.PayInterface=="支付宝")
+                    {
+                        refund.PostRefundA(lstSaleModel);
+                    }
                 }
-                else if(saleModel.PayInterface=="支付宝")
-                {
-                    refund.PostRefundA(lstSaleModel);
-                }
+               
             }
             catch(Exception e)
             {
