@@ -84,14 +84,14 @@ namespace Fycn.Service
                 RightBrace = " ",
                 Logic = ""
             });
-            if (!string.IsNullOrEmpty(machineConfigInfo.DeviceId))
+            if (!string.IsNullOrEmpty(machineConfigInfo.MachineId))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "DeviceId",
-                    DbColumnName = "a.device_id",
-                    ParamValue = "%" + machineConfigInfo.DeviceId + "%",
+                    ParamName = "MachineId",
+                    DbColumnName = "a.machine_id",
+                    ParamValue = "%" + machineConfigInfo.MachineId + "%",
                     Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""

@@ -71,10 +71,10 @@
   "GetMachineCountWithStatus": "SELECT COUNT(1) as vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id WHERE a.latest_date IS NULL UNION ALL SELECT COUNT(1) as Vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id  WHERE TIMESTAMPDIFF(SECOND,a.latest_date,NOW()) > 900 UNION ALL SELECT COUNT(1) as Vals FROM table_machine a  INNER JOIN (select client_name,client_id from table_client  where FIND_IN_SET(client_father_id ,getClientLst(?p_ClientId)) OR FIND_IN_SET(client_id ,getClientLst(?p_ClientId))) b ON a.client_id = b.client_id  WHERE TIMESTAMPDIFF(SECOND,a.latest_date,NOW()) <= 900",
 
   "_comment": "机器配置",
-  "GetMachineConfig": "SELECT b.*,a.device_id as DeviceId,a.machine_id as MachineIdB FROM table_machine a Left JOIN table_machine_config b ON a.machine_id=b.machine_id ",
+  "GetMachineConfig": "SELECT b.mc_status,b.mc_activity,b.mc_alipay_enable,b.mc_wpay_enable,b.mc_billpay_enable,b.mc_billchange_enable,b.mc_coinpay_enable,b.mc_coinchange_enable,b.mc_upay_enable,b.mc_icpay_enable,b.mc_lift_enable,b.mc_infrared_enable,b.mc_area1_temp,b.mc_area2_temp,b.mc_area3_temp,b.mc_area4_temp,b.mc_goods_used,b.mc_longitude,b.mc_dimension,b.updater,b.update_date,b.remark,a.machine_id FROM table_machine a Left JOIN table_machine_config b ON a.machine_id=b.machine_id ",
   "GetMachineConfigCount": "SELECT count(1) FROM table_machine a Left JOIN table_machine_config b ON a.machine_id=b.machine_id ",
   "DeleteMachineConfig": "DELETE from table_machine_config where machine_id=?p_MachineId",
-  "UpdateMachineConfig": "UPDATE table_machine SET  device_id =?p_DeviceId,  type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate WHERE machine_id =?p_MachineId",
+  "UpdateMachineConfig": "UPDATE table_machine SET  machine_id =?p_MachineId,  type_id =?p_TypeId,client_id=?p_ClientId,  usr_account =?p_UserAccount, Updater=?p_Updater, update_date=?p_UpdateDate WHERE machine_id =?p_MachineId",
 
   "_comment": "机器配置",
   "GetMachineLocationList": "SELECT a.* FROM table_machine_location a LEFT JOIN table_machine b ON a.machine_id=b.machine_id ",
