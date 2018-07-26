@@ -9,6 +9,8 @@ using Fycn.Model.Common;
 using Fycn.Model.Sys;
 using Fycn.Service;
 using Fycn.Interface;
+using Fycn.Utility;
+using Fycn.Model.Socket;
 
 namespace FycnApi.Controllers
 {
@@ -36,6 +38,36 @@ namespace FycnApi.Controllers
             }
             IMachineOperation imachine = new MachineOperationService();
             return Content(imachine.CopyOneMachine( oldMachineId,  newMachineId, newDeviceId, copyItem, ""));
+        }
+
+        //商品更新下推
+        [HttpPost]
+        public ResultObj<int> ProductPush(string machineId)
+        {
+            // lstCommandModel的第一条消息为机器编号
+            if (!MachineHelper.IsOnline(machineId))
+            {
+                return Content(0, ResultCode.Fail, "机器不在线");
+            }
+
+            //IMachine _IMachine = new MachineService();
+            //int result = _IMachine.GetFullfilGood(machineId);
+            //if (result == 1)
+            //{
+
+                List<CommandModel> lstCommand = new List<CommandModel>();
+                lstCommand.Add(new CommandModel()
+                {
+                    Content = machineId,
+                    Size = 12
+                });
+
+                //var log = LogManager.GetLogger("FycnApi", "weixin");
+                //log.Info("test");
+                //log.Info(tradeNoNode.InnerText);
+                SocketHelper.GenerateCommand(15, 13, 85, lstCommand);
+            //}
+            return Content(1);
         }
     }
 }

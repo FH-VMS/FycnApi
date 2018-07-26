@@ -58,9 +58,20 @@ namespace Fycn.Service
                     Logic = ""
                 });
             }
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "LatestDate",
+                DbColumnName = "latest_date",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
             conditions.AddRange(CreatePaginConditions(pageIndex, pageSize));
 
-            List<CommonDic> machines = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetMachineDic, conditions);
+            List<CommonDic> machines = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetMachineDicWithStatus, conditions);
             return machines;
         }
 
