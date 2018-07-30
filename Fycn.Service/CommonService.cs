@@ -322,7 +322,7 @@ namespace Fycn.Service
                 return null;
             }
             var conditions = new List<Condition>();
-            string clientIds = GetChildAndParentIds(clientId);
+            string clientIds = GetClientIds(clientId);
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
