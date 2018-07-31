@@ -45,12 +45,12 @@ namespace FycnApi
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.Configure<WebConfig>(Configuration.GetSection("AppConfiguration"));
             services.AddCors();
-           
+            string domain = ConfigHandler.Domain;
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder
-                    .WithOrigins("http://www.fy-cn.top")
+                    .WithOrigins(domain)
                     //.AllowAnyOrigin()
                     .WithMethods("GET", "POST", "PUT", "DELETE")
                     .AllowAnyHeader()

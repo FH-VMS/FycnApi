@@ -450,5 +450,20 @@ namespace Fycn.Utility
                 return Convert.ToDouble(_zhifubaoRate);
             }
         }
+
+        //域名
+        private static string _domain;
+
+        public static string Domain
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_domain))
+                {
+                    _domain = ConfigurationManager.AppSettings["Domain"] ?? "http://www.fy-cn.top";
+                }
+                return _domain;
+            }
+        }
     }
 }
