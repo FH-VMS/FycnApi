@@ -47,7 +47,7 @@ namespace Fycn.Service
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
                 DbColumnName = "a.usr_client_id",
-                ParamValue = clientIds,
+                ParamValue = clientIds.Replace(userClientId, "-1"),
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""
@@ -165,7 +165,7 @@ namespace Fycn.Service
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
                 DbColumnName = "a.usr_client_id",
-                ParamValue = clientIds,
+                ParamValue = clientIds.Replace(userClientId, "-1"),
                 Operation = ConditionOperate.INWithNoPara,
                 RightBrace = "",
                 Logic = ""

@@ -140,19 +140,43 @@ namespace Fycn.Service
         }
 
         //取客户树形结构作字典
-        public List<CommonDic> GetClientDic()
+        public List<ClientDic> GetClientDic(string userClientId)
         {
             string userStatus = HttpContextHandler.GetHeaderObj("Sts").ToString();
             if (string.IsNullOrEmpty(userStatus))
             {
                 return null;
             }
-            var clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            string clientId = string.Empty;
+            if(string.IsNullOrEmpty(userClientId))
+            {
+                clientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            }
+            else
+            {
+                clientId = userClientId;
+            }
             if (string.IsNullOrEmpty(clientId))
             {
                 return null;
             }
             var conditions = new List<Condition>();
+            string clientIds = new CommonService().GetClientIds(clientId);
+            if (clientIds.Contains("self"))
+            {
+                clientIds = "'" + clientIds.Replace(",", "','") + "'";
+            }
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientIds,
+                Operation = ConditionOperate.INWithNoPara,
+                RightBrace = " ",
+                Logic = ""
+            });
+            /*
             if (userStatus == "100" || userStatus == "99")
             {
                 conditions.Add(new Condition
@@ -182,8 +206,11 @@ namespace Fycn.Service
              
             }
             return GetCustomersFinalResult(GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetClientDic, conditions));
+            */
+            return GenerateDal.LoadByConditions<ClientDic>(CommonSqlKey.GetClientDic, conditions);
 
         }
+
 
         private List<CommonDic> GetCustomersFinalResult(List<CommonDic> result)
         {

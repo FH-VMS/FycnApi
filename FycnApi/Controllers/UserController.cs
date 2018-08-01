@@ -54,10 +54,10 @@ namespace FycnApi.Controllers
             return Content(_IBase.DeleteData(idList));
         }
 
-        public ResultObj<List<CommonDic>> GetClientDic()
+        public ResultObj<List<ClientDic>> GetClientDic(string clientId="")
         {
             ICommon iCommon = new CommonService();
-            return Content(iCommon.GetClientDic());
+            return Content(iCommon.GetClientDic(clientId));
         }
 
         public ResultObj<List<CommonDic>> GetAuthDic()

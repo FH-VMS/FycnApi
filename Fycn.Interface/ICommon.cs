@@ -27,7 +27,7 @@ namespace Fycn.Interface
         List<DicModel> GetRank(string id);
 
         [Remark("取客户当字典", ParmsNote = "", ReturnNote = "字典实体列表")]
-        List<CommonDic> GetClientDic();
+        List<ClientDic> GetClientDic(string userClientId);
 
         [Remark("取权限模板当字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetAuthDic();
