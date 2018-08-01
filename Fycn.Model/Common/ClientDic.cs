@@ -6,19 +6,19 @@ namespace Fycn.Model.Common
 {
     public class ClientDic
     {
-        public string Id
+        public string value
         {
             get;
             set;
         }
 
-        public string Name
+        public string label
         {
             get;
             set;
         }
 
-        public string FatherId
+        public string fatherid
         {
             get;
             set;

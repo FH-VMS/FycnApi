@@ -7,7 +7,7 @@
   "DeleteUser": "DELETE from table_user where id=?p_Id",
   "UpdateUser": "UPDATE table_user SET  usr_account =?p_UserAccount,  usr_name =?p_UserName,  usr_access_id =?p_UserAccessId,  usr_client_id =?p_UserClientId,  remark =?p_Remark,  creator =?p_Creator WHERE id =?p_Id",
   "GetMenuByUser": "SELECT menu_id,url, menu_name,menu_father, 0 as 'Add', 0 as 'Del', 0 as 'Mod', 0 as 'Sear', remark FROM table_menu where menu_father is null or menu_father='' UNION select a.menu_id,a.url, a.menu_name,a.menu_father, b.corr_add as 'Add', b.corr_del as 'Del', b.corr_modify as 'Mod', b.corr_search as 'Sear',a.remark from table_menu a RIGHT JOIN table_corr_dms b on a.menu_id = b.corr_menu_id LEFT JOIN table_dms c on b.corr_dms_id = c.id LEFT JOIN table_user d on c.id = d.usr_access_id Where d.usr_access_id =?p_UserAccessId",
-  "GetClientDic": "SELECT client_id as Id,client_name as Name, client_father_id as FatherId FROM table_client ",
+  "GetClientDic": "SELECT client_id as value,client_name as label, client_father_id as fatherid FROM table_client ",
   "GetAuthDic": "SELECT a.Id as Id,a.dms_name as Name FROM table_dms as a  LEFT JOIN table_book as b ON a.rank=b.value WHERE b.id='rank'",
   "CheckUserExist": "SELECT count(1) FROM table_user ",
 
