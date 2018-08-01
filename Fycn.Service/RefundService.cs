@@ -148,6 +148,14 @@ namespace Fycn.Service
                 PayService pay = new PayService();
                 //移动支付配置赋值
                 Config config = pay.GenerateConfigModelA(lstSaleModel[0].MachineId);
+                 if (config.private_key.Length > 1000)
+                {
+                    config.refund_sign_type = "RSA2";
+                }
+                else
+                {
+                    config.refund_sign_type = "RSA";
+                }
                 /****************************旧支付宝退款接口*******************************/
                 /*
                 string detail_data = string.Empty;
