@@ -440,7 +440,7 @@ namespace Fycn.Service
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                 }
                 GenerateDal.CommitTransaction();
-                if(saleModel.TradeStatus !=2)
+                if(!result)
                 {
                     RefundService refund = new RefundService();
                     if(saleModel.PayInterface=="微信")
