@@ -239,9 +239,9 @@ namespace FycnApi.Controllers
                 int weixinMoney = Convert.ToInt32((totalFee) * 100);
                 //}
                 
-               payInfo.total_fee = (weixinMoney < 0 ? 1 : weixinMoney);
+               payInfo.total_fee = (weixinMoney <= 0 ? 1 : weixinMoney);
                //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
-               payState.TotalMoney=(totalFee < 0 ? Convert.ToDecimal(0.01) : totalFee);
+               payState.TotalMoney=(totalFee <= 0 ? Convert.ToDecimal(0.01) : totalFee);
                //写入交易中转
                if(payInfo.total_fee==0)
                 {
