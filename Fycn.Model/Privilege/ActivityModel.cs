@@ -55,6 +55,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "count_per_person")]
+        public int CountPerPerson
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "start_time")]
         public DateTime StartTime
         {

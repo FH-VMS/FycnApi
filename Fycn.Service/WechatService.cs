@@ -746,14 +746,15 @@ namespace Fycn.Service
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "ExpireTime",
-                    DbColumnName = "expire_time",
-                    ParamValue = DateTime.Now,
-                    Operation = ConditionOperate.GreaterThan,
+                    ParamName = "DateDate",
+                    DbColumnName = "to_days(get_date)",
+                    ParamValue = "to_days(now())",
+                    Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
 
+                //取该用户当天的券数量
                 int reuslt = GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
                 if (reuslt == 0)
                 {
