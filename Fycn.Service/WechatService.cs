@@ -519,9 +519,9 @@ namespace Fycn.Service
 
 
         }
-         
-        // 取活动优惠券列表
-        public List<PrivilegeModel> GetActivityPrivilegeList(ActivityModel activityeInfo)
+
+        //取活动列表
+        public List<ActivityModel> GetActivityList(ActivityModel activityeInfo)
         {
             var conditions = new List<Condition>();
 
@@ -529,7 +529,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "ClientId",
-                DbColumnName = "a.client_id",
+                DbColumnName = "client_id",
                 ParamValue = activityeInfo.ClientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
@@ -540,7 +540,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "Numbers",
-                DbColumnName = "a.numbers",
+                DbColumnName = "numbers",
                 ParamValue = 0,
                 Operation = ConditionOperate.GreaterThan,
                 RightBrace = "",
@@ -551,7 +551,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND (",
                 ParamName = "StartTime",
-                DbColumnName = "a.start_time",
+                DbColumnName = "start_time",
                 ParamValue = DateTime.Now,
                 Operation = ConditionOperate.LessThan,
                 RightBrace = "",
@@ -561,7 +561,7 @@ namespace Fycn.Service
             {
                 LeftBrace = "",
                 ParamName = "StartTime1",
-                DbColumnName = "a.start_time",
+                DbColumnName = "start_time",
                 ParamValue = "",
                 Operation = ConditionOperate.Null,
                 RightBrace = ")",
@@ -572,7 +572,7 @@ namespace Fycn.Service
             {
                 LeftBrace = " AND ",
                 ParamName = "EndTime",
-                DbColumnName = "a.end_time",
+                DbColumnName = "end_time",
                 ParamValue = DateTime.Now,
                 Operation = ConditionOperate.GreaterThan,
                 RightBrace = "",
@@ -581,20 +581,43 @@ namespace Fycn.Service
 
             if (!string.IsNullOrEmpty(activityeInfo.ActivityType))
             {
-                    conditions.Add(new Condition
-                    {
-                        LeftBrace = " AND ",
-                        ParamName = "ActivityType",
-                        DbColumnName = "a.activity_type",
-                        ParamValue = activityeInfo.ActivityType,
-                        Operation = ConditionOperate.Equal,
-                        RightBrace = "",
-                        Logic = ""
-                    });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ActivityType",
+                    DbColumnName = "activity_type",
+                    ParamValue = activityeInfo.ActivityType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
             }
 
+            return GenerateDal.LoadByConditions<ActivityModel>(CommonSqlKey.GetWechatActivityList, conditions);
+        }
+         
+        // 取活动优惠券列表
+        public List<PrivilegeModel> GetActivityPrivilegeListById(ActivityPrivilegeRelationModel privilegeRelationInfo)
+        {
+            var conditions = new List<Condition>();
+            
+            if (!string.IsNullOrEmpty(privilegeRelationInfo.ActivityId))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ActivityId",
+                    DbColumnName = "a.activity_id",
+                    ParamValue = privilegeRelationInfo.ActivityId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            
 
-            return GenerateDal.LoadByConditions<PrivilegeModel>(CommonSqlKey.GetActivityPrivilegeList, conditions);
+
+            return GenerateDal.LoadByConditions<PrivilegeModel>(CommonSqlKey.GetActivityPrivilegeListById, conditions);
         }
 
 
@@ -715,12 +738,10 @@ namespace Fycn.Service
             return GenerateDal.CountByConditions(CommonSqlKey.GetPrivilegeCountByMemberId, conditions);
         }
 
-        //当前会员可领取的券的次数
-        public int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo)
+        //取指定时间内用户优惠券数量
+        public int GetTicketCountByTime(PrivilegeMemberRelationModel privilegeMemberInfo)
         {
             var conditions = new List<Condition>();
-            if (privilegeMemberInfo.PrincipleType=="2")
-            {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
@@ -755,13 +776,10 @@ namespace Fycn.Service
                 });
 
                 //取该用户当天的券数量
-                int reuslt = GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
-                if (reuslt == 0)
-                {
-                    return 1;
-                }
+                int result = GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);
+                return result;
 
-            }
+            
 
             return 0;
             

@@ -378,12 +378,26 @@ namespace FycnApi.Controllers
         //获取符合活动规则的券
         public ResultObj<List<PrivilegeModel>> GetActivityPrivilegeList(string clientId = "", string activityType="")
         {
-            ActivityModel activityInfo=new ActivityModel();
-            activityInfo.ClientId=clientId;
-            activityInfo.ActivityType= activityType;
+            IWechat iwechat = new WechatService();
+            ActivityModel activityInfo = new ActivityModel();
+            activityInfo.ClientId = clientId;
+            activityInfo.ActivityType = activityType;
+            //取活动列表
+            List<ActivityModel> lstActivityInfo = iwechat.GetActivityList(activityInfo);
+            string activityId = string.Empty;
+            if (lstActivityInfo.Count == 0)
+            {
+                return Content(new List<PrivilegeModel>());
+            }
+            else
+            {
+                activityId = lstActivityInfo[0].Id;
+            }
+            ActivityPrivilegeRelationModel activityRelationInfo =new ActivityPrivilegeRelationModel();
+            activityRelationInfo.ActivityId = activityId;
 
-            IWechat iwechat=new WechatService();
-            return Content(iwechat.GetActivityPrivilegeList(activityInfo));
+            
+            return Content(iwechat.GetActivityPrivilegeListById(activityRelationInfo));
         }
 
         public ResultObj<int> GetTicket([FromBody]PrivilegeMemberRelationModel privilegeMemberInfo)
@@ -422,15 +436,37 @@ namespace FycnApi.Controllers
         /// <param name="memberId"></param>
         /// <param name="clientId"></param>
         /// <returns></returns>
-        public ResultObj<int> GetCanTakeTicketCount(string memberId = "", string clientId = "", string principleType="")
+        public ResultObj<int> GetCanTakeTicketCount(string memberId = "", string clientId = "", string activityType="")
         {
             PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
             privilegeMemberInfo.MemberId = memberId;
             privilegeMemberInfo.ClientId = clientId;
-            privilegeMemberInfo.PrincipleType = principleType;
+            privilegeMemberInfo.PrincipleType = activityType;
 
             IWechat iwechat = new WechatService();
-            return Content(iwechat.GetCanTakeTicketCount(privilegeMemberInfo));
+            
+            //
+            int nowTicket = iwechat.GetTicketCountByTime(privilegeMemberInfo);
+            ActivityModel activityInfo = new ActivityModel();
+            activityInfo.ClientId = clientId;
+            activityInfo.ActivityType = activityType;
+            List<ActivityModel> lstActivity = iwechat.GetActivityList(activityInfo);
+            int settingCount = 0;
+            if (lstActivity.Count == 0)
+            {
+                return Content(0);
+            }
+            else
+            {
+                settingCount = lstActivity[0].CountPerPerson;
+            }
+            int canTake = settingCount - nowTicket;
+            if(canTake <= 0)
+            {
+                return Content(0);
+            }
+            
+            return Content(canTake);
         }
 
         #region 取货

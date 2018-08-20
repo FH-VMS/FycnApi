@@ -269,7 +269,7 @@ namespace Fycn.SqlDataAccess
         GetProdcutAndGroupList,
         GetHistorySalesList,
         GetWaitingSalesList,
-        GetActivityPrivilegeList,
+        GetActivityPrivilegeListById,
         IsExistTicket,
         GetPrivilegeByMemberId,
         GetPrivilegeCountByMemberId,
@@ -281,6 +281,7 @@ namespace Fycn.SqlDataAccess
         UpdateSalesCashlessByPickup,
         UpdatePickupCodeStatus,
         ExchangeFromFriend,
+        GetWechatActivityList,
 
         //优惠券信息
         GetPrivilegeList,

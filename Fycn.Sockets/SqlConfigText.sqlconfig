@@ -255,7 +255,7 @@
   "GetActivityList": "SELECT a.*,b.book_chinese as TimeRuleText,c.book_chinese as ActivityTypeText FROM table_activity_info a LEFT JOIN table_book b ON a.time_rule=b.`value` AND b.id='timerule' LEFT JOIN table_book c ON a.activity_type=c.`value` AND c.id='privilegegroup' ",
   "GetActivityCount": "SELECT COUNT(1) FROM table_activity_info",
   "DeleteActivity": "DELETE FROM table_activity_info WHERE id=?p_Id ",
-  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId,numbers=?p_Numbers WHERE id=?p_Id ",
+  "UpdateActivity": "UPDATE table_activity_info SET name=?p_Name, time_rule=?p_TimeRule,start_time=?p_StartTime,end_time=?p_EndTime, create_date=?p_CreateDate, creator=?p_Creator, activity_type=?p_ActivityType,client_id=?p_ClientId,numbers=?p_Numbers,count_per_person=?p_CountPerPerson WHERE id=?p_Id ",
   "GetActivityRelation": "SELECT * FROM table_activity_privilege_relation ",
   "DeleteActivityRelation": "DELETE FROM table_activity_privilege_relation WHERE activity_id=?p_ActivityId ",
 
@@ -273,7 +273,7 @@
   "GetPayProdcutAndGroupList": "SELECT * FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) a ",
   "GetHistorySalesList": "SELECT * FROM table_sales_cashless ",
   "GetWaitingSalesList": "SELECT * FROM table_client_sales_relation ",
-  "GetActivityPrivilegeList": "SELECT c.*,b.rate as Rate FROM table_activity_info a LEFT JOIN table_activity_privilege_relation b ON a.id=b.activity_id LEFT JOIN table_privilege_info c ON b.privilege_id=c.privilege_id ",
+  "GetActivityPrivilegeListById": "SELECT b.*,a.rate as Rate FROM table_activity_privilege_relation a LEFT JOIN table_privilege_info b ON a.privilege_id=b.privilege_id ",
   "IsExistTicket": "SELECT COUNT(1) FROM table_privilege_member_relation ",
   "GetPrivilegeByMemberId": "SELECT *,b.book_chinese as PrivilegeTypeText,c.wares_name as WaresName FROM table_privilege_member_relation a LEFT JOIN table_book b ON a.principle_type=b.`value` AND b.id='privilegetype' LEFT JOIN table_product c ON a.bind_product_ids=c.wares_id ",
   "GetPrivilegeCountByMemberId": "SELECT COUNT(1) FROM table_privilege_member_relation ",
@@ -284,6 +284,7 @@
   "UpdateSalesCashlessByPickup": "UPDATE table_sales_cashless SET machine_id=?p_MachineId, goods_id=?p_GoodsId,trade_status=?p_TradeStatus,sales_date=?p_SalesDate,reality_sale_number=?p_RealitySaleNumber WHERE trade_no=?p_TradeNo AND wares_id=?p_WaresId ",
   "UpdatePickupCodeStatus": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND pickup_code=?p_PickupNo ",
   "ExchangeFromFriend": "UPDATE table_client_sales_relation SET member_id=?p_MemberId WHERE code_status=?p_CodeStatus AND pickup_code=?p_PickupNo",
+  "GetWechatActivityList": "SELECT * FROM table_activity_info ",
 
   "_comment": "优惠券",
   "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName,c.book_chinese AS PrincipleTypeText,d.book_chinese AS TimeRuleText FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id LEFT JOIN table_book c ON a.principle_type=c.`value` AND c.id='privilegetype' LEFT JOIN table_book d ON a.time_rule=d.`value` AND d.id='timerule' ",

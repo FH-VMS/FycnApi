@@ -41,7 +41,7 @@ namespace Fycn.Interface
         int PostPayResultW(List<ProductPayModel> lstProductPay, string sellerId, string buyerId, string isConcern, string payDate,string clientId);
 
         [Remark("获取符合条件的活动券", ParmsNote = "", ReturnNote = "")]
-        List<PrivilegeModel> GetActivityPrivilegeList(ActivityModel privilegeInfo);
+        List<PrivilegeModel> GetActivityPrivilegeListById(ActivityPrivilegeRelationModel privilegeInfo);
 
         [Remark("会员领取优惠券", ParmsNote = "", ReturnNote = "")]
         int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo);
@@ -56,7 +56,7 @@ namespace Fycn.Interface
         int GetPrivilegeCountByMemberId(PrivilegeMemberRelationModel privilegeMemberInfo);
 
         [Remark("取得会员可领优惠券的次数", ParmsNote = "", ReturnNote = "")]
-        int GetCanTakeTicketCount(PrivilegeMemberRelationModel privilegeMemberInfo);
+        int GetTicketCountByTime(PrivilegeMemberRelationModel privilegeMemberInfo);
 
         [Remark("取可用优惠券", ParmsNote = "", ReturnNote = "")]
         List<PrivilegeMemberRelationModel> GetCanUsePrivilege(PrivilegeMemberRelationModel privilegeMemberInfo, string privilegeIds,ref decimal totalFee, List<ProductPayModel> lstPayInfo);
@@ -84,5 +84,8 @@ namespace Fycn.Interface
 
         [Remark("根据取货码和会员id取对应数据", ParmsNote = "", ReturnNote = "")]
         List<ClientSalesRelationModel> GetClientSalesByPickNo(string otherOpenId,ClientSalesRelationModel clientSalesInfo);
+
+        [Remark("取微信公众号对应的活动列表", ParmsNote = "", ReturnNote = "")]
+        List<ActivityModel> GetActivityList(ActivityModel activityeInfo);
     }
 }
