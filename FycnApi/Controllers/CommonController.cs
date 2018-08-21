@@ -208,6 +208,13 @@ namespace FycnApi.Controllers
             return Content(menusService.GetProductDic(clientId));
         }
 
+        // 取商品和商品组作字典
+        public ResultObj<List<CommonDic>> GetProductAndGroupDic(string clientId = "")
+        {
+            ICommon menusService = new CommonService();
+            return Content(menusService.GetProductAndGroupDic(clientId));
+        }
+
         // 取货柜作字典
         public ResultObj<List<CommonDic>> GetCabinetDic()
         {

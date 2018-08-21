@@ -51,6 +51,7 @@ namespace Fycn.SqlDataAccess
         GetProductDic,
         GetCabinetDic,
         GetProductDicAll,
+        GetProductAndGroupDic,
         CheckMachineId,
         GetMachineNameById,
         GetPayConfigDic,

@@ -47,6 +47,9 @@ namespace Fycn.Interface
         [Remark("取商品做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetProductDic(string clinetId);
 
+        [Remark("取商品和商品组做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
+        List<CommonDic> GetProductAndGroupDic(string clinetId);
+
         [Remark("取货柜做字典", ParmsNote = "", ReturnNote = "字典实体列表")]
         List<CommonDic> GetCabinetDic();
 

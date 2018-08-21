@@ -48,6 +48,7 @@
   "GetNotExpirePrivilegeDic": "SELECT privilege_id as Id, privilege_name as Name FROM table_privilege_info ",
   "GetPicPathByWaresId": "SELECT CONCAT(?p_ResourceUrl,b.pic_path) as PicUrl FROM table_product a LEFT JOIN table_pic b ON a.pic_id=b.pic_id ",
   "GetMachineDicWithStatus": "SELECT machine_id as Id, CONCAT(machine_id,' | ',IFNULL(remark,''), '~', IFNULL(TIMESTAMPDIFF(SECOND,latest_date,NOW()),'')) as Name FROM table_machine ",
+  "GetProductAndGroupDic": "SELECT a.wares_id as Id, a.wares_name as Name FROM (SELECT * FROM table_product UNION SELECT * FROM table_product_group) a ",
 
   "_comment": "机型",
   "GetMachineType": "SELECT a.*,b.book_chinese as TypeTypeText FROM table_machine_type as a  LEFT JOIN table_book as b ON a.type_type=b.value WHERE b.id='typetype' ",

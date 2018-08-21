@@ -552,6 +552,79 @@ namespace Fycn.Service
             return result;
         }
 
+
+        //取商品作字典
+        public List<CommonDic> GetProductAndGroupDic(string clientId)
+        {
+            string userClientId = HttpContextHandler.GetHeaderObj("UserClientId").ToString();
+            if (string.IsNullOrEmpty(userClientId))
+            {
+                return null;
+            }
+            /*
+            string sts = HttpContextHandler.GetHeaderObj("Sts").ToString();
+            if (string.IsNullOrEmpty(sts))
+            {
+                return null;
+            }
+            */
+
+            var result = new List<CommonDic>();
+            var conditions = new List<Condition>();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                string clientIds = GetChildAndParentIds(userClientId);
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "a.client_id",
+                    ParamValue = "'" + clientIds.Replace(",", "','") + "'",
+                    Operation = ConditionOperate.INWithNoPara,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+            else
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "ClientId",
+                    DbColumnName = "a.client_id",
+                    ParamValue = clientId,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            /*
+            if (sts == "100" || sts == "99")
+            {
+            */
+            result = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductAndGroupDic, conditions);
+            /*
+            }
+            else
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = "  ",
+                    ParamName = "ClientId",
+                    DbColumnName = "",
+                    ParamValue = userClientId,
+                    Operation = ConditionOperate.None,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                result = GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetProductDic, conditions);
+
+            }
+            */
+            return result;
+        }
+
         // 取货柜作字典
         public List<CommonDic> GetCabinetDic()
         {
