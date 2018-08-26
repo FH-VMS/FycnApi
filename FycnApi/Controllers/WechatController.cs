@@ -154,6 +154,8 @@ namespace FycnApi.Controllers
                 }
                 
                 lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
+                //检查商品是否有套餐
+                bool hasGroup = false;
                 //遍历商品
                 foreach (ProductListModel productInfo in lstProduct)
                 {
@@ -162,6 +164,10 @@ namespace FycnApi.Controllers
                                       select m).ToList<ProductPayModel>();
                     if (productPay.Count > 0)
                     {
+                        if(productPay[0].IsGroup == 1)
+                        {
+                            hasGroup = true;
+                        }
                         totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresDiscountUnitPrice == 0 ? productInfo.WaresUnitPrice: productInfo.WaresDiscountUnitPrice);
                         productNames = productNames + productInfo.WaresName + ",";
                         productPay[0].TradeNo = payInfo.trade_no;
@@ -178,7 +184,7 @@ namespace FycnApi.Controllers
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
                privilegeInfo.MemberId = openId;
-                if(totalFee>0.01M)
+                if(totalFee>0.01M && !hasGroup)
                 {
                     List<PrivilegeMemberRelationModel> lstPrivilege=new List<PrivilegeMemberRelationModel>();
                   if (string.IsNullOrEmpty(privilegeIds) && string.IsNullOrEmpty(selfChosen))
