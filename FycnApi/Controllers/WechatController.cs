@@ -410,7 +410,15 @@ namespace FycnApi.Controllers
         {
             IWechat iwechat=new WechatService();
             int count=iwechat.IsExistTicket(privilegeMemberInfo);
-            if(count>0)
+             ActivityModel activityInfo = new ActivityModel();
+            activityInfo.ClientId = privilegeMemberInfo.ClientId;
+            activityInfo.ActivityType = privilegeMemberInfo.PrincipleType;
+            List<ActivityModel> lstActivity = iwechat.GetActivityList(activityInfo);
+            if(lstActivity.Count == 0)
+            {
+                return Content(0);
+            }
+            if(count>=lstActivity[0].CountPerPerson)
             {
                 return Content(0);
             }
@@ -447,7 +455,7 @@ namespace FycnApi.Controllers
             PrivilegeMemberRelationModel privilegeMemberInfo = new PrivilegeMemberRelationModel();
             privilegeMemberInfo.MemberId = memberId;
             privilegeMemberInfo.ClientId = clientId;
-            privilegeMemberInfo.PrincipleType = activityType;
+            privilegeMemberInfo.ActivityType = activityType;
 
             IWechat iwechat = new WechatService();
             

@@ -764,16 +764,38 @@ namespace Fycn.Service
                     Logic = ""
                 });
 
-                conditions.Add(new Condition
+                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "DateDate",
-                    DbColumnName = "to_days(get_date)",
-                    ParamValue = "to_days(now())",
+                    ParamName = "ActivityType",
+                    DbColumnName = "activity_type",
+                    ParamValue = privilegeMemberInfo.ActivityType,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
                 });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "StartDateDate",
+                    DbColumnName = "get_date",
+                    ParamValue = DateTime.Now.ToString("yyyy/MM/dd") + " 00:00:00",
+                    Operation = ConditionOperate.GreaterThan,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "EndDateDate",
+                    DbColumnName = "get_date",
+                    ParamValue = DateTime.Now.AddDays(1).ToString("yyyy/MM/dd") + " 00:00:00",
+                    Operation = ConditionOperate.Less,
+                    RightBrace = "",
+                    Logic = ""
+                });
+               
 
                 //取该用户当天的券数量
                 int result = GenerateDal.CountByConditions(CommonSqlKey.IsExistTicket, conditions);

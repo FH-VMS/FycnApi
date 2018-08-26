@@ -57,6 +57,13 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        [Column(Name = "activity_type")]
+        public string ActivityType
+        {
+            get;
+            set;
+        }
+
         public string PrivilegeTypeText
         {
             get;
