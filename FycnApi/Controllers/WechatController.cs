@@ -408,16 +408,25 @@ namespace FycnApi.Controllers
 
         public ResultObj<int> GetTicket([FromBody]PrivilegeMemberRelationModel privilegeMemberInfo)
         {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+
+            
             IWechat iwechat=new WechatService();
-            int count=iwechat.IsExistTicket(privilegeMemberInfo);
+            PrivilegeMemberRelationModel tmpInfo = new PrivilegeMemberRelationModel();
+            tmpInfo.MemberId = privilegeMemberInfo.MemberId;
+            tmpInfo.ClientId = privilegeMemberInfo.ClientId;
+            tmpInfo.ActivityType = privilegeMemberInfo.ActivityType;
+            int count=iwechat.GetTicketCountByTime(tmpInfo);
+            log.Info("count:" + count);
              ActivityModel activityInfo = new ActivityModel();
             activityInfo.ClientId = privilegeMemberInfo.ClientId;
-            activityInfo.ActivityType = privilegeMemberInfo.PrincipleType;
+            activityInfo.ActivityType = privilegeMemberInfo.ActivityType;
             List<ActivityModel> lstActivity = iwechat.GetActivityList(activityInfo);
             if(lstActivity.Count == 0)
             {
                 return Content(0);
             }
+            log.Info("countperperson:" + lstActivity[0].CountPerPerson);
             if(count>=lstActivity[0].CountPerPerson)
             {
                 return Content(0);
