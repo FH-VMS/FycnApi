@@ -204,5 +204,11 @@ namespace Fycn.Model.Privilege
             set;
         }
 
+        public string ActivityId
+        {
+            get;
+            set;
+        }
+
     }
 }

@@ -286,6 +286,7 @@
   "UpdatePickupCodeStatus": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND pickup_code=?p_PickupNo ",
   "ExchangeFromFriend": "UPDATE table_client_sales_relation SET member_id=?p_MemberId WHERE code_status=?p_CodeStatus AND pickup_code=?p_PickupNo",
   "GetWechatActivityList": "SELECT * FROM table_activity_info ",
+  "UpdateActivityNumberById": "UPDATE table_activity_info SET numbers=numbers-1 WHERE id=?p_Id ",
 
   "_comment": "优惠券",
   "GetPrivilegeList": "SELECT a.*,b.client_name as ClientName,c.book_chinese AS PrincipleTypeText,d.book_chinese AS TimeRuleText FROM table_privilege_info a LEFT JOIN table_client b ON a.client_id=b.client_id LEFT JOIN table_book c ON a.principle_type=c.`value` AND c.id='privilegetype' LEFT JOIN table_book d ON a.time_rule=d.`value` AND d.id='timerule' ",

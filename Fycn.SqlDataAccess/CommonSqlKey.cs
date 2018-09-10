@@ -283,6 +283,7 @@ namespace Fycn.SqlDataAccess
         UpdatePickupCodeStatus,
         ExchangeFromFriend,
         GetWechatActivityList,
+        UpdateActivityNumberById,
 
         //优惠券信息
         GetPrivilegeList,

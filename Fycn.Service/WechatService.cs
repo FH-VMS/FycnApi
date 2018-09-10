@@ -624,9 +624,32 @@ namespace Fycn.Service
         //会员领取优惠券
         public int PostTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
         {
-            privilegeMemberInfo.Id = Guid.NewGuid().ToString();
-            privilegeMemberInfo.GetDate=DateTime.Now;
-            return GenerateDal.Create(privilegeMemberInfo);
+            try
+            {
+                GenerateDal.BeginTransaction();
+                privilegeMemberInfo.Id = Guid.NewGuid().ToString();
+                privilegeMemberInfo.GetDate=DateTime.Now;
+                GenerateDal.Create(privilegeMemberInfo);
+                if(!string.IsNullOrEmpty(privilegeMemberInfo.ActivityId))
+                {
+                    UpdateCurrTicket(privilegeMemberInfo.ActivityId);
+                }
+                GenerateDal.CommitTransaction();
+                return 1;
+            }
+            catch (Exception e)
+            {
+                GenerateDal.RollBack();
+                return 0;
+            }
+        }
+
+        //领券后更新减券的数量
+        private void UpdateCurrTicket(string activityId)
+        {
+            ActivityModel activityInfo = new ActivityModel();
+            activityInfo.Id = activityId;
+            GenerateDal.Execute(CommonSqlKey.UpdateActivityNumberById, activityInfo);
         }
 
         public int IsExistTicket(PrivilegeMemberRelationModel privilegeMemberInfo)
