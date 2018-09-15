@@ -447,8 +447,8 @@ namespace Fycn.Service
                 RedisHelper redisHelper3 = new RedisHelper(3);
                 if (redisHelper3.KeyExists(tmpStr))
                 {
-                    GeneratePickupCode();
-                    return "";
+                    return GeneratePickupCode();
+                    // return "";
                 }
                 else
                 {
@@ -458,8 +458,8 @@ namespace Fycn.Service
             }
             catch
             {
-                GeneratePickupCode();
-                return "";
+                return Guid.NewGuid().GetHashCode().ToString();
+                // return "";
             }
             
         }
