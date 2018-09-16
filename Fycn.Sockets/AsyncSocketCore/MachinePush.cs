@@ -100,8 +100,7 @@ namespace Fycn.Sockets.AsyncSocketCore
                     string signCode = ByteHelper.GenerateRealityData(data.Skip(13).Take(6).ToArray(), "stringval");
 
                     //resultA1 = imachine.UpdateMachineInlineTimeAndIpv4(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString() + "-" + m_asyncSocketUserToken.ConnectSocket.LocalEndPoint.ToString());
-                    m_asyncSocketUserToken.MachineId = machineNum41;
-                    SocketDictionary.Add(machineNum41, m_asyncSocketUserToken);
+                    
 
                     byte[] returnByte41 = new byte[21];
                     returnByte41[0] = byteInfo[0];//包头;
@@ -113,6 +112,7 @@ namespace Fycn.Sockets.AsyncSocketCore
 
                     if (MachineHelper.IsLegal(machineNum41, signCode, "code"))
                     {
+                        
                         try
                         {
                             ICommon common41 = new CommonService();
@@ -122,6 +122,8 @@ namespace Fycn.Sockets.AsyncSocketCore
                                 MachineHelper.ClearCode(machineNum41, "code");
                                 MachineHelper.Signature(machineNum41, m_asyncSocketUserToken.ConnectSocket.RemoteEndPoint.ToString());
                                 returnByte41[19] = 48;
+                                m_asyncSocketUserToken.MachineId = machineNum41;
+                                SocketDictionary.Add(machineNum41, m_asyncSocketUserToken);
                             }
                             else
                             {
