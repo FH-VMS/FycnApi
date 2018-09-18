@@ -25,8 +25,7 @@ namespace Fycn.PaymentLib
             }
         }
 
-        //public static string NotidyAddr = "http://www.fy-cn.top:8088/api";//正式
-        public static string RootAliMchId = "2088621838347114"; //分账的支付宝商户号
-        public static string RootWeixinMchId = "1433899402"; //分账的微信商户号
+        //分账账户的微信商户号和支付宝合作伙伴id
+        public static string[] DistrubuteAccounts = { "1433899402", "2088621838347114" };
     }
 }

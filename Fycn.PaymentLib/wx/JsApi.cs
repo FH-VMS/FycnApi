@@ -131,23 +131,48 @@ namespace Fycn.PaymentLib.wx
             return result;
         }
 
-        /**
-       *  
-       * 从统一下单成功返回的数据中获取微信浏览器调起jsapi支付所需的参数，
-       * 微信浏览器调起JSAPI时的输入参数格式如下：
-       * {
-       *   "appId" : "wx2421b1c4370ec43b",     //公众号名称，由商户传入     
-       *   "timeStamp":" 1395712654",         //时间戳，自1970年以来的秒数     
-       *   "nonceStr" : "e61463f8efa94090b1f366cccfbbb444", //随机串     
-       *   "package" : "prepay_id=u802345jgfjsdfgsdg888",     
-       *   "signType" : "MD5",         //微信签名方式:    
-       *   "paySign" : "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
-       * }
-       * @return string 微信浏览器调起JSAPI时的输入参数，json格式可以直接做参数用
-       * 更详细的说明请参考网页端调起支付API：http://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7
-       * 
-       */
-        public string GetJsApiParameters(WxPayConfig payConfig, PayModel payInfo)
+        /// <summary>
+        /// 企业向个人打款
+        /// </summary>
+        /// <param name="payInfo"></param>
+        /// <param name="payConfig"></param>
+        /// <returns></returns>
+        public WxPayData GetTransferToPersonal(TransferModel transfer, WxPayConfig payConfig)
+        {
+            WxPayData data = new WxPayData();
+            data.SetValue("partner_trade_no", transfer.partner_trade_no);
+            data.SetValue("openid", transfer.openid);
+            data.SetValue("re_user_name",transfer.re_user_name);
+            data.SetValue("amount", transfer.amount);
+            data.SetValue("desc", transfer.desc);
+
+            WxPayData result = WxPayApi.TransferToPersonal(data, payConfig);
+            if (!result.IsSet("appid") || !result.IsSet("prepay_id") || result.GetValue("prepay_id").ToString() == "")
+            {
+
+                throw new WxPayException("transfer interface error!");
+            }
+
+            return result;
+        }
+
+            /**
+           *  
+           * 从统一下单成功返回的数据中获取微信浏览器调起jsapi支付所需的参数，
+           * 微信浏览器调起JSAPI时的输入参数格式如下：
+           * {
+           *   "appId" : "wx2421b1c4370ec43b",     //公众号名称，由商户传入     
+           *   "timeStamp":" 1395712654",         //时间戳，自1970年以来的秒数     
+           *   "nonceStr" : "e61463f8efa94090b1f366cccfbbb444", //随机串     
+           *   "package" : "prepay_id=u802345jgfjsdfgsdg888",     
+           *   "signType" : "MD5",         //微信签名方式:    
+           *   "paySign" : "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
+           * }
+           * @return string 微信浏览器调起JSAPI时的输入参数，json格式可以直接做参数用
+           * 更详细的说明请参考网页端调起支付API：http://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7
+           * 
+           */
+            public string GetJsApiParameters(WxPayConfig payConfig, PayModel payInfo)
         {
 
             WxPayData jsApiParam = new WxPayData();

@@ -452,6 +452,12 @@ namespace Fycn.Service
                         refund.PostRefundA(lstSaleModel);
                     }
                 }
+                else
+                {
+                    //如果是分账账户，打款到个人
+                    DistrubuteMoneyService ds = new DistrubuteMoneyService();
+                    ds.PostMoney(saleModel);
+                }
                
             }
             catch(Exception e)

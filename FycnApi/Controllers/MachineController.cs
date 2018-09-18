@@ -287,11 +287,6 @@ namespace FycnApi.Controllers
                         //删除文件
                         //helper.KeyDelete(tradeNoNode.InnerText);
                         //FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
-                        if(mchIdNode.InnerText == PathConfig.RootWeixinMchId)
-                        {
-                            IDistrubuteMoney imoney = new DistrubuteMoneyService();
-                            imoney.PostMoney(tradeNoNode.InnerText);
-                        }
                     }
                    
                 }
@@ -388,11 +383,6 @@ namespace FycnApi.Controllers
                         //删除文件
                         //helper.KeyDelete(outTradeNo);
                         //FileHandler.DeleteFile("data/" + outTradeNo + ".wa");
-                        if (sellerId == PathConfig.RootAliMchId)
-                        {
-                            IDistrubuteMoney imoney = new DistrubuteMoneyService();
-                            imoney.PostMoney(outTradeNo);
-                        }
                         return "success";
                     }
                     
