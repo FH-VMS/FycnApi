@@ -306,6 +306,10 @@ namespace Fycn.SqlDataAccess
         //公众号设置
         IsExistWechat,
         GetWechatInfo,
-        UpdateWechatInfo
+        UpdateWechatInfo,
+
+        //分账系统
+        GetAccountByMachineId,
+        UpdateTransferList
     }
 }

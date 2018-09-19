@@ -296,5 +296,9 @@
 
   "_comment": "微信会员",
   "GetWechatMemberList": "SELECT a.*,b.client_name as ClientName FROM table_wechat_member a LEFT JOIN table_client b ON a.client_id=b.client_id ",
-  "GetWechatMemberCount": "SELECT COUNT(1) FROM table_wechat_member a LEFT JOIN table_client b ON a.client_id=b.client_id "
+  "GetWechatMemberCount": "SELECT COUNT(1) FROM table_wechat_member a LEFT JOIN table_client b ON a.client_id=b.client_id ",
+
+  "_comment": "分账系统",
+  "GetAccountByMachineId": "SELECT b.* FROM table_machine a LEFT JOIN table_transfer_account_system b ON a.transfer_account_id=b.id ",
+  "UpdateTransferList": "UPDATE table_transfer_fund_info SET transfer_status=?p_TransferStatus, transfer_date=?p_TransferDate,operator=?p_Operator WHERE id=?p_Id "
 }
