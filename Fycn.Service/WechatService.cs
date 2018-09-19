@@ -458,7 +458,7 @@ namespace Fycn.Service
             }
             catch
             {
-                return Guid.NewGuid().GetHashCode().ToString();
+                return GeneratePickupCode();
                 // return "";
             }
             

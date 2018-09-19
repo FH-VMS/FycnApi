@@ -22,14 +22,14 @@ namespace FycnApi.Controllers
             }
         }
 
-        public ResultObj<List<SaleModel>> GetData(string machineId = "", string payType = "", string tradeStatus = "", string salesDate = "", string tradeNo = "", int pageIndex = 1, int pageSize = 10)
+        public ResultObj<List<SaleModel>> GetData(string machineId = "", string pickupCode = "", string tradeStatus = "", string salesDate = "", string tradeNo = "", int pageIndex = 1, int pageSize = 10)
         {
             // IProduct service = new ProductService();
             //List<ProductModel> products = service.GetAllProducts();
 
             SaleModel saleInfo = new SaleModel();
             saleInfo.MachineId = machineId;
-            saleInfo.PayType = payType;
+            saleInfo.PickupCode = pickupCode;
             saleInfo.TradeNo = tradeNo;
             if (!string.IsNullOrEmpty(tradeStatus))
             {

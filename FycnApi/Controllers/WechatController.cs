@@ -533,7 +533,7 @@ namespace FycnApi.Controllers
                 return "NG取货码错误";
             }
             
-            redisHelper3.KeyDelete(pickcode);
+            // redisHelper3.KeyDelete(pickcode);
             return "OK" + lstRelation[0].WaresName;
             /*
             var request = Fycn.Utility.HttpContext.Current.Request;
@@ -560,7 +560,9 @@ namespace FycnApi.Controllers
             clientSalesRelation.PickupNo = pickcode;
             clientSalesRelation.Remark = "成功";
             int result = iwechat.PutPayResultByPickupCode(clientSalesRelation);
-            if(result==3)
+            RedisHelper redisHelper3 = new RedisHelper(3);
+            redisHelper3.KeyDelete(pickcode);
+            if (result==3)
             {
                 return "NG取货码不存在";
             }

@@ -62,15 +62,15 @@ namespace Fycn.Service
                 });
             }
 
-            if (!string.IsNullOrEmpty(saleInfo.PayType))
+            if (!string.IsNullOrEmpty(saleInfo.PickupCode))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "PayType",
-                    DbColumnName = "a.pay_type",
-                    ParamValue = saleInfo.PayType,
-                    Operation = ConditionOperate.Equal,
+                    ParamName = "PickupCode",
+                    DbColumnName = "b.pickup_code",
+                    ParamValue = "%" + saleInfo.PickupCode + "%",
+                    Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
@@ -195,15 +195,15 @@ namespace Fycn.Service
                 });
             }
 
-            if (!string.IsNullOrEmpty(saleInfo.PayType))
+            if (!string.IsNullOrEmpty(saleInfo.PickupCode))
             {
                 conditions.Add(new Condition
                 {
                     LeftBrace = " AND ",
-                    ParamName = "PayType",
-                    DbColumnName = "a.pay_type",
-                    ParamValue = saleInfo.PayType,
-                    Operation = ConditionOperate.Equal,
+                    ParamName = "PickupCode",
+                    DbColumnName = "b.pickup_code",
+                    ParamValue = "%" + saleInfo.PickupCode + "%",
+                    Operation = ConditionOperate.Like,
                     RightBrace = "",
                     Logic = ""
                 });
