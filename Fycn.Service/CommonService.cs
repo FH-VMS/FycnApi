@@ -739,6 +739,36 @@ namespace Fycn.Service
 
         }
 
+        //根据支付配置id和客户id取分账账户
+        public List<CommonDic> GetAccountManageDic(string payConfigId, string clientId)
+        {
+            string clientIds = GetChildAndParentIds(clientId);
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = " "
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PayConfigId",
+                DbColumnName = "pay_config_id",
+                ParamValue = payConfigId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = " "
+            });
+
+            return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetAccountManageDic, conditions);
+
+        }
+
         //可考虑放入redis缓存
         public string GetChildAndParentIds(string clientId)
         {

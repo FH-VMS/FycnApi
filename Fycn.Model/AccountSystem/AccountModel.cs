@@ -15,6 +15,20 @@ namespace Fycn.Model.AccountSystem
             set;
         }
 
+        [Column(Name = "name")]
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        [Column(Name = "client_id")]
+        public string ClientId
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "pay_config_id")]
         public string PayConfigId
         {
@@ -73,6 +87,24 @@ namespace Fycn.Model.AccountSystem
 
         [Column(Name = "ali_rate")]
         public float AliRate
+        {
+            get;
+            set;
+        }
+
+        public int PageIndex
+        {
+            get;
+            set;
+        }
+
+        public int PageSize
+        {
+            get;
+            set;
+        }
+
+        public string PayConfigName
         {
             get;
             set;

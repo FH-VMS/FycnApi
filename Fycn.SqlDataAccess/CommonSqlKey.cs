@@ -60,6 +60,7 @@ namespace Fycn.SqlDataAccess
         GetNotExpirePrivilegeDic,
         GetPicPathByWaresId,
         GetMachineDicWithStatus,
+        GetAccountManageDic,
 
         //机型
         GetMachineType,
@@ -310,6 +311,10 @@ namespace Fycn.SqlDataAccess
 
         //分账系统
         GetAccountByMachineId,
-        UpdateTransferList
+        UpdateTransferList,
+        UpdateAccountManage,
+        DeleteAccountManage,
+        GetAccountManageList,
+        GetAccountManageCount
     }
 }

@@ -86,5 +86,7 @@ namespace Fycn.Interface
         [Remark("根据商品id取图片路径", ParmsNote = "", ReturnNote = "图片列表实体")]
         List<PictureModel> GetPicPathByWaresId(string waresId);
 
+        [Remark("根据支付配置id和客户id取分账账户", ParmsNote = "", ReturnNote = "")]
+        List<CommonDic> GetAccountManageDic(string payConfigId, string clientId);
     }
 }

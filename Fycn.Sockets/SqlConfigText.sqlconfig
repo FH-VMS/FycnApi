@@ -43,6 +43,7 @@
   "CheckMachineId": "SELECT count(1) FROM table_machine ",
   "GetMachineNameById": "SELECT machine_id as Id, remark as Name FROM table_machine ",
   "GetPayConfigDic": "SELECT id,name FROM table_mobile_pay_config ",
+  "GetAccountManageDic": "SELECT id,name FROM table_transfer_account_system ",
   "GetAdDic": "SELECT id,name FROM table_ad ",
   "GetProductTypeDic": "SELECT wares_type_id as Id,wares_type_name as Name FROM table_product_type ",
   "GetNotExpirePrivilegeDic": "SELECT privilege_id as Id, privilege_name as Name FROM table_privilege_info ",
@@ -300,5 +301,9 @@
 
   "_comment": "分账系统",
   "GetAccountByMachineId": "SELECT b.* FROM table_machine a LEFT JOIN table_transfer_account_system b ON a.transfer_account_id=b.id ",
-  "UpdateTransferList": "UPDATE table_transfer_fund_info SET transfer_status=?p_TransferStatus, transfer_date=?p_TransferDate,operator=?p_Operator WHERE id=?p_Id "
+  "UpdateTransferList": "UPDATE table_transfer_fund_info SET transfer_status=?p_TransferStatus, transfer_date=?p_TransferDate,operator=?p_Operator WHERE id=?p_Id ",
+  "UpdateAccountManage": "UPDATE table_transfer_account_system SET `client_id=?p_ClientId,name`=?p_Name,pay_config_id=?p_PayConfigId,partner_id=?p_PartnerId,mch_id=?p_MchId,user_openid=?p_UserOpenid,wx_user_name=?p_WxUserName,ali_account=?p_AliAccount,ali_user_name=?p_AliUserName,wx_rate=?p_WxRate,ali_rate=?p_AliRate WHERE id=?p_Id ",
+  "DeleteAccountManage": "DELETE FROM table_transfer_account_system WHERE id=?p_Id ",
+  "GetAccountManageCount": "SELECT COUNT(1) FROM table_transfer_account_system ",
+  "GetAccountManageList": "SELECT a.*,b.`name` as PayConfigName FROM table_transfer_account_system a LEFT JOIN table_mobile_pay_config b ON a.pay_config_id=b.id "
 }

@@ -241,6 +241,16 @@ namespace FycnApi.Controllers
             return Content(commonService.GetPayConfigDic(clientId));
         }
 
+        public ResultObj<List<CommonDic>> GetAccountManageDic(string payConfigId, string clientId)
+        {
+            if (string.IsNullOrEmpty(clientId)||string.IsNullOrEmpty(payConfigId))
+            {
+                return Content(new List<CommonDic>());
+            }
+            ICommon commonService = new CommonService();
+            return Content(commonService.GetAccountManageDic(payConfigId, clientId));
+        }
+
         //取广告模板字典
         public ResultObj<List<CommonDic>> GetAdDic(string clientId)
         {
