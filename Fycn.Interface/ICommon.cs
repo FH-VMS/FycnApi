@@ -88,5 +88,8 @@ namespace Fycn.Interface
 
         [Remark("根据支付配置id和客户id取分账账户", ParmsNote = "", ReturnNote = "")]
         List<CommonDic> GetAccountManageDic(string payConfigId, string clientId);
+
+        [Remark("取可分账配置作为字典", ParmsNote = "", ReturnNote = "")]
+        List<CommonDic> GetCanDistributePayConfigDic();
     }
 }

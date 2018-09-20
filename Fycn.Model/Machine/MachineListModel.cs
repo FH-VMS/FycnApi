@@ -156,6 +156,13 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        [Column(Name = "transfer_account_id")]
+        public string TransferAccountId
+        {
+            get;
+            set;
+        }
+
         public string LatestOnline
          {
              get;

@@ -752,7 +752,7 @@ namespace Fycn.Service
                 ParamValue = clientId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
-                Logic = " "
+                Logic = ""
             });
             conditions.Add(new Condition
             {
@@ -762,10 +762,30 @@ namespace Fycn.Service
                 ParamValue = payConfigId,
                 Operation = ConditionOperate.Equal,
                 RightBrace = "",
-                Logic = " "
+                Logic = ""
             });
 
             return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetAccountManageDic, conditions);
+
+        }
+
+        //取可分账配置作为字典
+        public List<CommonDic> GetCanDistributePayConfigDic()
+        {
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ConfigType",
+                DbColumnName = "config_type",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+
+            return GenerateDal.LoadByConditions<CommonDic>(CommonSqlKey.GetPayConfigDic, conditions);
 
         }
 

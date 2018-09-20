@@ -251,6 +251,12 @@ namespace FycnApi.Controllers
             return Content(commonService.GetAccountManageDic(payConfigId, clientId));
         }
 
+        public ResultObj<List<CommonDic>> GetCanDistributePayConfigDic()
+        {
+            ICommon commonService = new CommonService();
+            return Content(commonService.GetCanDistributePayConfigDic());
+        }
+
         //取广告模板字典
         public ResultObj<List<CommonDic>> GetAdDic(string clientId)
         {
