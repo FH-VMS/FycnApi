@@ -81,30 +81,38 @@ namespace Fycn.Service
                 transferInfo.amount = Convert.ToInt32((saleInfo.TradeAmount - saleInfo.ServiceCharge) * (1 - accountInfo.WxRate) * 100);
             }
             transferInfo.desc = saleInfo.WaresName + "收款";
-            WxPayData result = jsApi.GetTransferToPersonal(transferInfo, payConfig);
-
-            TransferListModel tlInfo = new TransferListModel();
-            tlInfo.Id = Guid.NewGuid().ToString();
-            tlInfo.TradeNo = saleInfo.TradeNo;
-            tlInfo.PayInterface = "微信";
-            tlInfo.Amount = transferInfo.amount;
-            tlInfo.FyRate = accountInfo.WxRate;
-            tlInfo.MerchantId = saleInfo.MerchantId;
-            tlInfo.ToId = accountInfo.UserOpenid;
-            tlInfo.ReallyName = accountInfo.WxUserName;
-            tlInfo.Desc = result.ToJson();
-            if (result.GetValue("result_code").ToString().ToUpper() == "SUCCESS")
+            try
             {
+                WxPayData result = jsApi.GetTransferToPersonal(transferInfo, payConfig);
 
-                tlInfo.TransferStatus = "1";
+                TransferListModel tlInfo = new TransferListModel();
+                tlInfo.Id = Guid.NewGuid().ToString();
+                tlInfo.TradeNo = saleInfo.TradeNo;
+                tlInfo.PayInterface = "微信";
+                tlInfo.Amount = transferInfo.amount;
+                tlInfo.FyRate = accountInfo.WxRate;
+                tlInfo.MerchantId = saleInfo.MerchantId;
+                tlInfo.ToId = accountInfo.UserOpenid;
+                tlInfo.ReallyName = accountInfo.WxUserName;
+                tlInfo.Desc = result.ToJson();
+                if (result.GetValue("result_code").ToString().ToUpper() == "SUCCESS")
+                {
+
+                    tlInfo.TransferStatus = "1";
+                }
+                else
+                {
+                    tlInfo.TransferStatus = "0";
+                }
+
+                TransferListService transferListService = new TransferListService();
+                transferListService.PostData(tlInfo);
             }
-            else
+            catch (Exception exp)
             {
-                tlInfo.TransferStatus = "0";
+                Log.Write("wxtransfer", exp.Message);
+                throw exp;
             }
-
-            TransferListService transferListService = new TransferListService();
-            transferListService.PostData(tlInfo);
             return 1;
         }
 
@@ -163,36 +171,44 @@ namespace Fycn.Service
             model.Remark = saleInfo.WaresName + "收款";
             AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
             request.SetBizModel(model);
-            AlipayFundTransToaccountTransferResponse response = client.Execute(request);
+            try
+            {
+                AlipayFundTransToaccountTransferResponse response = client.Execute(request);
 
-            TransferListModel tlInfo = new TransferListModel();
-            tlInfo.Id = Guid.NewGuid().ToString();
-            tlInfo.TradeNo = saleInfo.TradeNo;
-            tlInfo.PayInterface = "支付宝";
-            tlInfo.Amount = float.Parse(model.Amount);
-            tlInfo.FyRate = accountInfo.AliRate;
-            tlInfo.MerchantId = saleInfo.MerchantId;
-            tlInfo.ToId = accountInfo.AliAccount;
-            tlInfo.ReallyName = accountInfo.AliUserName;
-            tlInfo.Desc = response.Body;
-            if (response.IsError)
-            {
-                tlInfo.TransferStatus = "0";
-            }
-            else
-            {
-                if(string.IsNullOrEmpty(response.OutBizNo))
+                TransferListModel tlInfo = new TransferListModel();
+                tlInfo.Id = Guid.NewGuid().ToString();
+                tlInfo.TradeNo = saleInfo.TradeNo;
+                tlInfo.PayInterface = "支付宝";
+                tlInfo.Amount = float.Parse(model.Amount);
+                tlInfo.FyRate = accountInfo.AliRate;
+                tlInfo.MerchantId = saleInfo.MerchantId;
+                tlInfo.ToId = accountInfo.AliAccount;
+                tlInfo.ReallyName = accountInfo.AliUserName;
+                tlInfo.Desc = response.Body;
+                if (response.IsError)
                 {
                     tlInfo.TransferStatus = "0";
                 }
                 else
                 {
-                    tlInfo.TransferStatus = "0";
-                    tlInfo.PaymentNo = response.OrderId;
+                    if (string.IsNullOrEmpty(response.OutBizNo))
+                    {
+                        tlInfo.TransferStatus = "0";
+                    }
+                    else
+                    {
+                        tlInfo.TransferStatus = "0";
+                        tlInfo.PaymentNo = response.OrderId;
+                    }
                 }
+                TransferListService transferListService = new TransferListService();
+                transferListService.PostData(tlInfo);
             }
-            TransferListService transferListService = new TransferListService();
-            transferListService.PostData(tlInfo);
+            catch (Exception exp)
+            {
+                Log.Write("zhifubaotransfer", exp.Message);
+                throw exp;
+            }
             return 1;
         }
 

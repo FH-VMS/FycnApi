@@ -79,7 +79,7 @@ namespace Fycn.Model.AccountSystem
             set;
         }
 
-        [Column(Name = "desc")]
+        [Column(Name = "description")]
         public string Desc
         {
             get;
