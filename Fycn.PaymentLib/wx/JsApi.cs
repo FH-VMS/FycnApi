@@ -143,16 +143,18 @@ namespace Fycn.PaymentLib.wx
             data.SetValue("partner_trade_no", transfer.partner_trade_no);
             data.SetValue("openid", transfer.openid);
             data.SetValue("re_user_name",transfer.re_user_name);
+            data.SetValue("check_name", "FORCE_CHECK");
             data.SetValue("amount", transfer.amount);
             data.SetValue("desc", transfer.desc);
 
             WxPayData result = WxPayApi.TransferToPersonal(data, payConfig);
+            /*
             if (!result.IsSet("appid") || !result.IsSet("prepay_id") || result.GetValue("prepay_id").ToString() == "")
             {
 
                 throw new WxPayException("transfer interface error!");
             }
-
+            */
             return result;
         }
 

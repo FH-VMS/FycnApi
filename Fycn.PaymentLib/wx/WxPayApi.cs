@@ -463,15 +463,7 @@ namespace Fycn.PaymentLib.wx
         {
             string url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
             //检测必填参数
-            if (!inputObj.IsSet("mch_appid"))
-            {
-                throw new WxPayException("缺少统一支付接口必填参数app id！");
-            }
-            else if (!inputObj.IsSet("mchid"))
-            {
-                throw new WxPayException("缺少统一支付接口必填参数mchid！");
-            }
-            else if (!inputObj.IsSet("partner_trade_no"))
+           if (!inputObj.IsSet("partner_trade_no"))
             {
                 throw new WxPayException("缺少统一支付接口必填参数partner_trade_no！");
             }
@@ -492,10 +484,6 @@ namespace Fycn.PaymentLib.wx
             {
                 throw new WxPayException("缺少统一支付接口必填参数desc！");
             }
-            else if (!inputObj.IsSet("spbill_create_ip"))
-            {
-                throw new WxPayException("缺少统一支付接口必填参数spbill_create_ip！");
-            }
 
             inputObj.SetValue("mch_appid", payConfig.APPID);//公众账号ID
             inputObj.SetValue("mchid", payConfig.MCHID);//商户号
@@ -509,7 +497,7 @@ namespace Fycn.PaymentLib.wx
             var start = DateTime.Now;
 
             //Log.Debug("WxPayApi", "UnfiedOrder request : " + xml);
-            string response = HttpService.Post(xml, url, false, timeOut, payConfig);
+            string response = HttpService.Post(xml, url, true, timeOut, payConfig);
 
             //Log.Write("result", response);
             //Log.Debug("WxPayApi", "UnfiedOrder response : " + response);
