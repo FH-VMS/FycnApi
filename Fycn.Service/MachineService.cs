@@ -420,6 +420,7 @@ namespace Fycn.Service
                 GenerateDal.BeginTransaction();
 
                 SaleModel saleModel = lstSaleModel[0];
+                int tradeStatus = saleModel.TradeStatus;
                 if (saleModel != null && saleModel.TradeStatus == 1)
                 {
                     //SaleModel saleInfo = new SaleModel();
@@ -454,9 +455,13 @@ namespace Fycn.Service
                 }
                 else
                 {
-                    //如果是分账账户，打款到个人
-                    DistrubuteMoneyService ds = new DistrubuteMoneyService();
-                    ds.PostMoney(saleModel);
+                    if(tradeStatus == 1)
+                    {
+                        //如果是分账账户，打款到个人
+                        DistrubuteMoneyService ds = new DistrubuteMoneyService();
+                        ds.PostMoney(saleModel);
+                    }
+                   
                 }
                
             }
