@@ -32,7 +32,8 @@ namespace Fycn.Service
                 if (saleInfo.PayInterface == "微信")
                 {
                     //微信分账
-                    WxTransfer(saleInfo);
+                    //WxTransfer(saleInfo);
+                    AliTransfer(saleInfo);
                 }
                 else if (saleInfo.PayInterface == "支付宝")
                 {
@@ -178,7 +179,7 @@ namespace Fycn.Service
                 TransferListModel tlInfo = new TransferListModel();
                 tlInfo.Id = Guid.NewGuid().ToString();
                 tlInfo.TradeNo = saleInfo.TradeNo;
-                tlInfo.PayInterface = "支付宝";
+                tlInfo.PayInterface = saleInfo.PayInterface;
                 tlInfo.Amount = float.Parse(model.Amount);
                 tlInfo.FyRate = accountInfo.AliRate;
                 tlInfo.MerchantId = saleInfo.MerchantId;
