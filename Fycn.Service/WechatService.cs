@@ -1061,6 +1061,17 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PrivilegeStatus",
+                DbColumnName = "a.privilege_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = " ",
+                Logic = ""
+            });
+
 
             List<PrivilegeMemberRelationModel> lstPrivilege = GenerateDal.LoadByConditions<PrivilegeMemberRelationModel>(CommonSqlKey.GetPrivilegeByMemberId, conditions);
             if (lstPrivilege.Count == 0)
@@ -1270,6 +1281,17 @@ namespace Fycn.Service
                 DbColumnName = "expire_time",
                 ParamValue = DateTime.Now,
                 Operation = ConditionOperate.GreaterThan,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "PrivilegeStatus",
+                DbColumnName = "privilege_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
                 RightBrace = "",
                 Logic = ""
             });
