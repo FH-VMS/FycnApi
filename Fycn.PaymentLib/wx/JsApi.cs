@@ -32,6 +32,11 @@ namespace Fycn.PaymentLib.wx
 
                 //构造网页授权获取code的URL
                 string redirect_uri = HttpUtility.UrlEncode(payConfig.FRONT_URL + urlParam);
+                if (urlParam.IndexOf("http") == 0)
+                {
+                    redirect_uri = HttpUtility.UrlEncode(urlParam);
+                }
+                
                 WxPayData data = new WxPayData();
                 data.SetValue("appid", payConfig.APPID);
                 data.SetValue("redirect_uri", redirect_uri);
