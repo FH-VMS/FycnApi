@@ -157,58 +157,62 @@ namespace Fycn.Service
                 newMachineInfo.IpV4 = "";
                 GenerateDal.Create(newMachineInfo);
 
-               
-                foreach (string item in copyItem)
+                if(copyItem!=null)
                 {
-                    switch (item)
+                    foreach (string item in copyItem)
                     {
-                        case "机器配置":
-                            
-                            var machineConfig = GenerateDal.LoadByConditions<MachineConfigModel>(CommonSqlKey.GetMachineConfigById, condition);
-                            if (machineConfig.Count == 0)
-                            {
-                                
-                            } else
-                            {
-                                var newMachineConfig = machineConfig[0];
-                                newMachineConfig.MachineId = newMachineId;
-                                GenerateDal.Create(newMachineConfig);
-                            }
-                           
-                            break;
-                        case "货道配置":
-                            var tunnelConfig = GenerateDal.LoadByConditions<TunnelConfigModel>(CommonSqlKey.GetTunnelConfigById, condition);
-                            if (tunnelConfig.Count == 0)
-                            {
+                        switch (item)
+                        {
+                            case "机器配置":
 
-                            }
-                            else
-                            {
-                               foreach(TunnelConfigModel config in tunnelConfig)
+                                var machineConfig = GenerateDal.LoadByConditions<MachineConfigModel>(CommonSqlKey.GetMachineConfigById, condition);
+                                if (machineConfig.Count == 0)
                                 {
-                                    config.MachineId = newMachineId;
-                                    GenerateDal.Create(config);
+
                                 }
-                                
-                            }
-
-                            var tunnelStatus = GenerateDal.LoadByConditions<TunnelInfoModel>(CommonSqlKey.GetTunnelStatusById, condition);
-                            if (tunnelStatus.Count == 0)
-                            {
-
-                            }
-                            else
-                            {
-                                foreach (TunnelInfoModel tunnelInfo in tunnelStatus)
+                                else
                                 {
-                                    tunnelInfo.MachineId = newMachineId;
-                                    GenerateDal.Create(tunnelInfo);
+                                    var newMachineConfig = machineConfig[0];
+                                    newMachineConfig.MachineId = newMachineId;
+                                    GenerateDal.Create(newMachineConfig);
                                 }
 
-                            }
-                            break;
+                                break;
+                            case "货道配置":
+                                var tunnelConfig = GenerateDal.LoadByConditions<TunnelConfigModel>(CommonSqlKey.GetTunnelConfigById, condition);
+                                if (tunnelConfig.Count == 0)
+                                {
+
+                                }
+                                else
+                                {
+                                    foreach (TunnelConfigModel config in tunnelConfig)
+                                    {
+                                        config.MachineId = newMachineId;
+                                        GenerateDal.Create(config);
+                                    }
+
+                                }
+
+                                var tunnelStatus = GenerateDal.LoadByConditions<TunnelInfoModel>(CommonSqlKey.GetTunnelStatusById, condition);
+                                if (tunnelStatus.Count == 0)
+                                {
+
+                                }
+                                else
+                                {
+                                    foreach (TunnelInfoModel tunnelInfo in tunnelStatus)
+                                    {
+                                        tunnelInfo.MachineId = newMachineId;
+                                        GenerateDal.Create(tunnelInfo);
+                                    }
+
+                                }
+                                break;
+                        }
                     }
                 }
+               
 
                 GenerateDal.CommitTransaction();
 
