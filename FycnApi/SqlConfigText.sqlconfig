@@ -306,5 +306,8 @@
   "DeleteAccountManage": "DELETE FROM table_transfer_account_system WHERE id=?p_Id ",
   "GetAccountManageCount": "SELECT COUNT(1) FROM table_transfer_account_system ",
   "GetAccountManageList": "SELECT a.*,b.`name` as PayConfigName FROM table_transfer_account_system a LEFT JOIN table_mobile_pay_config b ON a.pay_config_id=b.id ",
-  "GetTransferList": "SELECT trade_no,pay_interface,amount,really_name,transfer_date,transfer_status,payment_no,fy_rate,operator FROM table_transfer_fund_info "
+  "GetTransferList": "SELECT trade_no,pay_interface,amount,really_name,transfer_date,transfer_status,payment_no,fy_rate,operator FROM table_transfer_fund_info ",
+
+  "_comment": "一元嗨",
+  "GetMachineLocationById": "SELECT a.machine_id,a.remark as MachineName,b.* FROM table_machine a LEFT JOIN table_machine_location b ON a.machine_id=b.machine_id "
 }

@@ -7,6 +7,7 @@ using System.Web;
 using System.Xml;
 using Fycn.Interface;
 using Fycn.Model.Android;
+using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
@@ -396,6 +397,25 @@ namespace FycnApi.Controllers
         public ResultObj<int> IsSupportActivity(string waresId)
         {
             return Content(0);
+        }
+
+        //根据机器id取机器位置
+        public ResultObj<MachineLocationModel> GetMachineLocationById(string machineId)
+        {
+            if(string.IsNullOrEmpty(machineId))
+            {
+                return null;
+            }
+            IHi ihi = new HiService();
+            var lstMachines = ihi.GetMachineLocationById(machineId);
+            if (lstMachines.Count > 0)
+            {
+                return Content(lstMachines[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -22,6 +22,13 @@ namespace Fycn.Model.Machine
             set;
         }
 
+        [Column(Name = "machine_name")]
+        public string MachineName
+        {
+            get;
+            set;
+        }
+
         [Column(Name = "address")]
         public string Address
         {

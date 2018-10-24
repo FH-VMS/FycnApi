@@ -315,6 +315,9 @@ namespace Fycn.SqlDataAccess
         UpdateAccountManage,
         DeleteAccountManage,
         GetAccountManageList,
-        GetAccountManageCount
+        GetAccountManageCount,
+
+        //一元嗨
+        GetMachineLocationById
     }
 }
