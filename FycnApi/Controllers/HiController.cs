@@ -98,6 +98,7 @@ namespace FycnApi.Controllers
             //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             IPay _ipay = new PayService();
             WxPayConfig payConfig = _ipay.GenerateConfigModelW(machineId);
+            clientId = payConfig.ClientId;
             PayStateModel payState = new PayStateModel();
             if (string.IsNullOrEmpty(payConfig.APPID))
             {
@@ -136,6 +137,7 @@ namespace FycnApi.Controllers
 
             //Dictionary<string,string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string,string>>(jsonResult);
             string accessToken = payInfo.access_token;//dicAcess["access_token"];
+            log.Info(string.Format("access token is {0}", accessToken));
             //取授权用户信息
             string urlUserInfo = string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN", accessToken, payInfo.openid);
             string jsonUserInfo = HttpService.Get(urlUserInfo);
@@ -154,6 +156,8 @@ namespace FycnApi.Controllers
                 createMemberInfo.ClientId = clientId;
                 iwechat.CreateMember(createMemberInfo);
             }
+
+            log.Info(string.Format("userinfo is {0}", jsonUserInfo));
             //if(iwechat.IsExistMember(memberInfo))
             //log.Info("test");
 

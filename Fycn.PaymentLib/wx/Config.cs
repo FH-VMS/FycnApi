@@ -69,5 +69,11 @@ namespace Fycn.PaymentLib.wx
         */
         public const int LOG_LEVENL = 0;
 
+        public string ClientId
+        {
+            get;
+            set;
+        }
+
     }
 }

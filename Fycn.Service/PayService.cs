@@ -262,6 +262,7 @@ namespace Fycn.Service
                 payConfig.APPSECRET = cModel.WxAppSecret;
                 payConfig.SSLCERT_PATH = cModel.WxSslcertPath;
                 payConfig.SSLCERT_PASSWORD = cModel.WxSslcertPassword;
+                payConfig.ClientId = cModel.ClientId;
 
             }
             return payConfig;
