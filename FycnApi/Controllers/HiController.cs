@@ -18,6 +18,7 @@ using Fycn.PaymentLib.wx;
 using Fycn.Service;
 using Fycn.Utility;
 using FycnApi.Base;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payment.wx;
@@ -90,8 +91,9 @@ namespace FycnApi.Controllers
 
         public ResultObj<PayStateModel> WechatAuth(string machineId, string code, string retBack = "")
         {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
             string clientId = string.Empty;
-            //log.Info("mmmmmmmmmmmmmmmm:"+m);
+            log.Info(string.Format("machine id is {0}, code is {1}, retBack is {2}", machineId, code, retBack));
             string url = string.Empty;
             //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             IPay _ipay = new PayService();
@@ -109,13 +111,17 @@ namespace FycnApi.Controllers
             //JsApi.payInfo = new PayModel();
             payInfo.k = clientId;
             JsApi jsApi = new JsApi();
-            string backUrl = "/wechat.html?clientId=" + clientId;
+            string backUrl = "";
             if (!string.IsNullOrEmpty(retBack))
             {
                 backUrl = backUrl + HttpUtility.UrlDecode(retBack);
             }
+            else
+            {
+                return null;
+            }
             jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo, backUrl, "snsapi_userinfo");
-
+            log.Info(string.Format("openid id is {0}", payInfo.openid));
             if (string.IsNullOrEmpty(payInfo.openid))
             {
                 payState.RequestState = "0";
