@@ -246,7 +246,7 @@ namespace FycnApi.Controllers
 
                 
 
-                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
+                // payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
 
                 //string total_fee = "1";
                 //检测是否给当前页面传递了相关参数
@@ -426,6 +426,7 @@ namespace FycnApi.Controllers
         // 微信支付结果
         public string PostPayResultW()
         {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
             try
             {
                 var request = Fycn.Utility.HttpContext.Current.Request;
@@ -437,14 +438,14 @@ namespace FycnApi.Controllers
                 xmlDoc.LoadXml(postStr);
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
-                /*
+
                 RedisHelper helper = new RedisHelper(0);
-                
-                if (!helper.KeyExists(tradeNoNode.InnerText))
+                string retProducts = helper.StringGet(tradeNoNode.InnerText);
+                if (string.IsNullOrEmpty(retProducts))
                 {
-                    return Content(1);
+                    return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
                 }
-                */
+
                 /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
@@ -468,17 +469,24 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                                                                                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
-
-                    KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
-                    IMachine _imachine = new MachineService();
-                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
-                   
+                                                                                   //log.Info("nnnnnnn" + tradeNoNode.InnerText);
+                                                                                   //log.Info("aaaaaaa"+retProducts);
+                    List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
+                    log.Info("sssss" + JsonHandler.GetJsonStrFromObject(lstProductPay, false));
+                    log.Info("mmmmm" + jsonProduct);
+                    IWechat _iwechat = new WechatService();
+                    int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
+                    if (result > 0)
+                    {
+                        helper.KeyDelete(tradeNoNode.InnerText);
+                    }
 
                 }
                 return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";
             }
             catch (Exception ex)
             {
+                //log.Info("bbbb" + ex.Message);
                 return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
             }
 

@@ -156,6 +156,7 @@ namespace FycnApi.Controllers
                 lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','),waresGroupId.TrimEnd(','));
                 //检查商品是否有套餐
                 bool hasGroup = false;
+                List<ProductPayModel> lstProductPayReality = new List<ProductPayModel>();
                 //遍历商品
                 foreach (ProductListModel productInfo in lstProduct)
                 {
@@ -171,6 +172,7 @@ namespace FycnApi.Controllers
                         totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresDiscountUnitPrice == 0 ? productInfo.WaresUnitPrice: productInfo.WaresDiscountUnitPrice);
                         productNames = productNames + productInfo.WaresName + ",";
                         productPay[0].TradeNo = payInfo.trade_no;
+                        lstProductPayReality.Add(productPay[0]);
                     }
 
 
@@ -179,7 +181,7 @@ namespace FycnApi.Controllers
                
                 payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
 
-                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
+                payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPayReality, false);
                 /*******************优惠券信息**********************/
                 PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
                privilegeInfo.ClientId = clientId;
@@ -189,11 +191,11 @@ namespace FycnApi.Controllers
                     List<PrivilegeMemberRelationModel> lstPrivilege=new List<PrivilegeMemberRelationModel>();
                   if (string.IsNullOrEmpty(privilegeIds) && string.IsNullOrEmpty(selfChosen))
                   {
-                        lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
+                        lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPayReality);
                   }
                   else if (!string.IsNullOrEmpty(privilegeIds))
                   {
-                        lstPrivilege = _iwechat.GetChosenPrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
+                        lstPrivilege = _iwechat.GetChosenPrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPayReality);
                     }
                    
             
@@ -257,7 +259,7 @@ namespace FycnApi.Controllers
                 }
                RedisHelper helper = new RedisHelper(0);
 
-               helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPay, false), new TimeSpan(0, 10, 30));
+               helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPayReality, false), new TimeSpan(0, 10, 30));
 
                // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
