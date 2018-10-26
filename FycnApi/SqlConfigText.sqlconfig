@@ -309,5 +309,7 @@
   "GetTransferList": "SELECT trade_no,pay_interface,amount,really_name,transfer_date,transfer_status,payment_no,fy_rate,operator FROM table_transfer_fund_info ",
 
   "_comment": "一元嗨",
-  "GetMachineLocationById": "SELECT a.machine_id,a.remark as MachineName,b.* FROM table_machine a LEFT JOIN table_machine_location b ON a.machine_id=b.machine_id "
+  "GetMachineLocationById": "SELECT a.machine_id,a.remark as MachineName,b.* FROM table_machine a LEFT JOIN table_machine_location b ON a.machine_id=b.machine_id ",
+  "IsSupportActivity": "SELECT a.* FROM table_activity_privilege_relation a LEFT JOIN table_activity_info b ON a.activity_id=b.id LEFT JOIN table_machine c ON b.client_id=c.client_id ",
+  "ChangeTradeStatus": "UPDATE table_sales_cashless SET trade_status=?p_TradeStatus WHERE trade_no=?p_TradeNo AND trade_status=9 "
 }

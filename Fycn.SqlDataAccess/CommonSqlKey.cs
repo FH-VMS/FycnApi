@@ -318,6 +318,8 @@ namespace Fycn.SqlDataAccess
         GetAccountManageCount,
 
         //一元嗨
-        GetMachineLocationById
+        GetMachineLocationById,
+        IsSupportActivity,
+        ChangeTradeStatus
     }
 }

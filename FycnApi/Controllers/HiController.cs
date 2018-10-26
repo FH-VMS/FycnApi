@@ -12,6 +12,7 @@ using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
+using Fycn.Model.Sale;
 using Fycn.Model.Socket;
 using Fycn.Model.Sys;
 using Fycn.Model.Wechat;
@@ -439,12 +440,7 @@ namespace FycnApi.Controllers
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
 
-                RedisHelper helper = new RedisHelper(0);
-                string retProducts = helper.StringGet(tradeNoNode.InnerText);
-                if (string.IsNullOrEmpty(retProducts))
-                {
-                    return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
-                }
+             
 
                 /*
                 IMachine _imachine = new MachineService();
@@ -468,18 +464,33 @@ namespace FycnApi.Controllers
                     XmlNode openidNode = xmlDoc.SelectSingleNode("xml/openid"); //买家唯一标识
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
+                    XmlNode feeNode = xmlDoc.SelectSingleNode("xml/total_fee"); // 订单金额 单位为分
                                                                                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                                                                                    //log.Info("nnnnnnn" + tradeNoNode.InnerText);
                                                                                    //log.Info("aaaaaaa"+retProducts);
-                    List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
-                    log.Info("sssss" + JsonHandler.GetJsonStrFromObject(lstProductPay, false));
-                    log.Info("mmmmm" + jsonProduct);
-                    IWechat _iwechat = new WechatService();
-                    int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
-                    if (result > 0)
+                    KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
+                    IHi _ihi = new HiService();
+                    _ihi.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
+                    List<ActivityPrivilegeRelationModel> lstPrivilegeRelation = _ihi.IsSupportActivity(keyJsonModel.m);
+                    if(lstPrivilegeRelation.Count == 0) //未摇中
                     {
-                        helper.KeyDelete(tradeNoNode.InnerText);
+                        _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, false);
                     }
+                    else
+                    {
+                        if(IsReward(lstPrivilegeRelation[0], keyJsonModel.t[0], feeNode.InnerText))
+                        {
+                            //中奖
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, true);
+                        }
+                        else
+                        { //未摇中
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, false);
+                        }
+                    }
+
+                    // int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
+
 
                 }
                 return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";
@@ -493,12 +504,7 @@ namespace FycnApi.Controllers
             //File.WriteAllText(@"c:\text.txt", postStr); 
         }
 
-
-        //检查该商品是否支付一元嗨
-        public ResultObj<int> IsSupportActivity(string waresId)
-        {
-            return Content(0);
-        }
+        
 
         //根据机器id取机器位置
         public ResultObj<MachineLocationModel> GetMachineLocationById(string machineId)
@@ -526,5 +532,69 @@ namespace FycnApi.Controllers
             IAdRelation _iad = new AdRelationService();
             return Content(_iad.GetAdSource(machineId));
         }
+
+        public ResultObj<bool> IsSupportActivity(string machineId)
+        {
+            IHi ihi = new HiService();
+            var lstResult = ihi.IsSupportActivity(machineId);
+            if (lstResult.Count == 0)
+            {
+                return Content(false);
+            }
+            else
+            {
+                return Content(true);
+            }
+        }
+
+        //概率计算，是否摇中
+        private bool IsReward(ActivityPrivilegeRelationModel privilegeRelation, KeyTunnelModel tunnelInfo, string fee)
+        {
+            if(Convert.ToInt32(fee)>=decimal.Parse(tunnelInfo.p)*100)
+            {
+                return false;
+            }
+
+            Random ran = new Random();
+            int RandKey = ran.Next(0, 10000);
+            decimal result = ((Convert.ToInt32(fee) * 100) / decimal.Parse(tunnelInfo.p));
+            if (privilegeRelation.Rate!=0)
+            {
+                result = result * privilegeRelation.Rate;
+            }
+           
+            if(RandKey<result)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public ResultObj<int> GetTradeStatusByTradeNo(string tradeNo)
+        {
+            IHi ihi = new HiService();
+            List<SaleModel> lstSale = ihi.GetTradeStatusByTradeNo(tradeNo);
+            if(lstSale.Count==0)
+            {
+                return Content(0); //等待
+            }
+            if(lstSale[0].TradeStatus==10)
+            {
+                return Content(2);//未嗨中
+            }
+            if(lstSale[0].TradeStatus == 7)
+            {
+                return Content(1);//嗨中了
+            }
+
+            return Content(3);//其他错误
+        }
+
+
+
     }
 }
