@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using Fycn.Interface;
+using Fycn.Model.Ad;
 using Fycn.Model.Android;
 using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
+using Fycn.Model.Socket;
 using Fycn.Model.Sys;
 using Fycn.Model.Wechat;
 using Fycn.PaymentLib;
@@ -165,16 +167,25 @@ namespace FycnApi.Controllers
         }
 
 
-        //微信支付
-        public ResultObj<PayStateModel> PostDataW(string machineId, string openId, string privilegeIds="", string selfChosen="", [FromBody]List<ProductPayModel> lstProductPay=null)
+        //微信支付立即出货
+        public ResultObj<PayStateModel> PostDataW(string machineId, string openId,string hiPara="-1", [FromBody]List<ProductPayModel> lstProductPay=null)
         {
             string clientId = string.Empty;
             try
             {
+                RedisHelper redisHelper = new RedisHelper(0);
+                if (!redisHelper.KeyExists(machineId))
+                {
+                    PayStateModel payStateNull = new PayStateModel();
+                    return Content(payStateNull, ResultCode.Success, "机器不在线", new Pagination { });
+                }
+
                 IPay _ipay = new PayService();
                 //移动支付赋值
                 WxPayConfig payConfig = _ipay.GenerateConfigModelW(machineId);
-                payConfig.NOTIFY_URL = PathConfig.NotidyAddr + "/Hi/PostPayResultW"; //结果通知方法
+                clientId = payConfig.ClientId;
+               
+                
                 JsApi jsApi = new JsApi();
                 PayModel payInfo = new PayModel();
                 payInfo.openid = openId;
@@ -190,84 +201,53 @@ namespace FycnApi.Controllers
                 //string result = HttpService.Get(payInfo.redirect_url);
                 //生成交易号
                 payInfo.trade_no = new PayHelper().GeneraterTradeNo();
-                payInfo.jsonProduct = clientId;
+                //payInfo.jsonProduct = clientId;
                 //取商品信息
 
+                KeyJsonModel keyJsonInfo = new KeyJsonModel();
+                keyJsonInfo.m = machineId;
+                keyJsonInfo.t = new List<KeyTunnelModel>();
+                foreach (ProductPayModel productPay in lstProductPay)
+                {
+                    keyJsonInfo.t.Add(new KeyTunnelModel()
+                    {
+                        wid=productPay.WaresId,
+                        n="1",
+                        tn = payInfo.trade_no
+                    });
+                }
 
                 decimal totalFee = 0;
                 string productNames = string.Empty;
-                List<ProductListModel> lstProduct = new List<ProductListModel>();
-                IWechat _iwechat = new WechatService();
-                string waresId = string.Empty;
-                string waresGroupId = string.Empty;
-                foreach (ProductPayModel productInfo in lstProductPay)
-                {
-
-                    waresId = waresId + productInfo.WaresId + ",";
-
-                }
-
-                lstProduct = _iwechat.GetProdcutAndGroupList(waresId.TrimEnd(','), waresGroupId.TrimEnd(','));
-                //检查商品是否有套餐
-                bool hasGroup = false;
+                List<ProductModel> lstProduct = new List<ProductModel>();
+                lstProduct = _ipay.GetProducInfoByWaresId(machineId, keyJsonInfo.t);
                 //遍历商品
-                foreach (ProductListModel productInfo in lstProduct)
+                foreach (ProductModel productInfo in lstProduct)
                 {
-                    var productPay = (from m in lstProductPay
-                                      where m.WaresId == productInfo.WaresId
-                                      select m).ToList<ProductPayModel>();
-                    if (productPay.Count > 0)
+                    var tunnelInfo = (from m in keyJsonInfo.t
+                                      where m.tid == productInfo.WaresId
+                                      select m).ToList<KeyTunnelModel>();
+                    if (tunnelInfo.Count > 0)
                     {
-                        if (productPay[0].IsGroup == 1)
-                        {
-                            hasGroup = true;
-                        }
-                        totalFee = totalFee + Convert.ToInt32(productPay[0].Number) * Convert.ToDecimal(productInfo.WaresDiscountUnitPrice == 0 ? productInfo.WaresUnitPrice : productInfo.WaresDiscountUnitPrice);
+                        productInfo.Num = string.IsNullOrEmpty(tunnelInfo[0].n) ? "1" : tunnelInfo[0].n;
+                        totalFee = totalFee + Convert.ToInt32(productInfo.Num) * Convert.ToDecimal(productInfo.UnitW);
                         productNames = productNames + productInfo.WaresName + ",";
-                        productPay[0].TradeNo = payInfo.trade_no;
+                        productInfo.TradeNo = payInfo.trade_no;
+                        tunnelInfo[0].p = productInfo.UnitW;
+
+                        tunnelInfo[0].wid = productInfo.WaresId;
+                        tunnelInfo[0].tid = productInfo.TunnelId;
+
                     }
 
 
                 }
 
 
-                payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
+                
 
                 payState.ProductJson = JsonHandler.GetJsonStrFromObject(lstProductPay, false);
-                /*******************优惠券信息**********************/
-                PrivilegeMemberRelationModel privilegeInfo = new PrivilegeMemberRelationModel();
-                privilegeInfo.ClientId = clientId;
-                privilegeInfo.MemberId = openId;
-                if (totalFee > 0.01M && !hasGroup)
-                {
-                    List<PrivilegeMemberRelationModel> lstPrivilege = new List<PrivilegeMemberRelationModel>();
-                    if (string.IsNullOrEmpty(privilegeIds) && string.IsNullOrEmpty(selfChosen))
-                    {
-                        lstPrivilege = _iwechat.GetCanUsePrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
-                    }
-                    else if (!string.IsNullOrEmpty(privilegeIds))
-                    {
-                        lstPrivilege = _iwechat.GetChosenPrivilege(privilegeInfo, privilegeIds, ref totalFee, lstProductPay);
-                    }
 
-
-
-                    
-                    if (lstPrivilege.Count > 0)
-                    {
-                        string[] lstStr = lstPrivilege.Select(m => m.Id).ToArray();
-                        if (string.IsNullOrEmpty(privilegeIds))
-                        {
-                            payInfo.jsonProduct = payInfo.jsonProduct + "~" + string.Join(",", lstStr);
-                        }
-                        else
-                        {
-                            payInfo.jsonProduct = payInfo.jsonProduct + "~" + privilegeIds;
-                        }
-
-                        payState.PrivilegeJson = JsonHandler.GetJsonStrFromObject(lstPrivilege, false);
-                    }
-                }
                 //string total_fee = "1";
                 //检测是否给当前页面传递了相关参数
 
@@ -295,12 +275,29 @@ namespace FycnApi.Controllers
                 else
                 {
                     */
-                int weixinMoney = Convert.ToInt32((totalFee) * 100);
-                //}
+                if (hiPara == "-1")
+                {
+                    payConfig.NOTIFY_URL = PathConfig.NotidyAddr + "/Hi/PostPayResultImmediateltyW"; //结果通知方法
+                    int weixinMoney = Convert.ToInt32((totalFee) * 100);
+                    //}
 
-                payInfo.total_fee = (weixinMoney <= 0 ? 1 : weixinMoney);
+                    payInfo.total_fee = (weixinMoney <= 0 ? 1 : weixinMoney);
+                    payState.TotalMoney = (totalFee <= 0 ? Convert.ToDecimal(0.01) : totalFee);
+                    payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
+                }
+                else
+                {
+                    payConfig.NOTIFY_URL = PathConfig.NotidyAddr + "/Hi/PostPayW"; //结果通知方法
+                    int weixinMoney = Convert.ToInt32((totalFee) * 100);
+                    //}
+
+                    payInfo.total_fee = Convert.ToInt32(Decimal.Parse(hiPara)*100);
+                    payState.TotalMoney = Decimal.Parse(hiPara);
+                    payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames + "一元嗨("+hiPara +"倍)";
+                }
+                
                 //payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
-                payState.TotalMoney = (totalFee <= 0 ? Convert.ToDecimal(0.01) : totalFee);
+               
                 //写入交易中转
                 if (payInfo.total_fee == 0)
                 {
@@ -308,10 +305,8 @@ namespace FycnApi.Controllers
                     payState.RequestData = "";
                     return Content(payState);
                 }
-                RedisHelper helper = new RedisHelper(0);
 
-                helper.StringSet(payInfo.trade_no.Trim(), JsonHandler.GetJsonStrFromObject(lstProductPay, false), new TimeSpan(0, 10, 30));
-
+                payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo, payConfig);
@@ -334,9 +329,9 @@ namespace FycnApi.Controllers
             }
             return Content(new PayStateModel());
         }
-
+        
         // 微信支付结果
-        public string PostPayResultW()
+        public string PostPayResultImmediateltyW()
         {
             try
             {
@@ -349,14 +344,14 @@ namespace FycnApi.Controllers
                 xmlDoc.LoadXml(postStr);
                 // 商户交易号
                 XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
-
+                /*
                 RedisHelper helper = new RedisHelper(0);
-                string retProducts = helper.StringGet(tradeNoNode.InnerText);
-                if (string.IsNullOrEmpty(retProducts))
+                
+                if (!helper.KeyExists(tradeNoNode.InnerText))
                 {
-                    return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
+                    return Content(1);
                 }
-
+                */
                 /*
                 IMachine _imachine = new MachineService();
                 if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
@@ -380,14 +375,41 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                                                                                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
-                                                                                   //log.Info("nnnnnnn" + tradeNoNode.InnerText);
-                                                                                   //log.Info("aaaaaaa"+retProducts);
-                    List<ProductPayModel> lstProductPay = JsonHandler.GetObjectFromJson<List<ProductPayModel>>(retProducts);
-                    IWechat _iwechat = new WechatService();
-                    int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
-                    if (result > 0)
+
+                    KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
+                    IMachine _imachine = new MachineService();
+                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
+                    if (result == 1)
                     {
-                        helper.KeyDelete(tradeNoNode.InnerText);
+                        List<CommandModel> lstCommand = new List<CommandModel>();
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.m,
+                            Size = 12
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = tradeNoNode.InnerText,
+                            Size = 22
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = keyJsonModel.t[0].tid,
+                            Size = 5
+                        });
+                        lstCommand.Add(new CommandModel()
+                        {
+                            Content = "3",
+                            Size = 1
+                        });
+
+                        //var log = LogManager.GetLogger("FycnApi", "weixin");
+                        //log.Info("test");
+                        //log.Info(tradeNoNode.InnerText);
+                        SocketHelper.GenerateCommand(10, 41, 66, lstCommand);
+                        //删除文件
+                        //helper.KeyDelete(tradeNoNode.InnerText);
+                        //FileHandler.DeleteFile("data/" + tradeNoNode.InnerText + ".wa");
                     }
 
                 }
@@ -395,7 +417,68 @@ namespace FycnApi.Controllers
             }
             catch (Exception ex)
             {
-                //log.Info("bbbb" + ex.Message);
+                return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
+            }
+
+            //File.WriteAllText(@"c:\text.txt", postStr); 
+        }
+
+        // 微信支付结果
+        public string PostPayResultW()
+        {
+            try
+            {
+                var request = Fycn.Utility.HttpContext.Current.Request;
+                int len = (int)request.ContentLength;
+                byte[] b = new byte[len];
+                Fycn.Utility.HttpContext.Current.Request.Body.Read(b, 0, len);
+                string postStr = Encoding.UTF8.GetString(b);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(postStr);
+                // 商户交易号
+                XmlNode tradeNoNode = xmlDoc.SelectSingleNode("xml/out_trade_no");
+                /*
+                RedisHelper helper = new RedisHelper(0);
+                
+                if (!helper.KeyExists(tradeNoNode.InnerText))
+                {
+                    return Content(1);
+                }
+                */
+                /*
+                IMachine _imachine = new MachineService();
+                if (_imachine.GetCountByTradeNo(tradeNoNode.InnerText) > 0)
+                {
+                    return Content(1);
+                }
+                */
+
+
+                //支付结果
+                XmlNode payResultNode = xmlDoc.SelectSingleNode("xml/result_code");
+                if (payResultNode.InnerText.ToUpper() == "SUCCESS")
+                {
+                    /*******************************放到微信支付通知参数里，因参数只支付最大128个字符长度，所以注释修改*****************************/
+                    //XmlNode tunnelNode = xmlDoc.SelectSingleNode("xml/attach");
+                    //KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(tunnelNode.InnerText);
+                    XmlNode attachNode = xmlDoc.SelectSingleNode("xml/attach");
+                    string jsonProduct = attachNode.InnerText;//helper.StringGet(tradeNoNode.InnerText);
+                    XmlNode mchIdNode = xmlDoc.SelectSingleNode("xml/mch_id"); // 商户号
+                    XmlNode openidNode = xmlDoc.SelectSingleNode("xml/openid"); //买家唯一标识
+                    XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
+                    XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
+                                                                                   //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
+
+                    KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
+                    IMachine _imachine = new MachineService();
+                    int result = _imachine.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
+                   
+
+                }
+                return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";
+            }
+            catch (Exception ex)
+            {
                 return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
             }
 
@@ -426,6 +509,14 @@ namespace FycnApi.Controllers
             {
                 return null;
             }
+        }
+
+        //取广告图片
+        public ResultObj<List<SourceToMachineModel>> GetAd(string machineId)
+        {
+
+            IAdRelation _iad = new AdRelationService();
+            return Content(_iad.GetAdSource(machineId));
         }
     }
 }
