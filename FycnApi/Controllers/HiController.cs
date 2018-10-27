@@ -96,7 +96,7 @@ namespace FycnApi.Controllers
         {
             var log = LogManager.GetLogger("FycnApi", "wechat");
             string clientId = string.Empty;
-            log.Info(string.Format("machine id is {0}, code is {1}, retBack is {2}", machineId, code, retBack));
+            //log.Info(string.Format("machine id is {0}, code is {1}, retBack is {2}", machineId, code, retBack));
             string url = string.Empty;
             //KeyJsonModel keyJsonInfo = PayHelper.AnalizeKey(k);
             IPay _ipay = new PayService();
@@ -125,7 +125,7 @@ namespace FycnApi.Controllers
                 return null;
             }
             jsApi.GetOpenidAndAccessToken(code, payConfig, payInfo, backUrl, "snsapi_userinfo");
-            log.Info(string.Format("openid id is {0}", payInfo.openid));
+            //log.Info(string.Format("openid id is {0}", payInfo.openid));
             if (string.IsNullOrEmpty(payInfo.openid))
             {
                 payState.RequestState = "0";
@@ -140,7 +140,7 @@ namespace FycnApi.Controllers
 
             //Dictionary<string,string> dicAcess = JsonHandler.GetObjectFromJson<Dictionary<string,string>>(jsonResult);
             string accessToken = payInfo.access_token;//dicAcess["access_token"];
-            log.Info(string.Format("access token is {0}", accessToken));
+            //log.Info(string.Format("access token is {0}", accessToken));
             //取授权用户信息
             string urlUserInfo = string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN", accessToken, payInfo.openid);
             string jsonUserInfo = HttpService.Get(urlUserInfo);
@@ -160,7 +160,7 @@ namespace FycnApi.Controllers
                 iwechat.CreateMember(createMemberInfo);
             }
 
-            log.Info(string.Format("userinfo is {0}", jsonUserInfo));
+            //log.Info(string.Format("userinfo is {0}", jsonUserInfo));
             //if(iwechat.IsExistMember(memberInfo))
             //log.Info("test");
 
@@ -171,6 +171,12 @@ namespace FycnApi.Controllers
         //微信支付立即出货
         public ResultObj<PayStateModel> PostDataW(string machineId, string openId,string hiPara="-1", [FromBody]List<ProductPayModel> lstProductPay=null)
         {
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+            if(lstProductPay==null)
+            {
+                PayStateModel payStateNull = new PayStateModel();
+                return Content(payStateNull, ResultCode.Success, "传参有误", new Pagination { });
+            }
             string clientId = string.Empty;
             try
             {
@@ -185,8 +191,8 @@ namespace FycnApi.Controllers
                 //移动支付赋值
                 WxPayConfig payConfig = _ipay.GenerateConfigModelW(machineId);
                 clientId = payConfig.ClientId;
-               
-                
+
+                log.Info(string.Format("lstProductPay is {0}", JsonHandler.GetJsonStrFromObject(lstProductPay)));
                 JsApi jsApi = new JsApi();
                 PayModel payInfo = new PayModel();
                 payInfo.openid = openId;
@@ -212,9 +218,8 @@ namespace FycnApi.Controllers
                 {
                     keyJsonInfo.t.Add(new KeyTunnelModel()
                     {
-                        wid=productPay.WaresId,
-                        n="1",
-                        tn = payInfo.trade_no
+                        tid= productPay.WaresId,
+                        n="1"
                     });
                 }
 
@@ -283,6 +288,7 @@ namespace FycnApi.Controllers
                     //}
 
                     payInfo.total_fee = (weixinMoney <= 0 ? 1 : weixinMoney);
+                    log.Info(string.Format("total free is {0}", payInfo.total_fee));
                     payState.TotalMoney = (totalFee <= 0 ? Convert.ToDecimal(0.01) : totalFee);
                     payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames;
                 }
@@ -293,6 +299,7 @@ namespace FycnApi.Controllers
                     //}
 
                     payInfo.total_fee = Convert.ToInt32(Decimal.Parse(hiPara)*100);
+
                     payState.TotalMoney = Decimal.Parse(hiPara);
                     payInfo.product_name = productNames.Length > 25 ? productNames.Substring(0, 25) : productNames + "一元嗨("+hiPara +"倍)";
                 }
@@ -308,6 +315,8 @@ namespace FycnApi.Controllers
                 }
 
                 payInfo.jsonProduct = JsonHandler.GetJsonStrFromObject(keyJsonInfo, false);
+                log.Info(string.Format("jsonProduct is {0}", payInfo.jsonProduct));
+                log.Info(string.Format("openid is {0}", payInfo.openid));
                 // FileHandler.WriteFile("data/", JsApi.payInfo.trade_no + ".wa", JsApi.payInfo.jsonProduct);
 
                 WxPayData unifiedOrderResult = jsApi.GetUnifiedOrderResult(payInfo, payConfig);
@@ -315,7 +324,7 @@ namespace FycnApi.Controllers
                 string wxJsApiParam = jsApi.GetJsApiParameters(payConfig, payInfo);//获取H5调起JS API参数       
                 payState.RequestState = "1";
                 payState.RequestData = wxJsApiParam;
-
+                payState.ProductJson = payInfo.trade_no;
 
 
                 return Content(payState);
