@@ -1,4 +1,5 @@
-﻿using Fycn.Model.Machine;
+﻿using Fycn.Model.Ad;
+using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Sale;
@@ -25,5 +26,8 @@ namespace Fycn.Interface
 
         [Remark("根据单号查询单号状态", ParmsNote = "", ReturnNote = "")]
         List<SaleModel> GetTradeStatusByTradeNo(string tradeNo);
+
+        [Remark("取广告资源", ParmsNote = "", ReturnNote = "")]
+        List<SourceToMachineModel> GetAdSource(string machineId, string adType);
     }
 }

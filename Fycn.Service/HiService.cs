@@ -1,4 +1,5 @@
 ﻿using Fycn.Interface;
+using Fycn.Model.Ad;
 using Fycn.Model.Machine;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
@@ -227,6 +228,66 @@ namespace Fycn.Service
             
 
             return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions);
+        }
+
+
+        public List<SourceToMachineModel> GetAdSource(string machineId,string adType)
+        {
+            if (string.IsNullOrEmpty(machineId))
+            {
+                return null;
+            }
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "c.machine_id",
+                ParamValue = machineId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            if (!string.IsNullOrEmpty(adType))
+            {
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "AdType1",
+                    DbColumnName = "a.ad_type",
+                    ParamValue = adType,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+            }
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "Sequence",
+                DbColumnName = "a.ad_type",
+                ParamValue = "asc",
+                Operation = ConditionOperate.OrderBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<SourceToMachineModel>(CommonSqlKey.GetAdSource, conditions);
         }
     }
 }

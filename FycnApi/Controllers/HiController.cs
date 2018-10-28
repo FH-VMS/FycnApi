@@ -538,8 +538,8 @@ namespace FycnApi.Controllers
         public ResultObj<List<SourceToMachineModel>> GetAd(string machineId)
         {
 
-            IAdRelation _iad = new AdRelationService();
-            return Content(_iad.GetAdSource(machineId));
+            IHi ihi = new HiService();
+            return Content(ihi.GetAdSource(machineId,"3"));
         }
 
         public ResultObj<bool> IsSupportActivity(string machineId)
