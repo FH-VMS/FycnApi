@@ -294,7 +294,7 @@ namespace FycnApi.Controllers
                 }
                 else
                 {
-                    payConfig.NOTIFY_URL = PathConfig.NotidyAddr + "/Hi/PostPayW"; //结果通知方法
+                    payConfig.NOTIFY_URL = PathConfig.NotidyAddr + "/Hi/PostPayResultW"; //结果通知方法
                     int weixinMoney = Convert.ToInt32((totalFee) * 100);
                     //}
 
@@ -478,6 +478,10 @@ namespace FycnApi.Controllers
                                                                                    //log.Info("nnnnnnn" + tradeNoNode.InnerText);
                                                                                    //log.Info("aaaaaaa"+retProducts);
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
+                    if(keyJsonModel!=null && keyJsonModel.t.Count>0)
+                    {
+                        keyJsonModel.t[0].p = (Convert.ToInt32(feeNode.InnerText) / 100).ToString();
+                    }
                     IHi _ihi = new HiService();
                     _ihi.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
                     List<ActivityPrivilegeRelationModel> lstPrivilegeRelation = _ihi.IsSupportActivity(keyJsonModel.m);
