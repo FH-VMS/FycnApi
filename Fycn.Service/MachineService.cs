@@ -447,7 +447,7 @@ namespace Fycn.Service
                     saleModel.RealitySaleNumber = 1;
                     if (result)
                     {
-                        saleModel.TradeStatus = 2;
+                        saleModel.TradeStatus = 8;
                     }
                     else
                     {
