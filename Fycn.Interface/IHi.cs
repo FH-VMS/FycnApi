@@ -4,6 +4,7 @@ using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Sale;
 using Fycn.Model.Sys;
+using Fycn.Model.Wechat;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,5 +30,8 @@ namespace Fycn.Interface
 
         [Remark("取广告资源", ParmsNote = "", ReturnNote = "")]
         List<SourceToMachineModel> GetAdSource(string machineId, string adType);
+
+        [Remark("取货卡列表", ParmsNote = "", ReturnNote = "")]
+        List<ClientSalesRelationModel> GetWaitingPickupByMachine(string machineId, string openId);
     }
 }

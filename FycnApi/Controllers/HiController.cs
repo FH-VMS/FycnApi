@@ -608,6 +608,28 @@ namespace FycnApi.Controllers
         }
 
 
+        //取出待取货的取货卡列表
+        public ResultObj<List<ClientSalesRelationModel>> GetWaitingPickupByMachine(string machineId,string openId)
+        {
+            if(string.IsNullOrEmpty(machineId)||string.IsNullOrEmpty(openId))
+            {
+                return null;
+            }
+            IHi ihi = new HiService();
+            List<ClientSalesRelationModel> lstClientSales = ihi.GetWaitingPickupByMachine(machineId, openId);
 
+            return Content(lstClientSales);
+        }
+
+        //立即取货
+        [HttpPost]
+        public ResultObj<int> PickupImmediately(string tradeNo)
+        {
+            if(string.IsNullOrEmpty(tradeNo))
+            {
+                return Content(0);
+            }
+            return Content(1);
+        }
     }
 }

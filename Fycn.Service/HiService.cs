@@ -322,6 +322,16 @@ namespace Fycn.Service
                 Logic = ""
             });
 
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "CodeStatus",
+                DbColumnName = "a.code_status",
+                ParamValue = 1,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
             return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingPickupByMachine, conditions);
         }
     }
