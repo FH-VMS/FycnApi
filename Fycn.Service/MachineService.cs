@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using Fycn.Utility;
 using Fycn.Model.Sys;
+using Fycn.Model.Wechat;
 
 namespace Fycn.Service
 {
@@ -421,7 +422,7 @@ namespace Fycn.Service
 
                 SaleModel saleModel = lstSaleModel[0];
                 int tradeStatus = saleModel.TradeStatus;
-                if (saleModel != null && saleModel.TradeStatus == 1)
+                if (saleModel != null && saleModel.TradeStatus == 1) //状态为1  为立即出货  待出货状态
                 {
                     //SaleModel saleInfo = new SaleModel();
                     saleModel.SalesDate = DateTime.Now;
@@ -439,6 +440,36 @@ namespace Fycn.Service
 
                     }
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
+                }
+                else if (saleModel != null && saleModel.TradeStatus == 7)//状态为7  为出货卡取货
+                {
+                    saleModel.SalesDate = DateTime.Now;
+                    saleModel.RealitySaleNumber = 1;
+                    if (result)
+                    {
+                        saleModel.TradeStatus = 2;
+                    }
+                    else
+                    {
+                        saleModel.RealitySaleNumber = 0;
+                        saleModel.TradeStatus = 5;
+                        UpdateAddCurrStock(saleModel.MachineId, saleModel.GoodsId, 1);
+                    }
+                    GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
+                    //取销售表对应的取货码表数据  并更新成已出货状态
+                    List<ClientSalesRelationModel> lstClientSales = new HiService().VerifyPickupByTradeNo(tradeNo);
+                    if(lstClientSales!=null && lstClientSales.Count>0)
+                    {
+                        if(lstClientSales[0].CodeStatus==1)
+                        {
+                            ClientSalesRelationModel saleRelationModel = new ClientSalesRelationModel();
+                            saleRelationModel.TotalNum = lstClientSales[0].TotalNum;
+                            saleRelationModel.CodeStatus = 2;
+                            saleRelationModel.EndDate = DateTime.Now;
+                            saleRelationModel.Remark = "一元嗨活动取货";
+                            GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatusByTradeNo, saleRelationModel);
+                        }
+                    }
                 }
                 GenerateDal.CommitTransaction();
                 if(!result)

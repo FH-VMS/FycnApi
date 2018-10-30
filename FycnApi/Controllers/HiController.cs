@@ -629,6 +629,46 @@ namespace FycnApi.Controllers
             {
                 return Content(0);
             }
+            IHi ihi = new HiService();
+            List<ClientSalesRelationModel>  lstClientSales = ihi.VerifyPickupByTradeNo(tradeNo);
+
+            if(lstClientSales==null || lstClientSales.Count==0 || lstClientSales[0].CodeStatus!=1)
+            {
+                return Content(0);
+            }
+            ClientSalesRelationModel salesInfo = lstClientSales[0];
+            var lstProduct = ihi.GetProducInfoByWaresId(salesInfo.MachineId, salesInfo.WaresId);
+            if (lstProduct == null || lstProduct.Count == 0)
+            {
+                return Content(0);
+            }
+            List<CommandModel> lstCommand = new List<CommandModel>();
+            lstCommand.Add(new CommandModel()
+            {
+                Content = salesInfo.MachineId,
+                Size = 12
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = salesInfo.TradeNo,
+                Size = 22
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = lstProduct[0].TunnelId,
+                Size = 5
+            });
+            lstCommand.Add(new CommandModel()
+            {
+                Content = "3",
+                Size = 1
+            });
+
+            //var log = LogManager.GetLogger("FycnApi", "weixin");
+            //log.Info("test");
+            //log.Info(tradeNoNode.InnerText);
+            SocketHelper.GenerateCommand(10, 41, 66, lstCommand);
+
             return Content(1);
         }
     }

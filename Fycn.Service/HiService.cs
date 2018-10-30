@@ -334,5 +334,102 @@ namespace Fycn.Service
             });
             return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingPickupByMachine, conditions);
         }
+
+        //验证取货码
+        public List<ClientSalesRelationModel> VerifyPickupByTradeNo(string tradeNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(tradeNo))
+                {
+                    return null;
+                }
+                
+                var conditions = new List<Condition>();
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeNo",
+                    DbColumnName = "a.trade_no",
+                    ParamValue = tradeNo,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+                
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "CodeStatus",
+                    DbColumnName = "a.code_status",
+                    ParamValue = 1,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                conditions.Add(new Condition
+                {
+                    LeftBrace = " AND ",
+                    ParamName = "TradeStatus",
+                    DbColumnName = "b.trade_status",
+                    ParamValue = 7,
+                    Operation = ConditionOperate.Equal,
+                    RightBrace = "",
+                    Logic = ""
+                });
+
+                return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.VerifyPickupByTradeNo, conditions);
+            }
+            catch (Exception e)
+            {
+                return new List<ClientSalesRelationModel>();
+            }
+
+
+        }
+
+
+        public List<ProductModel> GetProducInfoByWaresId(string machineId, string waresId)
+        {
+            var conditions = new List<Condition>();
+
+            
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "a.machine_id",
+                ParamValue = machineId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "WaresId1",
+                DbColumnName = "a.wares_id",
+                ParamValue = waresId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "",
+                DbColumnName = "a.wares_id",
+                ParamValue = "",
+                Operation = ConditionOperate.GroupBy,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ProductModel>(CommonSqlKey.GetProductInfoByWaresId, conditions);
+
+
+        }
     }
 }

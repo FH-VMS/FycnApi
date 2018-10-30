@@ -33,5 +33,11 @@ namespace Fycn.Interface
 
         [Remark("取货卡列表", ParmsNote = "", ReturnNote = "")]
         List<ClientSalesRelationModel> GetWaitingPickupByMachine(string machineId, string openId);
+
+        [Remark("立即取货验证", ParmsNote = "", ReturnNote = "")]
+        List<ClientSalesRelationModel> VerifyPickupByTradeNo(string tradeNo);
+
+        [Remark("根据商品id取出对应的货道", ParmsNote = "", ReturnNote = "")]
+        List<ProductModel> GetProducInfoByWaresId(string machineId, string waresId);
     }
 }

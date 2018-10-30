@@ -321,6 +321,8 @@ namespace Fycn.SqlDataAccess
         GetMachineLocationById,
         IsSupportActivity,
         ChangeTradeStatus,
-        GetWaitingPickupByMachine
+        GetWaitingPickupByMachine,
+        VerifyPickupByTradeNo,
+        UpdatePickupCodeStatusByTradeNo
     }
 }
