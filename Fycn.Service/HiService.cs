@@ -161,6 +161,7 @@ namespace Fycn.Service
                     clientSalesInfo.WaresId = keyJsonModel.t[0].wid;
                     clientSalesInfo.WaresName = waresName;
                     clientSalesInfo.CodeStatus = 1;
+                    clientSalesInfo.TotalNum = 1;
                     clientSalesInfo.CreateDate = DateTime.Now;
                     clientSalesInfo.MemberId = memberId;
                     GenerateDal.Create(clientSalesInfo);
