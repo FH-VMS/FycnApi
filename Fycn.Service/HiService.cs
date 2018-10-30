@@ -60,7 +60,9 @@ namespace Fycn.Service
                     saleInfo.TradeAmount = Convert.ToDouble(keyTunnelInfo.p);
                     saleInfo.ServiceCharge = Math.Round(Convert.ToDouble(keyTunnelInfo.p) * ConfigHandler.WeixinRate, 2, MidpointRounding.AwayFromZero);
                     saleInfo.WaresId = keyTunnelInfo.wid;
-                    saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid);
+                   
+                    saleInfo.WaresName = GetProductNameByWaresId(keyTunnelInfo.wid) + "一元嗨(" + keyTunnelInfo.p + "倍)";
+                    
                     GenerateDal.Create(saleInfo);
                 }
 
