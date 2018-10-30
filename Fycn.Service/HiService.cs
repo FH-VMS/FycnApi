@@ -314,7 +314,7 @@ namespace Fycn.Service
             conditions.Add(new Condition
             {
                 LeftBrace = " AND ",
-                ParamName = "MachineId",
+                ParamName = "MemberId",
                 DbColumnName = "a.member_id",
                 ParamValue = openId,
                 Operation = ConditionOperate.Equal,
