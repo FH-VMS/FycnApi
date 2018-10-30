@@ -312,7 +312,7 @@
   "GetMachineLocationById": "SELECT a.machine_id,a.remark as MachineName,b.* FROM table_machine a LEFT JOIN table_machine_location b ON a.machine_id=b.machine_id ",
   "IsSupportActivity": "SELECT a.* FROM table_activity_privilege_relation a LEFT JOIN table_activity_info b ON a.activity_id=b.id LEFT JOIN table_machine c ON b.client_id=c.client_id ",
   "ChangeTradeStatus": "UPDATE table_sales_cashless SET trade_status=?p_TradeStatus WHERE trade_no=?p_TradeNo AND trade_status=9 ",
-  "GetWaitingPickupByMachine": "SELECT a.* FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no ",
-  "VerifyPickupByTradeNo": "SELECT a.*,b.merchant_id as MachineId FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no AND a.member_id=b.buyer_id",
+  "GetWaitingPickupByMachine": "SELECT a.*,b.machine_id as MachineId,CONCAT(?p_ResourceUrl,d.pic_path) as PicUrl FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no LEFT JOIN table_product c ON b.wares_id=c.wares_id LEFT JOIN table_pic d ON c.pic_id=d.pic_id ",
+  "VerifyPickupByTradeNo": "SELECT a.*,b.machine_id as MachineId FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no AND a.member_id=b.buyer_id",
   "UpdatePickupCodeStatusByTradeNo": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND trade_no=?p_TradeNo "
 }

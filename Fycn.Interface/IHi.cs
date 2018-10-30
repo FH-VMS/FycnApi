@@ -23,7 +23,7 @@ namespace Fycn.Interface
         int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo, string sellerId, string buyerId, string isConcern, string payDate);
 
         [Remark("嗨的结果插入表中", ParmsNote = "", ReturnNote = "")]
-        int DoReward(KeyJsonModel keyJsonModel, string tradeNo, string memberId, bool isGoal);
+        int DoReward(KeyJsonModel keyJsonModel, string tradeNo, string memberId,string waresName, bool isGoal);
 
         [Remark("根据单号查询单号状态", ParmsNote = "", ReturnNote = "")]
         List<SaleModel> GetTradeStatusByTradeNo(string tradeNo);

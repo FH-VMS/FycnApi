@@ -474,33 +474,37 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                     XmlNode feeNode = xmlDoc.SelectSingleNode("xml/total_fee"); // 订单金额 单位为分
-                                                                                   //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
-                                                                                   //log.Info("nnnnnnn" + tradeNoNode.InnerText);
-                                                                                   //log.Info("aaaaaaa"+retProducts);
+                    XmlNode bodyNode = xmlDoc.SelectSingleNode("xml/body");
+                    //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
+                    //log.Info("nnnnnnn" + tradeNoNode.InnerText);
+                    //log.Info("aaaaaaa"+retProducts);
                     KeyJsonModel keyJsonModel = JsonHandler.GetObjectFromJson<KeyJsonModel>(jsonProduct);
-                    if(keyJsonModel!=null && keyJsonModel.t.Count>0)
+                    string waresPrice = keyJsonModel.t[0].p;
+                    if (keyJsonModel!=null && keyJsonModel.t.Count>0)
                     {
                         keyJsonModel.t[0].p = (Convert.ToInt32(feeNode.InnerText) / 100).ToString();
                     }
                     IHi _ihi = new HiService();
                     _ihi.PostPayResultW(keyJsonModel, tradeNoNode.InnerText, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText);
                     List<ActivityPrivilegeRelationModel> lstPrivilegeRelation = _ihi.IsSupportActivity(keyJsonModel.m);
+                    /*
                     if(lstPrivilegeRelation.Count == 0) //未摇中
                     {
                         _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, false);
                     }
                     else
                     {
-                        if(IsReward(lstPrivilegeRelation[0], keyJsonModel.t[0], feeNode.InnerText))
+                    */
+                        if(IsReward(lstPrivilegeRelation, keyJsonModel.t[0], feeNode.InnerText, waresPrice))
                         {
                             //中奖
-                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, true);
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, bodyNode.InnerText, true);
                         }
                         else
                         { //未摇中
-                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, false);
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, bodyNode.InnerText, false);
                         }
-                    }
+                    //}
 
                     // int result = _iwechat.PostPayResultW(lstProductPay, mchIdNode.InnerText, openidNode.InnerText, isSubNode.InnerText, timeEndNode.InnerText, jsonProduct);
 
@@ -510,7 +514,7 @@ namespace FycnApi.Controllers
             }
             catch (Exception ex)
             {
-                //log.Info("bbbb" + ex.Message);
+                log.Info("bbbb" + ex.Message);
                 return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
             }
 
@@ -561,9 +565,10 @@ namespace FycnApi.Controllers
         }
 
         //概率计算，是否摇中
-        private bool IsReward(ActivityPrivilegeRelationModel privilegeRelation, KeyTunnelModel tunnelInfo, string fee)
+        private bool IsReward(List<ActivityPrivilegeRelationModel> lstAcitivityRelation, KeyTunnelModel tunnelInfo, string fee, string originPrice)
         {
-            if(Convert.ToInt32(fee)>=decimal.Parse(tunnelInfo.p)*100)
+           
+            if (Convert.ToInt32(fee)>=decimal.Parse(originPrice) *100)
             {
                 return false;
             }
@@ -571,12 +576,16 @@ namespace FycnApi.Controllers
             Random ran = new Random();
             int RandKey = ran.Next(0, 10000);
             decimal result = ((Convert.ToInt32(fee) * 100) / decimal.Parse(tunnelInfo.p));
-            if (privilegeRelation.Rate!=0)
+            if(lstAcitivityRelation.Count>0)
             {
-                result = result * privilegeRelation.Rate;
+                ActivityPrivilegeRelationModel privilegeRelation = lstAcitivityRelation[0];
+                if (privilegeRelation.Rate != 0)
+                {
+                    result = result * privilegeRelation.Rate;
+                }
             }
-           
-            if(RandKey<result)
+            
+            if (RandKey<result)
             {
                 return true;
             }
@@ -642,6 +651,8 @@ namespace FycnApi.Controllers
             {
                 return Content(0);
             }
+            var log = LogManager.GetLogger("FycnApi", "wechat");
+            log.Info("send message success");
             List<CommandModel> lstCommand = new List<CommandModel>();
             lstCommand.Add(new CommandModel()
             {

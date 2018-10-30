@@ -109,5 +109,11 @@ namespace Fycn.Model.Wechat
             get;
             set;
         }
+
+        public string PicUrl
+        {
+            get;
+            set;
+        }
     }
 }

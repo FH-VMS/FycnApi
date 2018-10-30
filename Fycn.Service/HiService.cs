@@ -137,7 +137,7 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<ActivityPrivilegeRelationModel>(CommonSqlKey.IsSupportActivity, conditions);
             
         }
-        public int DoReward(KeyJsonModel keyJsonModel, string tradeNo,  string memberId, bool isGoal)
+        public int DoReward(KeyJsonModel keyJsonModel, string tradeNo,  string memberId, string waresName, bool isGoal)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace Fycn.Service
                     clientSalesInfo.TradeNo = tradeNo;
                     clientSalesInfo.PickupNo = "取货卡";
                     clientSalesInfo.WaresId = keyJsonModel.t[0].wid;
-                    clientSalesInfo.WaresName = "";
+                    clientSalesInfo.WaresName = waresName;
                     clientSalesInfo.CodeStatus = 1;
                     clientSalesInfo.CreateDate = DateTime.Now;
                     clientSalesInfo.MemberId = memberId;
@@ -329,6 +329,16 @@ namespace Fycn.Service
                 DbColumnName = "a.code_status",
                 ParamValue = 1,
                 Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+            conditions.Add(new Condition
+            {
+                LeftBrace = "  ",
+                ParamName = "ResourceUrl",
+                DbColumnName = "",
+                ParamValue = ConfigHandler.ResourceUrl,
+                Operation = ConditionOperate.None,
                 RightBrace = "",
                 Logic = ""
             });
