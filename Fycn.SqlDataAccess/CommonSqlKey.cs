@@ -320,6 +320,7 @@ namespace Fycn.SqlDataAccess
         //一元嗨
         GetMachineLocationById,
         IsSupportActivity,
-        ChangeTradeStatus
+        ChangeTradeStatus,
+        GetWaitingPickupByMachine
     }
 }

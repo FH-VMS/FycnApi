@@ -289,5 +289,38 @@ namespace Fycn.Service
 
             return GenerateDal.LoadByConditions<SourceToMachineModel>(CommonSqlKey.GetAdSource, conditions);
         }
+
+
+        public List<ClientSalesRelationModel> GetWaitingPickupByMachine(string machineId, string openId)
+        {
+            if (string.IsNullOrEmpty(machineId)|| string.IsNullOrEmpty(openId))
+            {
+                return null;
+            }
+            var conditions = new List<Condition>();
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "b.machine_id",
+                ParamValue = machineId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "a.member_id",
+                ParamValue = openId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
+
+            return GenerateDal.LoadByConditions<ClientSalesRelationModel>(CommonSqlKey.GetWaitingPickupByMachine, conditions);
+        }
     }
 }
