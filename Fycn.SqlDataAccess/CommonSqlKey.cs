@@ -323,6 +323,9 @@ namespace Fycn.SqlDataAccess
         ChangeTradeStatus,
         GetWaitingPickupByMachine,
         VerifyPickupByTradeNo,
-        UpdatePickupCodeStatusByTradeNo
+        UpdatePickupCodeStatusByTradeNo,
+        IsExistMemberAccount,
+        AddMemberAccount,
+        GetMemberAccountByMember
     }
 }

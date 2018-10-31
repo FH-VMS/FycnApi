@@ -9,6 +9,7 @@ using Fycn.Interface;
 using Fycn.Model.Ad;
 using Fycn.Model.Android;
 using Fycn.Model.Machine;
+using Fycn.Model.Member;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Product;
@@ -680,6 +681,29 @@ namespace FycnApi.Controllers
             //log.Info(tradeNoNode.InnerText);
             SocketHelper.GenerateCommand(10, 41, 66, lstCommand);
 
+            return Content(1);
+        }
+
+        //根据会员id取对应客户的账户信息
+        public ResultObj<MemberAccountModel> GetMemberAccountByMember(string machineId,string openId)
+        {
+            if(string.IsNullOrEmpty(machineId)||string.IsNullOrEmpty(openId))
+            {
+                return Content(new MemberAccountModel());
+            }
+            IHi ihi = new HiService();
+            var lstMachines = ihi.GetMachineByMachineId(machineId);
+            if(lstMachines.Count==0)
+            {
+                return Content(new MemberAccountModel());
+            }
+
+            return Content(ihi.GetMemberAccountByMember(openId, lstMachines[0].ClientId));
+        }
+
+        //通过积分取充值卡
+        public ResultObj<int> PickupByAccount(string machineId, string openId)
+        {
             return Content(1);
         }
     }

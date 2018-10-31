@@ -1,5 +1,6 @@
 ﻿using Fycn.Model.Ad;
 using Fycn.Model.Machine;
+using Fycn.Model.Member;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Sale;
@@ -39,5 +40,11 @@ namespace Fycn.Interface
 
         [Remark("根据商品id取出对应的货道", ParmsNote = "", ReturnNote = "")]
         List<ProductModel> GetProducInfoByWaresId(string machineId, string waresId);
+
+        [Remark("根据会员id取对应客户的账户信息", ParmsNote = "", ReturnNote = "")]
+        MemberAccountModel GetMemberAccountByMember(string memberId, string clientId);
+
+        [Remark("根据机器id取机器信息", ParmsNote = "", ReturnNote = "")]
+        List<MachineListModel> GetMachineByMachineId(string machineId);
     }
 }

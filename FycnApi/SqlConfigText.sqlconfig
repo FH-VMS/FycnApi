@@ -314,5 +314,8 @@
   "ChangeTradeStatus": "UPDATE table_sales_cashless SET trade_status=?p_TradeStatus WHERE trade_no=?p_TradeNo AND trade_status=9 ",
   "GetWaitingPickupByMachine": "SELECT a.*,b.machine_id as MachineId,CONCAT(?p_ResourceUrl,d.pic_path) as PicUrl FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no LEFT JOIN table_product c ON b.wares_id=c.wares_id LEFT JOIN table_pic d ON c.pic_id=d.pic_id ",
   "VerifyPickupByTradeNo": "SELECT a.*,b.machine_id as MachineId FROM table_client_sales_relation a LEFT JOIN table_sales_cashless b ON a.trade_no=b.trade_no AND a.member_id=b.buyer_id",
-  "UpdatePickupCodeStatusByTradeNo": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND trade_no=?p_TradeNo "
+  "UpdatePickupCodeStatusByTradeNo": "UPDATE table_client_sales_relation SET end_date=?p_EndDate,code_status=?p_CodeStatus,total_num=?p_TotalNum,remark=?p_Remark WHERE code_status=1 AND trade_no=?p_TradeNo ",
+  "IsExistMemberAccount": "SELECT COUNT(1) FROM table_member_account ",
+  "GetMemberAccountByMember": "SELECT * FROM table_member_account ",
+  "AddMemberAccount": "UPDATE table_member_account SET account_data=account_data+?p_AccountData WHERE member_id=?p_MemberId AND client_id=?p_ClientId "
 }

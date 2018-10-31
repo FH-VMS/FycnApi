@@ -1,6 +1,7 @@
 ﻿using Fycn.Interface;
 using Fycn.Model.Ad;
 using Fycn.Model.Machine;
+using Fycn.Model.Member;
 using Fycn.Model.Pay;
 using Fycn.Model.Privilege;
 using Fycn.Model.Sale;
@@ -37,6 +38,11 @@ namespace Fycn.Service
         //微信支付结果插入数据库
         public int PostPayResultW(KeyJsonModel keyJsonModel, string tradeNo, string sellerId, string buyerId, string isConcern, string payDate)
         {
+            int existResult = new MachineService().GetCountByTradeNo(tradeNo);
+            if(existResult>0)
+            {
+                return 1;
+            }
             try
             {
                 GenerateDal.BeginTransaction();
@@ -142,19 +148,20 @@ namespace Fycn.Service
             try
             {
                 GenerateDal.BeginTransaction();
-                if(isGoal) //一元嗨 嗨中
+                List<MachineListModel> lstMachine = GetMachineByMachineId(keyJsonModel.m);
+                string clientId = string.Empty;
+                if (lstMachine.Count > 0)
+                {
+                    clientId = lstMachine[0].ClientId;
+                }
+                if (isGoal) //一元嗨 嗨中
                 {
                     SaleModel saleInfo = new SaleModel();
                     saleInfo.TradeStatus = 7;
                     saleInfo.TradeNo = tradeNo;
                     GenerateDal.Update(CommonSqlKey.ChangeTradeStatus, saleInfo);
                     ClientSalesRelationModel clientSalesInfo = new ClientSalesRelationModel();
-                    List<MachineListModel> lstMachine = GetMachineByMachineId(keyJsonModel.m);
-                    string clientId = string.Empty;
-                    if(lstMachine.Count>0)
-                    {
-                        clientId = lstMachine[0].ClientId;
-                    }
+                   
                     clientSalesInfo.ClientId = clientId;
                     clientSalesInfo.TradeNo = tradeNo;
                     clientSalesInfo.PickupNo = "取货卡";
@@ -171,6 +178,24 @@ namespace Fycn.Service
                     SaleModel saleInfo = new SaleModel();
                     saleInfo.TradeStatus = 10;
                     saleInfo.TradeNo = tradeNo;
+                    MemberAccountModel memberAccount = new MemberAccountModel();
+                    int existResult = GetMemberAccountCount(memberId, clientId);
+                    if(existResult==0)
+                    {
+                        memberAccount.Id = Guid.NewGuid().ToString();
+                        memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                        memberAccount.ClientId = clientId;
+                        memberAccount.MemberId = memberId;
+                        memberAccount.TransferWithMoney = "100";
+                        GenerateDal.Create(memberAccount);
+                    }
+                    else
+                    {
+                        memberAccount.ClientId = clientId;
+                        memberAccount.MemberId = memberId;
+                        memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                        GenerateDal.Update(CommonSqlKey.AddMemberAccount, memberAccount);
+                    }
                     GenerateDal.Update(CommonSqlKey.ChangeTradeStatus, saleInfo);
                 }
                 
@@ -233,7 +258,7 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<SaleModel>(CommonSqlKey.GetSalesByNo, conditions);
         }
 
-
+        //取广告资源
         public List<SourceToMachineModel> GetAdSource(string machineId,string adType)
         {
             if (string.IsNullOrEmpty(machineId))
@@ -294,6 +319,7 @@ namespace Fycn.Service
         }
 
 
+        //取取货卡列表
         public List<ClientSalesRelationModel> GetWaitingPickupByMachine(string machineId, string openId)
         {
             if (string.IsNullOrEmpty(machineId)|| string.IsNullOrEmpty(openId))
@@ -401,7 +427,7 @@ namespace Fycn.Service
 
         }
 
-
+        //根据商品id取商品信息
         public List<ProductModel> GetProducInfoByWaresId(string machineId, string waresId)
         {
             var conditions = new List<Condition>();
@@ -441,6 +467,78 @@ namespace Fycn.Service
             return GenerateDal.LoadByConditions<ProductModel>(CommonSqlKey.GetProductInfoByWaresId, conditions);
 
 
+        }
+
+        //是否存在会员账户
+        private int GetMemberAccountCount(string memberId, string clientId)
+        {
+            var conditions = new List<Condition>();
+
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "member_id",
+                ParamValue = memberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+
+
+            return GenerateDal.CountByConditions(CommonSqlKey.IsExistMemberAccount, conditions);
+        }
+
+        //根据会员id取对应客户的账户信息
+        public MemberAccountModel GetMemberAccountByMember(string memberId, string clientId)
+        {
+            var conditions = new List<Condition>();
+
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "MachineId",
+                DbColumnName = "member_id",
+                ParamValue = memberId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "ClientId",
+                DbColumnName = "client_id",
+                ParamValue = clientId,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "  ",
+                Logic = ""
+            });
+
+
+            List<MemberAccountModel> lstMemberAccount = GenerateDal.LoadByConditions<MemberAccountModel>(CommonSqlKey.GetMemberAccountByMember, conditions);
+            if(lstMemberAccount.Count==0)
+            {
+                return new MemberAccountModel();
+            }
+            else
+            {
+                return lstMemberAccount[0];
+            }
         }
     }
 }
