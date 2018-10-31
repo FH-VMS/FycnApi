@@ -147,13 +147,19 @@ namespace Fycn.Service
         {
             try
             {
-                GenerateDal.BeginTransaction();
-                List<MachineListModel> lstMachine = GetMachineByMachineId(keyJsonModel.m);
+
                 string clientId = string.Empty;
-                if (lstMachine.Count > 0)
+                if (!string.IsNullOrEmpty(keyJsonModel.m))
                 {
-                    clientId = lstMachine[0].ClientId;
+                    List<MachineListModel> lstMachine = GetMachineByMachineId(keyJsonModel.m);
+
+                    if (lstMachine.Count > 0)
+                    {
+                        clientId = lstMachine[0].ClientId;
+                    }
                 }
+                GenerateDal.BeginTransaction();
+               
                 if (isGoal) //一元嗨 嗨中
                 {
                     SaleModel saleInfo = new SaleModel();
@@ -179,23 +185,27 @@ namespace Fycn.Service
                     saleInfo.TradeStatus = 10;
                     saleInfo.TradeNo = tradeNo;
                     MemberAccountModel memberAccount = new MemberAccountModel();
-                    int existResult = GetMemberAccountCount(memberId, clientId);
-                    if(existResult==0)
+                    if(!string.IsNullOrEmpty(clientId))
                     {
-                        memberAccount.Id = Guid.NewGuid().ToString();
-                        memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
-                        memberAccount.ClientId = clientId;
-                        memberAccount.MemberId = memberId;
-                        memberAccount.TransferWithMoney = "100";
-                        GenerateDal.Create(memberAccount);
+                        int existResult = GetMemberAccountCount(memberId, clientId);
+                        if (existResult == 0)
+                        {
+                            memberAccount.Id = Guid.NewGuid().ToString();
+                            memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                            memberAccount.ClientId = clientId;
+                            memberAccount.MemberId = memberId;
+                            memberAccount.TransferWithMoney = "100";
+                            GenerateDal.Create(memberAccount);
+                        }
+                        else
+                        {
+                            memberAccount.ClientId = clientId;
+                            memberAccount.MemberId = memberId;
+                            memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                            GenerateDal.Update(CommonSqlKey.AddMemberAccount, memberAccount);
+                        }
                     }
-                    else
-                    {
-                        memberAccount.ClientId = clientId;
-                        memberAccount.MemberId = memberId;
-                        memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
-                        GenerateDal.Update(CommonSqlKey.AddMemberAccount, memberAccount);
-                    }
+                   
                     GenerateDal.Update(CommonSqlKey.ChangeTradeStatus, saleInfo);
                 }
                 
@@ -230,7 +240,7 @@ namespace Fycn.Service
                 });
             }
 
-            return GenerateDal.LoadByConditions<MachineListModel>(CommonSqlKey.GetMachineByMachineId, conditions);
+            return GenerateDal.LoadByConditions<MachineListModel>(CommonSqlKey.GetCopyMachineById, conditions);
         }
 
         //根据单号取订单

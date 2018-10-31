@@ -475,7 +475,6 @@ namespace FycnApi.Controllers
                     XmlNode isSubNode = xmlDoc.SelectSingleNode("xml/is_subscribe"); // 是否为公众号关注者
                     XmlNode timeEndNode = xmlDoc.SelectSingleNode("xml/time_end"); // 是否为公众号关注者
                     XmlNode feeNode = xmlDoc.SelectSingleNode("xml/total_fee"); // 订单金额 单位为分
-                    XmlNode bodyNode = xmlDoc.SelectSingleNode("xml/body");
                     //string jsonProduct = FileHandler.ReadFile("data/" + tradeNoNode.InnerText + ".wa");
                     //log.Info("nnnnnnn" + tradeNoNode.InnerText);
                     //log.Info("aaaaaaa"+retProducts);
@@ -496,14 +495,15 @@ namespace FycnApi.Controllers
                     else
                     {
                     */
-                        if(IsReward(lstPrivilegeRelation, keyJsonModel.t[0], feeNode.InnerText, waresPrice))
+                    log.Info(string.Format("machine id is {0}", keyJsonModel.m));
+                    if (IsReward(lstPrivilegeRelation, feeNode.InnerText, waresPrice))
                         {
                             //中奖
-                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, bodyNode.InnerText, true);
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, "", true);
                         }
                         else
                         { //未摇中
-                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, bodyNode.InnerText, false);
+                            _ihi.DoReward(keyJsonModel, tradeNoNode.InnerText, openidNode.InnerText, "", false);
                         }
                     //}
 
@@ -527,7 +527,8 @@ namespace FycnApi.Controllers
         //根据机器id取机器位置
         public ResultObj<MachineLocationModel> GetMachineLocationById(string machineId)
         {
-            if(string.IsNullOrEmpty(machineId))
+           
+            if (string.IsNullOrEmpty(machineId))
             {
                 return null;
             }
@@ -566,9 +567,10 @@ namespace FycnApi.Controllers
         }
 
         //概率计算，是否摇中
-        private bool IsReward(List<ActivityPrivilegeRelationModel> lstAcitivityRelation, KeyTunnelModel tunnelInfo, string fee, string originPrice)
+        private bool IsReward(List<ActivityPrivilegeRelationModel> lstAcitivityRelation, string fee, string originPrice)
         {
-           
+            var log = LogManager.GetLogger("FycnApi", "2222");
+            log.Info(string.Format("fee is {0}, origin price is {1}", fee,originPrice));
             if (Convert.ToInt32(fee)>=decimal.Parse(originPrice) *100)
             {
                 return false;
@@ -576,7 +578,7 @@ namespace FycnApi.Controllers
 
             Random ran = new Random();
             int RandKey = ran.Next(0, 10000);
-            decimal result = ((Convert.ToInt32(fee) * 100) / decimal.Parse(tunnelInfo.p));
+            decimal result = ((Convert.ToInt32(fee) * 100) / decimal.Parse(originPrice));
             if(lstAcitivityRelation.Count>0)
             {
                 ActivityPrivilegeRelationModel privilegeRelation = lstAcitivityRelation[0];
@@ -585,7 +587,10 @@ namespace FycnApi.Controllers
                     result = result * privilegeRelation.Rate;
                 }
             }
-            
+            log.Info(string.Format("RandKey is {0}", RandKey));
+            log.Info(string.Format("result is {0}", result));
+
+            log.Info(string.Format("bool is {0}", RandKey < result));
             if (RandKey<result)
             {
                 return true;
