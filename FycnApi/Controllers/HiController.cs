@@ -72,6 +72,7 @@ namespace FycnApi.Controllers
             machineInfo.MachineId = machineId;
             machineInfo.PageIndex = pageIndex;
             machineInfo.PageSize = pageSize;
+            machineInfo.WaresTypeId = waresTypeId;
             IAndroid imachine = new AndroidService();
             var data = imachine.GetProductAndroid(machineInfo);
             //int totalcount = imachine.GetProductAndroidCount(machineInfo);

@@ -38,7 +38,7 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
-            if (string.IsNullOrEmpty(machineInfo.WaresTypeId))
+            if (!string.IsNullOrEmpty(machineInfo.WaresTypeId))
             {
                 conditions.Add(new Condition
                 {
