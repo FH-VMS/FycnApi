@@ -133,7 +133,7 @@ namespace Fycn.Service
                 LeftBrace = " AND ",
                 ParamName = "ActivityType",
                 DbColumnName = "b.activity_type",
-                ParamValue = machineId,
+                ParamValue = 2,
                 Operation = ConditionOperate.Equal,
                 RightBrace = " ",
                 Logic = ""
