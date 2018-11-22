@@ -648,7 +648,7 @@ namespace FycnApi.Controllers
             IHi ihi = new HiService();
             List<ClientSalesRelationModel>  lstClientSales = ihi.VerifyPickupByTradeNo(tradeNo);
 
-            if(lstClientSales==null || lstClientSales.Count==0 || lstClientSales[0].CodeStatus!=1)
+            if(lstClientSales==null || lstClientSales.Count==0)
             {
                 return Content(0);
             }
