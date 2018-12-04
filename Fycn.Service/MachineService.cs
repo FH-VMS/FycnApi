@@ -463,6 +463,7 @@ namespace Fycn.Service
                         if(lstClientSales[0].CodeStatus==1)
                         {
                             ClientSalesRelationModel saleRelationModel = new ClientSalesRelationModel();
+                            saleRelationModel.TradeNo = tradeNo;
                             saleRelationModel.TotalNum = lstClientSales[0].TotalNum;
                             saleRelationModel.CodeStatus = 2;
                             saleRelationModel.EndDate = DateTime.Now;
