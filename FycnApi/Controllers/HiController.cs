@@ -641,6 +641,7 @@ namespace FycnApi.Controllers
         [HttpPost]
         public ResultObj<int> PickupImmediately(string tradeNo)
         {
+            
             if(string.IsNullOrEmpty(tradeNo))
             {
                 return Content(0);
@@ -657,7 +658,11 @@ namespace FycnApi.Controllers
                 return Content(0);
             }
             ClientSalesRelationModel salesInfo = lstClientSales[0];
-            var lstProduct = ihi.GetProducInfoByWaresId(salesInfo.MachineId, salesInfo.WaresId);
+            if (!MachineHelper.IsOnline(salesInfo.MachineId))
+            {
+                return Content(0,ResultCode.Fail, "机器不在线！");
+            }
+                var lstProduct = ihi.GetProducInfoByWaresId(salesInfo.MachineId, salesInfo.WaresId);
             if (lstProduct == null || lstProduct.Count == 0)
             {
                 return Content(0);
