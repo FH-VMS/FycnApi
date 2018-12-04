@@ -645,6 +645,10 @@ namespace FycnApi.Controllers
             {
                 return Content(0);
             }
+            if(MachineHelper.IsLegalOrder(tradeNo))
+            {
+                return Content(0);
+            }
             IHi ihi = new HiService();
             List<ClientSalesRelationModel>  lstClientSales = ihi.VerifyPickupByTradeNo(tradeNo);
 
@@ -711,6 +715,35 @@ namespace FycnApi.Controllers
         public ResultObj<int> PickupByAccount(string machineId, string openId)
         {
             return Content(1);
+        }
+
+        //判断定单状态
+        public ResultObj<int> GetPickupStatusByTradeNo(string tradeNo)
+        {
+            if(string.IsNullOrEmpty(tradeNo))
+            {
+                return Content(0);
+            }
+
+            if (MachineHelper.IsLegalOrder(tradeNo))
+            {
+                return Content(2);
+            }
+            IHi ihi = new HiService();
+            var lstSalesModel = ihi.GetTradeStatusByTradeNo(tradeNo);
+            if(lstSalesModel==null || lstSalesModel.Count==0)
+            {
+                return Content(0);
+            }
+            if(lstSalesModel[0].TradeStatus==7)
+            {
+                return Content(0);
+            }
+            if(lstSalesModel[0].TradeStatus == 8)
+            {
+                return Content(1);
+            }
+            return Content(0);
         }
     }
 }

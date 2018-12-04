@@ -18,6 +18,18 @@ namespace FycnLog
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigin",
+                    builder => builder
+                    //.WithOrigins("http://120.27.217.224:9090")
+                    .AllowAnyOrigin()
+                    .WithMethods("GET", "POST", "PUT", "DELETE")
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .SetPreflightMaxAge(TimeSpan.FromSeconds(2520))
+                    );
+            });
             services.AddDirectoryBrowser();
         }
 
@@ -29,7 +41,7 @@ namespace FycnLog
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors("AllowAllOrigin");
             var dir = new DirectoryBrowserOptions();
             dir.FileProvider = new PhysicalFileProvider("/log/");
             app.UseDirectoryBrowser(dir);

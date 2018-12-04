@@ -369,6 +369,17 @@ namespace Fycn.Service
                 RightBrace = "",
                 Logic = ""
             });
+
+            conditions.Add(new Condition
+            {
+                LeftBrace = " AND ",
+                ParamName = "TradeStatus",
+                DbColumnName = "b.trade_status",
+                ParamValue = 7,
+                Operation = ConditionOperate.Equal,
+                RightBrace = "",
+                Logic = ""
+            });
             conditions.Add(new Condition
             {
                 LeftBrace = "  ",
@@ -411,17 +422,6 @@ namespace Fycn.Service
                     ParamName = "CodeStatus",
                     DbColumnName = "a.code_status",
                     ParamValue = 1,
-                    Operation = ConditionOperate.Equal,
-                    RightBrace = "",
-                    Logic = ""
-                });
-
-                conditions.Add(new Condition
-                {
-                    LeftBrace = " AND ",
-                    ParamName = "TradeStatus",
-                    DbColumnName = "b.trade_status",
-                    ParamValue = 7,
                     Operation = ConditionOperate.Equal,
                     RightBrace = "",
                     Logic = ""
@@ -550,5 +550,6 @@ namespace Fycn.Service
                 return lstMemberAccount[0];
             }
         }
+        
     }
 }

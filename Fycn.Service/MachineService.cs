@@ -472,7 +472,7 @@ namespace Fycn.Service
                     }
                 }
                 GenerateDal.CommitTransaction();
-                if(!result)
+                if(!result&& tradeStatus==1)
                 {
                     RefundService refund = new RefundService();
                     if(saleModel.PayInterface=="微信")
@@ -484,9 +484,10 @@ namespace Fycn.Service
                         refund.PostRefundA(lstSaleModel);
                     }
                 }
-                else
+                else if(result)
                 {
-                    if(tradeStatus == 1)
+                    
+                    if(tradeStatus == 1 || tradeStatus == 7)
                     {
                         //如果是分账账户，打款到个人
                         DistrubuteMoneyService ds = new DistrubuteMoneyService();
