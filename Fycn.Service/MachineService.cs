@@ -458,9 +458,9 @@ namespace Fycn.Service
                     GenerateDal.Update(CommonSqlKey.UpdatePayResult, saleModel);
                     //取销售表对应的取货码表数据  并更新成已出货状态
                     List<ClientSalesRelationModel> lstClientSales = new HiService().VerifyPickupByTradeNo(tradeNo);
-                    if(lstClientSales!=null && lstClientSales.Count>0)
+                    if (lstClientSales != null && lstClientSales.Count > 0)
                     {
-                        if(lstClientSales[0].CodeStatus==1)
+                        if (lstClientSales[0].CodeStatus == 1)
                         {
                             ClientSalesRelationModel saleRelationModel = new ClientSalesRelationModel();
                             saleRelationModel.TradeNo = tradeNo;
@@ -468,7 +468,8 @@ namespace Fycn.Service
                             saleRelationModel.CodeStatus = 2;
                             saleRelationModel.EndDate = DateTime.Now;
                             saleRelationModel.Remark = "一元嗨活动取货";
-                            GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatusByTradeNo, saleRelationModel);
+                            return GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatusByTradeNo, saleRelationModel);
+
                         }
                     }
                 }
@@ -500,11 +501,14 @@ namespace Fycn.Service
             }
             catch(Exception e)
             {
+                GenerateDal.RollBack();
                 return 0;
             }
             
             return 1;
         }
+
+         
 
         //上报出货结果  更新销售表状态
         public int PutPayResult(KeyJsonModel keyJsonInfo)
