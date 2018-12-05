@@ -468,7 +468,7 @@ namespace Fycn.Service
                             saleRelationModel.CodeStatus = 2;
                             saleRelationModel.EndDate = DateTime.Now;
                             saleRelationModel.Remark = "一元嗨活动取货";
-                            return GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatusByTradeNo, saleRelationModel);
+                            GenerateDal.Update(CommonSqlKey.UpdatePickupCodeStatusByTradeNo, saleRelationModel);
 
                         }
                     }
