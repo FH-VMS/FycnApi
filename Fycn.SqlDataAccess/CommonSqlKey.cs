@@ -238,6 +238,7 @@ namespace Fycn.SqlDataAccess
         GetGroupProduct,
         GetGroupMoneyByMachine,
         GetMobilePayStatistic,
+        GetCashPayStatistic,
         GetProductStatistic,
         GetProductStatisticCount,
 

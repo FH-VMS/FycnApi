@@ -231,6 +231,7 @@
   "GetGroupProduct": "select  count(1) as Data, wares_name as Name FROM table_sales_cashless a LEFT JOIN table_machine b on a.machine_id=b.machine_id ",
   "GetGroupMoneyByMachine": "SELECT SUM(a.trade_amount*a.reality_sale_number) as Data,CONCAT(b.machine_id,' | ',IFNULL(b.remark,'')) as Name FROM table_sales_cashless a LEFT JOIN table_machine b ON a.machine_id = b.machine_id ",
   "GetMobilePayStatistic": "SELECT a.pay_interface,count(1) as PayNumbers, SUM(a.trade_amount*a.reality_sale_number) as Amount,SUM(a.service_charge) as ServiceCharge FROM table_sales_cashless a LEFT JOIN table_machine b ON a.machine_id = b.machine_id ",
+  "GetCashPayStatistic": "SELECT '现金' as pay_interface,count(1) as PayNumbers, SUM(a.sales_prices*a.sales_number) as Amount,SUM(0) as ServiceCharge FROM table_sales_cash a LEFT JOIN table_machine b ON a.machine_id = b.machine_id",
   "GetProductStatistic": "SELECT a.wares_name,count(1) as PayNumbers, SUM(a.trade_amount*a.reality_sale_number) as Amount,SUM(a.service_charge) as ServiceCharge FROM table_sales_cashless a LEFT JOIN table_machine b ON a.machine_id = b.machine_id ",
   "GetProductStatisticCount": "SELECT count(DISTINCT a.wares_name) FROM table_sales_cashless a LEFT JOIN table_machine b ON a.machine_id = b.machine_id ",
 

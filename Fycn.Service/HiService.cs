@@ -191,7 +191,7 @@ namespace Fycn.Service
                         if (existResult == 0)
                         {
                             memberAccount.Id = Guid.NewGuid().ToString();
-                            memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                            memberAccount.AccountData = 1;
                             memberAccount.ClientId = clientId;
                             memberAccount.MemberId = memberId;
                             memberAccount.TransferWithMoney = "100";
@@ -201,7 +201,7 @@ namespace Fycn.Service
                         {
                             memberAccount.ClientId = clientId;
                             memberAccount.MemberId = memberId;
-                            memberAccount.AccountData = Convert.ToInt32(keyJsonModel.t[0].p);
+                            memberAccount.AccountData = 1;
                             GenerateDal.Update(CommonSqlKey.AddMemberAccount, memberAccount);
                         }
                     }

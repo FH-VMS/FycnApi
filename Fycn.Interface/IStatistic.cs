@@ -39,6 +39,9 @@ namespace Fycn.Interface
         [Remark("统计移动支付金额及笔数", ParmsNote = "", ReturnNote = "")]
         DataTable GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId, string machineId, string tradeStatus);
 
+        [Remark("统计现金支付金额及笔数", ParmsNote = "", ReturnNote = "")]
+        DataTable GetCashPayStatistic(string salesDateStart, string salesDateEnd, string clientId, string machineId, string tradeStatus);
+
         [Remark("统计商品金额及笔数", ParmsNote = "", ReturnNote = "")]
         DataTable GetProductStatistic(string salesDateStart, string salesDateEnd, string productName, string clientId, string machineId, string tradeStatus,int pageIndex,int pageSize);
         

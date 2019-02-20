@@ -727,28 +727,28 @@ namespace FycnApi.Controllers
         {
             if(string.IsNullOrEmpty(tradeNo))
             {
-                return Content(0);
+                return Content(0, ResultCode.Fail, "取货失败");
             }
 
             if (MachineHelper.IsLegalOrder(tradeNo))
             {
-                return Content(2);
+                return Content(2, ResultCode.Success, "出货中");
             }
             IHi ihi = new HiService();
             var lstSalesModel = ihi.GetTradeStatusByTradeNo(tradeNo);
             if(lstSalesModel==null || lstSalesModel.Count==0)
             {
-                return Content(0);
+                return Content(0, ResultCode.Fail, "取货失败");
             }
             if(lstSalesModel[0].TradeStatus==7)
             {
-                return Content(0);
+                return Content(0, ResultCode.Fail, "取货失败");
             }
             if(lstSalesModel[0].TradeStatus == 8)
             {
-                return Content(1);
+                return Content(1, ResultCode.Success, "成功");
             }
-            return Content(0);
+            return Content(0, ResultCode.Fail, "取货失败");
         }
     }
 }

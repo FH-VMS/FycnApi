@@ -9,6 +9,7 @@ using Fycn.Interface;
 using Fycn.Service;
 using Fycn.Utility;
 using Fycn.Model.Sys;
+using System.Data;
 
 namespace FycnApi.Controllers
 {
@@ -24,7 +25,14 @@ namespace FycnApi.Controllers
 
         public ResultObj<string> GetMobilePayStatistic(string salesDateStart, string salesDateEnd, string clientId="", string machineId="", string tradeStatus= "2^7^8")
         {
-            return Content(JsonHandler.DataTable2Json(_istatistic.GetMobilePayStatistic(salesDateStart, salesDateEnd, clientId, machineId, tradeStatus)));
+            DataTable dtMobilePay = _istatistic.GetMobilePayStatistic(salesDateStart, salesDateEnd, clientId, machineId, tradeStatus);
+            DataTable dtCashPay = _istatistic.GetCashPayStatistic(salesDateStart, salesDateEnd, clientId, machineId, "");
+            if (dtCashPay.Rows.Count>0)
+            {
+                dtMobilePay.Merge(dtCashPay,false,MissingSchemaAction.AddWithKey);
+            }
+            
+            return Content(JsonHandler.DataTable2Json(dtMobilePay));
         }
 
         public ResultObj<string> GetProductStatistic(string salesDateStart, string salesDateEnd, string productName="", string clientId="", string machineId="", string tradeStatus="2^7^8",int pageIndex=1, int pageSize=10)
